@@ -1,0 +1,33 @@
+<!-- Title and Hide Search Toggle -->
+<% showing = params[:show] %>
+<% content_for :title, "#{@account.name} - #{params[:show].titleize}" %>
+<%= search_header('fad fa-chalkboard-teacher', "&nbsp; External Account Search") %>
+
+  <!-- Search in Accounts  -->
+  <%= render 'layouts/search/search', :locals => {
+    :fields_search => accounts_search(params[:show]),
+    :help => showing.constantize.text_search_help,
+    :url => tags_objects_account_path(:id => @account.id)
+  }%>
+
+  <!-- Loading -->
+  <%= render 'layouts/search/loading' %>
+  <!-- Display -->
+  <div id="search-results">
+    <!-- Pagination and Display -->
+    <%= render 'layouts/search/display_pagination', :locals => {:showing => showing, :display => 'true', :paginate => @showing, :total => @total_showing} %>
+    <!-- Object Index -->
+    <% index_partial = (params[:show] == 'Scenario' ? 'admin/accounts/partials/scenarios' : 'admin/accounts/partials/questions') %>
+    <%= render index_partial %>
+    <!-- Pagination Bottom -->
+    <%= render 'layouts/search/display_pagination', :locals => {:showing => showing, :paginate => @showing, :total => @total_showing} %>
+  </div>
+
+<!-- Bottom Menu -->
+<div id="menu-bottom">
+  <ul>
+    <% if can?(:account, :read) %><li><%= link_to account_path(:id => @account.id) do %><i class="fas fa-chalkboard-teacher fa-3x" title="Back to Account"></i><br>Back to Account<% end %></li><% end %>
+    <!-- Back Dashboard --><li> <%= link_to root_path do %><i class="fas fa-chalkboard fa-3x" title="Back to Dashboard"></i><br>Dashboard<% end %></li>
+  </ul>
+</div>
+

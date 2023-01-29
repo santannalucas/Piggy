@@ -1,0 +1,35 @@
+<!-- Title and Hide Search Toggle -->
+<% content_for :title, "Scheduled Bills" %>
+
+<div id='workspace'>
+  <!-- Transactions Search Header -->
+  <%= search_header("fad fa-calendar-alt", 'Scheduled Bills').html_safe %>
+
+  <!-- Search in Reports -->
+  <%= render 'layouts/search/search', :locals => {
+    :fields_search => reports_search,
+    :help => 'Search in Reports.',
+    :url => reports_path(:per_page => params[:per_page]),
+    :height => '100px'
+  }%>
+
+  <%= render 'layouts/search/loading' %>
+
+  <!-- Display -->
+  <div id="search-results">
+    <!-- Pagination and Display -->
+    <%= render 'layouts/search/display_pagination', :locals => {:showing => 'Report', :display => 'true', :paginate => @reports, :total => @total_reports} %>
+    <!-- Index -->
+    <%= render 'reports/partials/index' %>
+    <!-- Bottom Pagination -->
+    <%= render 'layouts/search/display_pagination', :locals => {:showing => 'Report', :paginate => @reports, :total => @total_reports} %>
+  </div>
+
+</div>
+
+<!-- Bottom Menu -->
+<div id="menu-bottom">
+  <ul>
+    <!-- Back Dashboard -->  <li> <%= link_to root_path do %><i class="fad fa-analytics fa-3x dashboard" title="Back to Dashboard"></i><br>Dashboard<% end %></li>
+  </ul>
+</div>r

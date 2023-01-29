@@ -1,0 +1,32 @@
+<% error = params[:errors] %>
+<% if locals[:new].present? %>
+<tr id="row-form-new" <% unless error.present? %> hidden="hidden" <% end %>class="row-form-form <%= 'error' if error.present? %>">
+  <%= form_for @account_new do |form| %>
+    <td> # </td>
+    <!-- Name -->  <td class="form"> <%= form.text_field :name, :class => 'input-field-table-column', :placeholder => 'Add Account Name.' %></td>
+    <!-- Type -->  <td class="form"> <%= form.text_field :description, :class => 'input-field-table-column', :placeholder => 'Add Description (optional).' %></td>
+    <!-- Expenses --><td></td>
+    <!-- Deposits --><td></td>
+    <!-- Save -->
+    <td><button type='submit' name='Update' value='Update' class='action-icon new-form'><i class="fad fa-save fa-lg" title="Save"></i></button></td>
+    <!-- Cancel  -->
+    <td><i class="fad fa-times-circle action-icon new-form cancel-table-row-form" title="Cancel"></i></td>
+  <% end %>
+</tr>
+<% else %>
+  <% account = @account_edit || locals[:account] %><% rows = locals[:rows] %>
+  <tr id="form_record_<%= account.id %>"  <%= "hidden='hidden'".html_safe unless locals[:error] %> class="row-form-form <%= 'error' if locals[:error] %>">
+    <%= form_for(account, url: account_path(id:account.id), method: :put) do |form|%>
+      <!-- #    -->  <td> <%= rows %></td>
+      <!-- Name -->  <td> <%= form.text_field :name, :class => 'input-field-table-column' %></td>
+      <!-- Type -->  <td> <%= form.text_field :description, :class => 'input-field-table-column', :placeholder => 'Add Description (optional).' %></td>
+      <td></td>
+      <td></td>
+      <td><button type='submit' name='Update' value='Update' class='action-icon row-form'><i class="fad fa-save fa-lg" title="Save"></i></button></td>
+      <td>
+        <% if locals[:error] %><%= link_to accounts_path do %><i class="fad fa-times-circle action-icon row-form cancel-table-row" title="Cancel"></i><% end %>
+        <% else %><i class="fad fa-times-circle action-icon row-form cancel-table-row-form" rel="<%= account.id %>" title="Cancel"></i><% end %>
+      </td>
+    <% end %>
+  </tr>
+<% end %>

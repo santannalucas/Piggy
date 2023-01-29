@@ -1,0 +1,76 @@
+<!-- Rows Count Init. --><% rows = 0 %>
+<% role_view = !@workspace.present? %>
+<!-- Table Header -->
+<table class="default rules-form">
+  <tr>
+    <th style="width: 5%;">  # </th>
+    <th style="width: 15%;" class="align-left"> <%= role_view ? rules_sort("admin_workspaces.name", "Workspace") : rules_sort('admin_roles.name','Role') %></th>
+    <th style="width: 30%;" class="align-left"> <%= rules_sort "admin_custom_rules.description", "Description" %></th>
+    <th style="width: 40%;" class="align-left"> Long Description </th>
+    <th style="width: 10%;"> Allowed? </th>
+    <th style="width: 10%;" colspan="2"> Actions </th>
+  </tr>
+  <!-- Row Form - New Record -->
+  <% if role_view %>
+  <tr id="row-form-new" <% unless params[:errors].present? || params[:filter_wks] == '1' %> hidden="hidden" <% end %>class="row-form-form">
+    <%= form_for(@new_custom, url: create_role_custom_rules_path, method: :post) do |form|%>
+    <td>#<%= form.hidden_field :role_id, :value => @role.id %></td>
+    <td> <%= select_tag :workspace_id, options_for_select(CustomRule.workspaces_not_assigned(@role.id, 'collect'), params[:workspace_id]), {:disabled => params[:workspace_id].present?, :include_blank => 'All', :class => 'add-new-row custom-role-rules-form'} %> </td>
+    <td colspan="2"><%= form.select :custom_rule_id, options_for_select(@avail_rules, params[:custom_rule]), :class => 'input-field-table-column to-focus' %></td>
+    <td><%= form.check_box :access %> </td>
+    <td><button type='submit' name='Update' value='Update' class='action-icon'><i class="fad fa-save fa-lg" title="Save"></i></button></td>
+    <td><i class="fad fa-times-circle action-icon cancel-table-row-form" title="Cancel"></i></td>
+    <% end %>
+  </tr>
+  <% end %>
+<!-- Table Body and Rows Count -->
+<% @showing.each do |role_rule| %><% rows = rows + 1 %>
+  <% error = params[:error_id] == role_rule.id.to_s %>
+  <% updated = params[:updated].to_i == role_rule.id %>
+    <% role_wks = role_view ?
+      link_to(role_rule.custom_rule.workspace.name, workspace_path(:id => role_rule.custom_rule.workspace.id, :show => 'custom_rules')):
+      link_to(role_rule.role.name, role_path(:id => role_rule.role_id, :show => 'custom_rules'))
+    %>
+  <tr id="field_record_<%= role_rule.id %>" class="<%= cycle('odd', 'even') -%> row-form-field <%= 'updated' if updated %>"  <%= "hidden='hidden'".html_safe if error %>>
+    <!-- Row    --><td> <%= row_number(rows) %> </td>
+    <!-- WKS    --><td class="align-left"> <%= role_wks %></td>
+    <!-- Short  --><td class="align-left"> <%= role_rule.custom_rule.description %> </td>
+    <!-- Long   --><td class="align-left"> <%= role_rule.custom_rule.long_description %> </td>
+    <!-- Access --><td><%= check_box_tag("Access", "access", role_rule.access , disabled:true) %></td>
+    <% if role_view %>
+    <td><!-- Edit -->
+    <% if can?(:custom_rule, :update) %><i class="fad fa-pencil-alt action-icon row-form-edit-field " rel="<%= role_rule.id %>" title="Edit"></i><% end %></td>
+    <td><!-- Role to Workspace -->
+      <% if can?(:workspace,:read) %>
+        <%= link_to role_path(:id => role_rule.role_id, :show => 'custom_rules', :search => role_rule.custom_rule.description, :full_sentence => true) do %>
+        <i class="fad fa-search action-icon" title="View Details"></i><% end %>
+      <% end %></td>
+    <% else %>
+      <td colspan="2"><!-- Workspace to Role -->
+        <% if can?(:role, :read) %>
+          <%= link_to role_path(:id => role_rule.role_id, :show => 'custom_rules', :search => role_rule.custom_rule.description, :full_sentence => true) do %>
+            <i class="fad fa-search action-icon" title="View Details"></i><% end %>
+        <% end %></td>
+    <% end %>
+  </tr>
+  <!-- Row Form Field -->
+  <% if role_view %>
+    <tr id="form_record_<%= role_rule.id %>"  <%= "hidden='hidden'".html_safe unless error %> class="row-form-form <%= 'error' if error %>">
+      <%= form_for(role_rule, url: update_role_custom_rules_path, method: :put) do |form|%>
+        <td><%= row_number(rows) %><%= form.hidden_field :id %></td>
+        <td class="align-left"> <%= role_rule.custom_rule.workspace.name %> </td>
+        <td class="align-left"> <%= role_rule.custom_rule.description %> </td>
+        <td class="align-left"> <%= role_rule.custom_rule.long_description %> </td>
+        <td><%= form.check_box :access %> </td>
+        <td><button type='submit' name='Update' value='Update' class='action-icon row-form'><i class="fad fa-save fa-lg" title="Save"></i></button></td>
+          <td>
+            <% if error %><%= link_to roles_path(:show => 'custom_rules') do %><i class="fad fa-times-circle action-icon row-form cancel-table-row" title="Cancel"></i><% end %>
+            <% else %><i class="fad fa-times-circle action-icon row-form cancel-table-row-form" rel="<%= role_rule.id %>" title="Cancel"></i><% end %>
+          </td>
+        <% end %>
+      </tr>
+    <% end %>
+  <% end %>
+  <!-- Index Bottom -->
+  <%= render 'layouts/search/index_bottom', :locals => {:showing => 'Custom Rule', :collection => @showing.present?, :total => @total_showing, :colspan => 7, :rows => rows, :rows_height => 38} %>
+</table>

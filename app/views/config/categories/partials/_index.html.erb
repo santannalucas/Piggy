@@ -1,0 +1,37 @@
+<!-- Rows Count Init. -->
+<%= hidden_field_tag(:from, 'index') %>
+<% rows = 0 %>
+
+<!-- Table Header and Tags Form-->
+<table class="default">
+  <thead>
+  <tr>
+    <th style="width:20px;">#</th>
+    <th style="width:50%" class="align-left"> <%= cat_sort("category.name", "Name") %></th>
+    <th style="width:35%"> <%= cat_sort("categories.account_type", "Type") %> </th>
+    <th style="width:15%"> Sub-Categories </th>
+    <th style="width:115px" colspan="3"> Actions </th>
+  </tr>
+  </thead>
+  <!-- Search in Transactions -->
+  <%= render 'config/categories/partials/form', :locals => {:new => true} %>
+
+  <!-- Table Body and Rows Count -->
+  <% @categories.each do |category| %><% rows = rows + 1 %>
+    <% error = params[:error_id] == category.id.to_s %>
+    <% updated = params[:updated].to_i == category.id %>
+    <tr id="field_record_<%= category.id %>" class="<%= cycle('odd', 'even') -%> row-form-field <%= 'updated' if updated %>" <%= "hidden='hidden'".html_safe if error %>>
+      <td> <%= rows %> </td>
+      <td class="align-left"> <%= category.name %> </td>
+      <td> <%= category.type_string %></td>
+      <td> <%= category.sub_categories.count %> </td>
+      <td><%= link_to sub_categories_path(:category_id => category.id) do %><i class="fad fa-search action-icon" title="View Sub-Categories"></i><% end %> </td>
+      <td><i class="fad fa-pencil-alt action-icon row-form-edit-field" rel="<%= category.id %>" title="Edit"></i></td>
+      <td><%= link_to category_path(:id => category.id), :class => 'delete-confirm', :method => :delete do %><i class="fas fa-trash action-icon" title="Delete"></i><% end %></td>
+    </tr>
+    <!-- Row Edit Form -->
+    <%= render 'config/categories/partials/form', :locals => { :category => category, :error => error, :rows => rows} %>
+<% end %>
+  <!-- Index Bottom -->
+  <%= render 'layouts/search/index_bottom', :locals => {:showing => 'Category', :collection => @categories.present?, :total => @categories.count, :colspan => 7, :rows => rows, :rows_height => 38} %>
+</table>

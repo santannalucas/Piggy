@@ -1,0 +1,12 @@
+<div id="menu-tabs">
+  <ul>
+    <li class="active"><%= locals[:selected][0] %></li>
+    <% locals[:collection].each do | option_name , option_id| %>
+      <% unless option_id == locals[:selected][1] %>
+        <% parameter = locals[:params] %>
+        <% parameter[locals[:attr]] = option_id %>
+        <%= link_to polymorphic_path(locals[:url], parameter), :class => 'loading' do %><li><%= option_name %></li><% end %>
+      <% end %>
+    <% end %>
+  </ul>
+</div>

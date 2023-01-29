@@ -1,0 +1,6 @@
+<% if flash.present? %>
+    <% flash.each do |key, value| %>
+      <% flash_value = value + '<i class="fas fa-times fa-sm close-flash"></i>' %>
+    <%= content_tag :div, flash_value.html_safe, class: "flash #{key}" %>
+  <% end %>
+<% end %>

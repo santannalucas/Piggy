@@ -1,0 +1,22 @@
+<!-- Rows Count Init. --><% rows, columns = 0, 3 %>
+
+<!-- Table Header -->
+<table id="example" class="default" style="width:100%;margin:0;">
+  <tr>
+    <th style="width:100px; "> <%= rules_sort("admin_workspaces.id", "ID") %></th>
+    <th style="width:100%;" class="align-left"> <%= rules_sort "admin_workspaces.name", "Name" %></th>
+    <th style="width:70px;"> Actions </th>
+  </tr>
+
+  <!-- Table Body and Rows Count -->
+  <% @showing.each do |workspace| %><% rows = rows + 1 %>
+    <tr class="<%= cycle('odd', 'even') -%>">
+      <td> <%= link_to workspace.id, workspace_path(:id => workspace.id) %> </td>
+      <td class="align-left"> <%= link_to workspace.name, workspace_path(:id => workspace.id) %> </td>
+      <td><%= link_to workspace_path(:id => workspace.id, :show => "overview") do %><i class="fad fa-search action-icon" title="View Details"></i><% end %> </td>
+    </tr>
+  <% end %>
+
+<!-- Index Bottom -->
+<%= render 'layouts/search/index_bottom', :locals => {:showing => 'Workspace', :collection => @showing.present?, :total => @total_showing, :colspan => columns, :rows => rows, :rows_height => 38} %>
+</table>

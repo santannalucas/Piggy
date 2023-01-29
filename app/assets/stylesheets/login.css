@@ -1,0 +1,142 @@
+body 
+	{
+	font-family: "Raleway", sans-serif;
+	font-size: 16px;
+	line-height:18px;
+	background: #FFF;
+    	color:#333;
+	margin:0;
+	padding:0;
+	height:100%;
+	width:100%;
+	}
+
+
+
+a:link {
+    text-decoration: none;
+    
+}
+
+a:visited {
+    text-decoration: none;
+}
+
+a:hover {
+    text-decoration: none;
+}
+
+a:active {
+    text-decoration: underline;
+}
+
+/* Text Styles*/
+
+a { color: inherit; } 
+
+sub, sup {
+  font-size: 75%;
+  line-height: 0;
+  position: relative;
+  vertical-align: baseline;
+}
+
+sup {
+  top: -0.5em;
+}
+
+sub {
+  bottom: -0.25em;
+}
+
+
+.field_with_errors {
+	border: solid ;
+	border-width:1px;
+	border-color: #dcdcdc;
+	background-color:#060404;
+	}
+h1{ 
+	font-size: 2.5em;
+	line-height: 2em;
+	padding:30px auto 0;
+	margin:0;
+	font-family: "Raleway", Arial, sans-serif;
+	font-weight: strong; 
+	letter-spacing: 1.5px;	
+}	
+
+h3	{ 
+	margin:30px 0px 30px auto;
+	font-size: 1.5em;
+	font-family: "Raleway", Arial, sans-serif;
+	text-align:left;
+	}	
+	
+	
+h4	{
+	font-size: 1.3em;
+	font-family: "Raleway", Arial, sans-serif;
+	margin: 0px auto 50px;
+	}
+
+h5{	
+	margin-top:-15px;
+	font-weight:bold;
+	padding-top:0;
+	font-size: 1em;
+	text-align: center;
+	color: #d4af38;
+	letter-spacing: 3px;
+	font-family: "Raleway", Arial, sans-serif;
+}
+#login{
+	text-align: center;
+	width: 40%;
+	border-radius: 15px;
+	border: solid 1px #dddddd;
+	position: relative;
+	margin: 15% 30%;
+	padding: 20px;
+	}
+
+
+#login ul {
+	list-style: none;
+	line-height: 24px;
+}
+
+#login li {
+	text-align: left;
+	width: 50%;
+	cursor: pointer;
+	padding: 0;
+	margin: 0 25%;
+}
+
+.login-input{
+	width: 100%;
+}
+
+.login-submit{
+	padding: 5px;
+	width: 30%;
+	margin: 10px;
+	font-size: 15px;
+}
+#login-logo{
+	text-align: center;
+	margin: 0 30%;
+	width: 40%;
+}
+
+#login-footer{
+	text-align: center;
+	font-size: 10px;
+}
+
+.remember{
+	font-size: 12px;
+}
+
+

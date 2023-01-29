@@ -1,0 +1,44 @@
+<% error = params[:errors] %>
+<% if locals[:new].present? %>
+<tr id="row-form-new" <% unless error.present? %> hidden="hidden" <% end %>class="row-form-form <%= 'error' if error.present? %>">
+  <%= form_for @bank_account_new do |form| %>
+    <td> # </td>
+    <!-- Name -->  <td class="form"> <%= form.text_field :name, :class => 'input-field-table-column', :placeholder => 'Add Account Name.' %></td>
+    <!-- No   -->  <td class="form"> <%= form.text_field :number, :class => 'input-field-table-column', :placeholder => 'Add Account Number (optional).' %></td>
+    <!-- Type -->  <td class="form"><%= form.select :account_type, options_for_select(account_types_options),{},{:class => 'input-field-table-column to-focus'} %>
+    <!-- Desc -->  <td class="form"> <%= form.text_field :description, :class => 'input-field-table-column', :placeholder => 'Optional Description.' %></td>
+    <!-- Select Currency -->
+    <td class="form"><%= form.select :currency_id, options_for_select(@currencies.collect{|x| [x.name,x.id]}),{},{:class => 'input-field-table-column to-focus'} %>
+    <!-- Date -->
+    <td class="form"> <%= date_field_tag('bank_account[created_at]', Time.now.to_date, class: 'input-field-table-column align-center') %> </td>
+    <td class="form"><%= form.check_box :active, :class => 'rules-form' %> </td>
+    <td class="form"><%= form.check_box :dashboard, :class => 'rules-form' %> </td>
+    <!-- Save -->
+    <td></td>
+    <td><button type='submit' name='Update' value='Update' class='action-icon new-form'><i class="fad fa-save fa-lg" title="Save"></i></button></td>
+    <!-- Cancel  -->
+    <td><i class="fad fa-times-circle action-icon new-form cancel-table-row-form" title="Cancel"></i></td>
+  <% end %>
+</tr>
+<% else %>
+  <% bank_account = @bank_account_edit || locals[:bank_account] %><% rows = locals[:rows] %>
+  <tr id="form_record_<%= bank_account.id %>"  <%= "hidden='hidden'".html_safe unless locals[:error] %> class="row-form-form <%= 'error' if locals[:error] %>">
+    <%= form_for(bank_account, url: bank_account_path(id:bank_account.id), method: :put) do |form|%>
+      <!-- #    -->  <td> <%= rows %></td>
+      <!-- Name -->  <td> <%= form.text_field :name, :class => 'input-field-table-column' %></td>
+      <!-- No   -->  <td> <%= form.text_field :number, :class => 'input-field-table-column', :placeholder => 'Add Account Number (optional).' %></td>
+      <!-- Type -->  <td> <%= form.select :account_type, options_for_select(account_types_options, form.object.account_type),{},{:class => 'input-field-table-column align-center'} %></td>
+      <!-- Desc -->  <td> <%= form.text_field :description, :class => 'input-field-table-column', :placeholder => 'Optional Description.' %></td>
+      <!-- Select Currency --><td><%= form.select :currency_id, options_for_select(@currencies.collect{|x| [x.name,x.id]},form.object.currency_id),{},{:class => 'input-field-table-column align-center'} %>
+      <!-- Date -->  <td> <%= date_field_tag('bank_account[created_at]', form.object.created_at.to_date, class: 'input-field-table-column align-center') %> </td>
+      <td><%= form.check_box :active, :class => 'rules-form' %> </td>
+      <td><%= form.check_box :dashboard, :class => 'rules-form' %> </td>
+      <td></td>
+      <td><button type='submit' name='Update' value='Update' class='action-icon row-form'><i class="fad fa-save fa-lg" title="Save"></i></button></td>
+      <td>
+        <% if locals[:error] %><%= link_to bank_accounts_path do %><i class="fad fa-times-circle action-icon row-form cancel-table-row" title="Cancel"></i><% end %>
+        <% else %><i class="fad fa-times-circle action-icon row-form cancel-table-row-form" rel="<%= bank_account.id %>" title="Cancel"></i><% end %>
+      </td>
+    <% end %>
+  </tr>
+<% end %>

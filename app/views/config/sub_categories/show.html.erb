@@ -1,0 +1,75 @@
+<% content_for :title,  "MCQ Exam: #{@exam.name}" %>
+
+<!-- Title -->
+<h4><i class="fad fa-book-open fa-sh"></i> &nbsp;   <%= @exam.name %> | <span><%= @exam.status.titleize %> - MCQ Exam  </span></h4>
+<div id="hide-search" class="with-sidebar"> &nbsp; <i id='hide-search-arrow' class="fad fa-arrow-alt-from-bottom fa-sm"></i>  <i class="fad fa-search"></i></div>
+
+<!-- Object Inside -->
+<div class="view-object with-sidebar reports">
+  <div class="view-object-inside">
+
+  <!-- Reports Sidebar -->
+  <%= render 'exams/questions_exams/partials/sidebar' %>
+  <!-- Details and Search -->
+  <div id="search-with-details">
+  <div class="search-details-divider">
+    <!-- Exam Details -->
+    <div class="search-details">
+    <table class="field-row ">
+      <tr><th>Name:</th><td><%= @exam.name %></td></tr>
+      <tr><th>Status:</th><td><b><%= @exam.status.upcase %></b></td></tr>
+      <tr><th>Description:</th><td><%= @exam.description %></td></tr>
+      <tr><th>Type:</th><td><%= @exam.exam_type.titleize %></td></tr>
+      <tr><th>Date:</th><td><%= default_date(@exam.date) %></td></tr>
+      <% if @exam.last_process_report_at.present? %>
+      <tr><!-- Last Process Result -->
+        <th>Last Process: </th>
+        <td><%= default_datetime(@exam.last_process_report_at) %><i class="fad fa-window-maximize rep-res-toggle" title="Show last Process Report."></i></td>
+      </tr> <% end %>
+      <% if can?(:questions_exam,:update) && @exam.status == 'finalised' %>
+      <tr><!-- Import Statistics -->
+        <th><b> Import Statistics </b></th>
+        <td><%= form_tag import_stats_questions_exam_path, :multipart => true, :class => 'stats_import' do %>
+          <%= file_field_tag "import_file", :class => 'field-row-import-file' %>
+          <button type='submit' id="submit-import" class='action-icon'><i class="fad fa-file-upload" title="Save"></i></button>
+        </td> <% end %>
+      </tr> <% end %>
+    </table>
+    </div>
+    <!-- Search in exam -->
+    <div class="search-details-box">
+    <%= render 'layouts/search/search', :locals => {:fields_search => exam_objs_search('question'), :placeholder => exam_questions_placeholder(params[:show]), :url => questions_exam_path(@exam), :with_details => true} %>
+    </div>
+    <!-- Search Details End -->
+    </div>
+  </div>
+
+  <!-- Loading -->
+  <%= render 'layouts/search/loading' %>
+
+  <!-- Last Process Report -->
+  <% if @exam.last_process_report.present? %><div id="report-result" <%= "hidden='hidden'" unless params[:result_report] %>><%= @exam.last_process_report.html_safe %><i class="fal fa-window-close close-report-result"></i></div><% end %>
+
+  <!-- Display -->
+  <div id="search-results" <%= "hidden='hidden'" if params[:result_report] %>>
+    <!-- Exam Threshold -->
+    <%= render 'questions/partials/thres' %>
+    <!-- Pagination and Display -->
+    <%= render 'layouts/search/display_pagination', :locals => {:showing => (params[:show] == 'questions' ? 'Question' : 'Tag'), :display => 'true', :paginate => (@tags.present? ? @tags : @questions), :total => (@total_tags.present? ? @total_tags : @total_questions)} %>
+    <!-- Tabs -->
+    <%= render 'layouts/object/show_menu', :locals => {:selected => questions_exam_tabs(params[:show]), :attr => :show, :collection => questions_exam_tabs, :url => [:questions_exam], :params => {:show => params[:show]} } %>
+    <!-- Showing Questions or Tags -->
+    <% if params[:show] == 'questions' %><%= render 'questions/partials/index', :locals => {:from => 'exam'} %><% elsif params[:show] == 'tags' %><%= render 'tags/partials/index' %><% end %>
+  </div>
+  <!-- Object End -->
+  </div>
+</div>
+
+<!-- Bottom Menu -->
+<div id="menu-bottom">
+  <ul>
+  <!-- Edit Exam      --><% if can?(:questions_exam, :update) && @exam.status != "completed" %><li><%= link_to edit_questions_exam_path(@exam, :show => params[:show]) do %><i class="fas fa-edit fa-3x" title="Edit"></i><br>Edit<% end %> </li><% end %>
+  <!-- Back to Search --><li><% if params[:from] == 'index' %><%= link_to :back do %><i class="fas fa-search fa-3x" title="Back to Search"></i><br>Back to Search<% end %><% else %>
+  <!-- Back to Exams  --><%= link_to questions_exams_path do %><i class="fas fa-book-alt fa-3x" title="Back to Exams"></i><br>Back to Exams <% end %><% end %> </li>
+  </ul>
+</div>

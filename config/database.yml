@@ -1,0 +1,17 @@
+# SQLite version 3.x
+#   gem install sqlite3
+#
+#   Ensure the SQLite 3 gem is defined in your Gemfile
+#   gem 'sqlite3'
+#
+default: &default
+  database: kuokalc
+  adapter: postgresql
+  host: localhost
+  username: kuokalc_user
+  password: kuokalc_user
+
+development:
+  <<: *default
+  database: kuokalc
+

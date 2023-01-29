@@ -1,0 +1,31 @@
+<% error = params[:errors] %>
+<% if locals[:new].present? %>
+<tr id="row-form-new" <% unless error.present? %> hidden="hidden" <% end %>class="row-form-form <%= 'error' if error.present? %>">
+  <%= form_for @category do |form| %>
+    <td> # </td>
+    <!-- Name -->  <td class="form"> <%= form.text_field :name, :class => 'input-field-table-column', :placeholder => 'Add Category Name.' %></td>
+    <!-- Type -->  <td class="form"><%= form.select :category_type, options_for_select(category_types_options),{},{:class => 'input-field-table-column align-center'} %>
+    <!-- Save -->
+    <td colspan="2"></td>
+    <td><button type='submit' name='Update' value='Update' class='action-icon new-form'><i class="fad fa-save fa-lg" title="Save"></i></button></td>
+    <!-- Cancel  -->
+    <td><i class="fad fa-times-circle action-icon new-form cancel-table-row-form" title="Cancel"></i></td>
+  <% end %>
+</tr>
+<% else %>
+  <% category = @category_edit || locals[:category] %><% rows = locals[:rows] %>
+  <tr id="form_record_<%= category.id %>"  <%= "hidden='hidden'".html_safe unless locals[:error] %> class="row-form-form <%= 'error' if locals[:error] %>">
+    <%= form_for(category, url: category_path(id:category.id), method: :put) do |form|%>
+      <!-- #    -->  <td> <%= rows %></td>
+      <!-- Name -->  <td> <%= form.text_field :name, :class => 'input-field-table-column' %></td>
+      <!-- Type -->  <td> <%= form.select :category_type, options_for_select(category_types_options, form.object.category_type),{},{:class => 'input-field-table-column align-center'} %></td>
+      <td> <%= category.sub_categories.count %> </td>
+      <td></td>
+      <td><button type='submit' name='Update' value='Update' class='action-icon row-form'><i class="fad fa-save fa-lg" title="Save"></i></button></td>
+      <td>
+        <% if locals[:error] %><%= link_to categories_path do %><i class="fad fa-times-circle action-icon row-form cancel-table-row" title="Cancel"></i><% end %>
+        <% else %><i class="fad fa-times-circle action-icon row-form cancel-table-row-form" rel="<%= category.id %>" title="Cancel"></i><% end %>
+      </td>
+    <% end %>
+  </tr>
+<% end %>

@@ -1,0 +1,99 @@
+<%= stylesheet_link_tag 'dashboard.css' %>
+
+<script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
+<script type="text/javascript">
+    google.charts.load("41", {packages:["corechart",'bar']});
+    google.charts.setOnLoadCallback(pieExpenses);
+    function pieExpenses() {
+        var data = google.visualization.arrayToDataTable(<%= raw @pie_chart %>);
+        var options = {chartArea: {width: 450, height: 350}, colors: [
+          '#c02e2e','#c45454'],
+            pieHole: 0,};
+        var chart = new google.visualization.PieChart(document.getElementById('pie-expenses'));
+        chart.draw(data, options);
+    }
+
+    google.charts.setOnLoadCallback(monthExpected);
+
+    function monthExpected() {
+        var data = new google.visualization.arrayToDataTable([
+            [' ', 'Received','to Receive','Paid','Unpaid'], ['<%= Date::MONTHNAMES[params[:month].try(:to_i) || Time.now.month] %>', <%= @in_current %>, <%= @in_unpaid %>, <%= @out_current %>, <%= @out_unpaid %>]
+        ]);
+
+        var options = {
+            chartArea: {width: 220, height: 255},
+            tooltip: {isHtml: true},
+            legend:{position:'none'},
+            isStacked: true,
+            vAxis: {format: '$ ', viewWindow: { max: <%= (((@in_total > @out_total ? @in_total : @out_total)/500).to_i + 2 )*500 %>, min: 0 }            },
+            vAxes: {0: { }, 1: {gridlines: { color: 'transparent' }, textStyle: { color: 'transparent'}},},
+            series: { 2: { targetAxisIndex: 1 }, 3: {targetAxisIndex: 1},},
+            colors: ['#638269','#c53e3e'],
+
+        };
+
+        var chart = new google.charts.Bar(document.getElementById('month-expected'));
+        chart.draw(data, google.charts.Bar.convertOptions(options));
+    }
+
+        google.charts.setOnLoadCallback(drawTopX);
+
+        function drawTopX() {
+            var data = new google.visualization.DataTable();
+            data.addColumn('string', '');
+            data.addColumn('number', 'Deposits');
+            data.addColumn('number', 'Expenses');
+
+            data.addRows(<%= raw @monthly_total %>);
+
+            var options = {
+                legend: {position:'none'},
+                axes: { x: { 0: {side: 'top'}}},
+                colors: ['#638269','#c53e3e']
+            };
+
+            var materialChart = new google.charts.Bar(document.getElementById('monthly'));
+            materialChart.draw(data, options);
+        }
+
+</script>
+<!-- Title and Hide Search Toggle -->
+<% content_for :title, "Dashboard" %>
+<!-- Sidebar -->
+<%= render 'dashboard/partials/sidebar' %>
+
+<div id='workspace' class="sidebar">
+  <!-- Transactions Search Header -->
+  <h1><i class='fad fa-analytics dashboard'></i> &nbsp;Dashboard - <%= [Date::MONTHNAMES[params[:month].to_i],params[:year].to_s].join(' ') %></h1>
+  <div id="in-out">
+    <div class="in-out-item">Income:  <div class="in-out-value deposits"><%= number_to_currency(@in_current) %><i>( <%= number_to_currency(@in_total) %> )</i></div></div>
+    <div class="in-out-item">Expenses:<div class="in-out-value expenses"><%= number_to_currency(@out_current) %><i>( <%= number_to_currency(@out_total) %> )</i></div></div>
+    <div class="in-out-item">Total:   <div class="in-out-value"><%= currency_with_color(@total) %><i>(<%= currency_with_color(@paid_total) %>)</i></div></div>
+  </div>
+
+  <div id='dashboard-central' >
+
+    <div>
+      <h2>Current vs Expected</h2>
+      <div id="month-expected"></div>
+    </div>
+
+    <div style="height: 320px"><%= render 'dashboard/partials/calendar' %></div>
+
+    <%= render 'dashboard/partials/bills' %>
+
+    <div>
+      <h2>Month Expenses by Category</h2>
+      <div id="pie-expenses"></div>
+    </div>
+
+    <div>
+      <h2>This year Deposits / Expenses</h2>
+      <div id="monthly"></div>
+    </div>
+
+
+
+
+  </div>
+</div>

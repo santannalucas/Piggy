@@ -1,0 +1,24 @@
+<div id='controls'>
+   <!-- Previous Year -->
+  <%= link_to dashboard_path(:year => params[:year].to_i - 1, :month => params[:month],:bank_account_id => params[:bank_account_id]) do %>
+    <i class="fas fa-angle-double-left controls-icon" title="Previous Year"></i>
+  <% end %>
+
+  <%= link_to previous_year_month(params[:month],params[:year],params[:bank_account_id]) do %>
+    <i class="fas fa-angle-left controls-icon" title="Previous Month"></i>
+  <% end %>
+
+  <%= link_to dashboard_path do %>
+    <i class="far fa-dot-circle controls-icon current" title="Current Month"></i>
+  <% end %>
+
+  <%= link_to next_year_month(params[:month],params[:year],params[:bank_account_id]) do %>
+    <i class="fas fa-angle-right controls-icon" title="Next Month"></i>
+  <% end %>
+
+  <%= link_to dashboard_path(:year => params[:year].to_i + 1, :month => params[:month],:bank_account_id => params[:bank_account_id]) do %>
+    <i class="fas fa-angle-double-right controls-icon" title="Next Year "></i>
+  <% end %>
+
+</div>
+

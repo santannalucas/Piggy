@@ -1,0 +1,32 @@
+<script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
+<script type="text/javascript">
+    google.charts.load("41", {packages:["corechart",'bar']});
+    google.charts.setOnLoadCallback(drawTopX);
+
+    function drawTopX() {
+        var data = new google.visualization.DataTable();
+        data.addColumn('string', '');
+        data.addColumn('number', 'Result');
+
+        data.addRows(<%= raw @monthly_result %>);
+
+        var options = {
+            legend: {position:'none'},
+            axes: { x: { 0: {side: 'top'}}},
+            colors: <%= raw @colors %>,
+            vAxis: {
+                viewWindowMode:'explicit',
+                viewWindow: {
+                    max:8000,
+                    min:-500
+                }}
+        };
+
+        var materialChart = new google.charts.Bar(document.getElementById('monthly_result_per_year'));
+        materialChart.draw(data, options);
+    }
+</script>
+<h1><i class='fad fa-analytics dashboard'></i> &nbsp;Monthly Result per Year - <%= params[:year].to_s %></h1>
+
+<div id="monthly_result_per_year"></div>
+

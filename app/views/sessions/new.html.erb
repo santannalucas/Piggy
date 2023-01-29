@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+<title>You arrived to Warners St.</title>
+  <link href='https://fonts.googleapis.com/css?family=Raleway:500,900,200' rel='stylesheet' type='text/css'>
+	<%= stylesheet_link_tag "login" %>
+ <%= favicon_link_tag "favicon.ico" %>
+</head>
+
+<body>
+<% if flash.present? %>
+	<% flash.each do |key, value| %>
+		<% flash_value = value + '<i class="fas fa-times fa-sm close-flash"></i>' %>
+		<%= content_tag :div, flash_value.html_safe, class: "flash #{key}" %>
+	<% end %>
+<% end %>
+
+<div id='login'>
+	<div id='login-logo'>	<%= (image_tag("logo_l.png", :width => "100%")) %> 	</div>
+	<%= form_for(:session, url: login_path) do |f| %>
+	  <ul class="login-menu">
+		  <li><%= f.label :email, class: 'login-label'%></li>
+		  <li><%= f.email_field :email, class: 'login-input' %></li>
+			<li><%= f.label :password, class: 'login-label'%></li>
+			<li><%= f.password_field :password, class: 'login-input' %></td></li>
+	 </ul>
+		<div class="remember"><%= f.label :remember_me do %> <%= f.check_box :remember_me %> <span>Remember me on this computer</span> <% end %></div>
+   <%= f.submit "Log in", class: "login-submit" %>
+	<% end %>
+</div>
+
+<div id="login-footer">Warners St Finances<sup>&reg;</sup> is developed by <%= link_to "Lucas Sant'Anna", 'https://www.linkedin.com/in/santannalucas/' %> all rights reserved.</div>
+</body>
+</html>
+
+
+
+
+
+
+

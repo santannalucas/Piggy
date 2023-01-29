@@ -1,0 +1,23 @@
+<div>
+  <h2> Programed Bills</h2>
+
+  <div id=bills>
+    <table class="programed-bills">
+    <% @bills.unpaid.each do |item| %>
+      <tr class="<%= cycle('odd', 'even') -%>">
+        <th style="width: 30px"> <%= trans_type_icon(item.scheduler) %> </th>
+        <td style="width: 125px"> <%= item.scheduler.account.name %> </td>
+        <td style="width: 85px"> <%= item.scheduler.scheduler_type.name.gsub('Payments','') %></td>
+        <th style="width: 85px"> $ <%= ('%.2f' % item.amount) %> </th>
+        <td style="width: 85px">  <%= default_date(item.created_at) %> </td>
+        <td style="width: 50px" class="align-center">
+          <%= link_to scheduler_pay_path(:scheduler_id => item.scheduler.id, :item_id => item.id, :from => 'dashboard') do %>
+            <i class="fad fa-check-circle <%= item.scheduler.type_name %> action-icon" title="Pay Bill"></i>
+          <% end %>
+        </td>
+      </tr>
+    <% end %>
+    </table>
+  </div>
+
+</div>

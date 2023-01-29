@@ -1,0 +1,36 @@
+<!-- Title and Hide Search Toggle -->
+<% content_for :title, "Currencies" %>
+
+<div id='workspace'>
+  <!-- Transactions Search Header -->
+  <%= search_header("fad fa-usd-circle", 'Currencies').html_safe %>
+
+  <!-- Search in  Currencies -->
+  <%= render 'layouts/search/search', :locals => {
+    :fields_search => currencies_search,
+    :help => 'Search in Currencies.',
+    :url => currencies_path(:per_page => params[:per_page]),
+    :height => '110px'
+  }%>
+
+  <%= render 'layouts/search/loading' %>
+
+  <!-- Display -->
+  <div id="search-results">
+    <!-- Pagination and Display -->
+    <%= render 'layouts/search/display_pagination', :locals => {:showing => 'Currency', :display => 'true', :paginate => @currencies, :total => @total_currencies} %>
+    <!-- Index -->
+    <%= render 'config/currencies/partials/index' %>
+    <!-- Bottom Pagination -->
+    <%= render 'layouts/search/display_pagination', :locals => {:showing => 'Currency', :paginate => @currencies, :total => @total_currencies} %>
+  </div>
+
+</div>
+
+<!-- Bottom Menu -->
+<div id="menu-bottom">
+  <ul>
+    <!-- New Currency --><li><a id='add-row-form-new' href="#row-form-new"><i class="fad fa-plus-circle fa-3x new-icon" title="New Currency"></i><br> New </a> </li>
+    <!-- Back Dashboard -->  <li> <%= link_to root_path do %><i class="fad fa-analytics fa-3x dashboard" title="Back to Dashboard"></i><br>Dashboard<% end %></li>
+  </ul>
+</div>

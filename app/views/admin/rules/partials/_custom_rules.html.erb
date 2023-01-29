@@ -1,0 +1,43 @@
+<!-- Rows Count Init. --><% rows = 0 %>
+
+<!-- Table Header -->
+<table class="default rules-form">
+  <tr>
+    <th style="width: 30px"> # </th>
+    <th style="width: 15%;" class="align-left"> <%= rules_sort "admin_workspaces.name", "Workspace" %></th>
+    <th style="width: 30%;" class="align-left"> <%= rules_sort "admin_custom_rules.description", "Description" %></th>
+    <th style="width: 55%;" class="align-left"> Long Description </th>
+    <th style="width: 100px;" colspan="2"> Actions </th>
+  </tr>
+<!-- Table Body and Rows Count -->
+<% @showing.each do |custom| %><% rows = rows + 1 %>
+  <% error = (params[:error_id] == custom.id.to_s || params[:filter_workspace] == '1') %>
+  <% updated = params[:updated].to_i == custom.id %>
+  <% object_link = workspace_path(:id => custom.workspace.id, :show => 'custom_rules', :search => custom.description, :full_sentence => true) %>
+  <tr id="field_record_<%= custom.id %>" class="<%= cycle('odd', 'even') -%> row-form-field <%= 'updated' if updated %>" <%= "hidden='hidden'".html_safe if error %>>
+    <!-- Row   --> <td> <%= row_number(rows) %> </td>
+    <!-- WKS   --> <td class="align-left"> <%= link_to custom.workspace.name, object_link %> </td>
+    <!-- Short --> <td class="align-left"> <%= link_to custom.description, object_link %> </td>
+    <!-- Long  --> <td class="align-left"> <%= link_to custom.long_description, object_link %> </td>
+    <!-- View  --><td><%= link_to object_link do %><i class="fad fa-search action-icon" title="View Details"></i><% end %></td>
+    <!-- Edit  --><td><% if can?(:custom_rule, :update) %><i class="fad fa-pencil-alt action-icon row-form-edit-field " rel="<%= custom.id %>" title="Edit"></i><% end %></td>
+  </tr>
+    <!-- Row Form Field -->
+    <tr id="form_record_<%= custom.id %>"  <%= "hidden='hidden'".html_safe unless error %> class="row-form-form <%= 'error' if error %>">
+      <%= form_for custom, method: :put do |form| %>
+        <td> <%= row_number(rows) %><%= form.hidden_field :id %> </td>
+        <!-- WKS   --> <td class="align-left"> <%= custom.workspace.name %> </td>
+        <td><%= form.text_field :description, :value => error ? params[:short] : custom.description, :class => 'input-field-table-column' %></td>
+        <td><%= form.text_field :long_description, :value => error ? params[:long] : custom.long_description, :class => 'input-field-table-column' %></td>
+        <td><button type='submit' name='Update' value='Update' class='action-icon row-form'><i class="fad fa-save fa-lg" title="Save"></i></button></td>
+        <td>
+          <% if error %><%= link_to rules_path(:show => 'custom_rules') do %><i class="fad fa-times-circle action-icon row-form cancel-table-row" title="Cancel"></i><% end %>
+          <% else %><i class="fad fa-times-circle action-icon row-form cancel-table-row-form" rel="<%= custom.id %>" title="Cancel"></i><% end %>
+        </td>
+      <% end %>
+    </tr>
+  <% end %>
+
+  <!-- Index Bottom -->
+  <%= render 'layouts/search/index_bottom', :locals => {:showing => 'Custom Rule', :collection => @showing.present?, :total => @total_showing, :colspan => 6, :rows => rows, :rows_height => 38} %>
+</table>

@@ -1,0 +1,36 @@
+<!-- Rows Count Init. -->
+<% rows, columns = 0 , 9 %>
+
+<!-- Table Header and Tags Form-->
+<table class="default">
+  <thead>
+  <tr>
+  <!-- ID/Number  --> <th style="width:70px;"> <%= qts_sort("questions.number", "ID") %></th>
+  <!-- Topic      --> <th style="width:30%" class="align-left"> <%= qts_sort "questions.topic", "Topic" %></th>
+  <!-- Clinical T.--> <th style="width:15%"> <%= qts_sort "questions.clinician_task_id", "Clinical Task" %>  </th>
+  <!-- Discipline --> <th style="width:15%"> <%= qts_sort "questions.discipline_id", "Discipline" %>  </th>
+  <!-- System     --> <th style="width:15%"> <%= qts_sort "questions.system_id", "System" %> </th>
+  <!-- A.Thres    --> <th style="width:10%"> <%= qts_sort "questions.anchored_threshold", "A-Thres." %> </th>
+  <!-- Images     --> <th style="width:15%"> <%= qts_sort "questions.images_types", "Image" %> </th>
+  <!-- Actions --><th style="width:105px" colspan="2"> Actions </th>
+  </tr>
+</thead>
+<!-- Table Body and Rows Count -->
+<% @showing.each do |question| %><% rows = rows + 1 %>
+  <!-- Quick Link to View -->
+  <% link_to_path = tags_object_account_path(:id => @account.id, :object_number => question.number, :object_type => 'Question') %>
+  <!-- Row --><tr class="<%= cycle('odd', 'even') -%>">
+  <!-- Number     --> <td> <%= row_link(question.number, false, link_to_path) %> </td>
+  <!-- Topic      --> <td class="align-left"> <%= row_link(question.topic.upcase, false , link_to_path) %> <% if controller_path != 'questions' && question.status == 'archived' %> (Archived) <% end %> </td>
+  <!-- Clinic.T   --> <td><%= row_link(question.clinician_task.try(:code), question.clinician_task.try(:name), link_to_path) %></td>
+  <!-- Discipline --> <td><%= row_link(question.discipline.try(:code),question.discipline.try(:name), link_to_path) %></td>
+  <!-- System     --> <td><%= row_link(question.system.try(:code), question.system.try(:name), link_to_path) %></td>
+  <!-- A. Thres.  --> <td><%= row_link(sprintf("%0.3f", question.anchored_threshold.round(3)), false, link_to_path) if question.anchored_threshold.present? %> </td>
+  <!-- Images     --> <td><%= row_link(question.images_types, false, link_to_path) %></td>
+  <!-- Details --> <td style="width:35px"><%= link_to link_to_path do %><i class="fad fa-search action-icon" title="View Details"></i><% end %> </td>
+  <!-- New Tab --> <td style="width:35px"><%= link_to link_to_path, :target => "blank" do %><i class="fad fa-external-link-alt action-icon" title="Open New Tab"></i><% end %></td>
+  </tr>
+  <% end %>
+<!-- Index Bottom -->
+<%= render 'layouts/search/index_bottom', :locals => {:showing => 'Question', :collection => @showing.present?, :total => @total_showing, :colspan => columns, :rows => rows, :rows_height => 38} %>
+</table>

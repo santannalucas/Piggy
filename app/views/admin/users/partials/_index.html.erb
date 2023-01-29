@@ -1,0 +1,37 @@
+<%# Partial Used on Users Index, Role Show and Account Show %>
+<!-- Rows Count Init. --><% rows, columns = 0 , 7 %>
+<!-- Permission --><% message =  "Are you sure you want to remove this User ?" %>
+<!-- From --> <% params[:from] = params[:from] || 'index' %>
+
+<!-- Table Header -->
+<table id="example" class="default">
+  <tr>
+    <th style='width:70px'> <%= rules_sort "admin_users.id", "ID" %></th>
+    <th style='width:33%' class="align-left"> <%= rules_sort "admin_users.name", "Name" %></th>
+    <th style='width: 33%' class="align-left"> <%= rules_sort "admin_users.email", "Email" %></th>
+    <% unless @role.present? %><th style='width:33%' class="align-left"> <%= rules_sort "admin_roles.name", "Role" %></th><% columns = columns + 1 %><% end %>
+    <th style='width:155px' colspan="3"> Actions </th>
+  </tr>
+
+  <!-- Search in Transactions -->
+  <%= render 'admin/users/partials/form' %>
+
+  <!-- Table Body and Rows Count -->
+<% @showing.each do |user| %><% rows = rows + 1 %>
+  <!-- Quick Link to View -->
+  <% link_to_path = user_path(:id => user.id, :from => params[:from], :from_id => params[:from_id]) %>
+  <tr class="<%= cycle('odd', 'even') -%>">
+    <!-- ID    --><td><%= row_link(user.id, false, link_to_path) %></td>
+    <!-- Name  --><td class="align-left"><%= row_link(user.name, false, link_to_path) %></td>
+    <!-- Users --><td class="align-left"><%= row_link(user.email, false, link_to_path) %></td>
+    <!-- Role   --><% unless @role.present? %><td class="align-left"> <%= row_link(user.role.name, false, role_path(user.role.id)) if user.role %> </td> <% end %>
+    <!-- View   --><td><%= link_to link_to_path do %><i class="fad fa-search action-icon" title="View Details"></i><% end %> </td>
+    <!-- Edit   --><% if can?(:user,:update) %><td><%= link_to user_path(id:user.id,from:params[:from],editing:true,from_id:params[:from_id]) do %><i class="fad fa-pencil-alt action-icon" title="Edit"></i><% end %></td><% end %>
+    <!-- Delete --><td><%= link_to user_path(:id => user.id), data: {confirm: message}, :method  => :delete do %><i class="fad fa-trash action-icon row-form" title="Delete"></i><% end %></td>
+  </tr>
+
+  <% end %>
+<!-- Index Bottom -->
+<%= render 'layouts/search/index_bottom', :locals => {:showing => 'User', :collection => @showing.present?, :total => @total_showing, :colspan => columns, :rows => rows, :rows_height => 38} %>
+</table>
+

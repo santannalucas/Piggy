@@ -1,0 +1,52 @@
+<!-- Rows Count Init. -->
+<%= hidden_field_tag(:from, 'index') %>
+<% rows = 0 %>
+
+<!-- Table Header and Tags Form-->
+<table class="default">
+  <thead>
+  <tr>
+    <th style="width:20px;">#</th>
+    <th style="width: 6%"> <%= transaction_sort("transactions.transaction_type_id","Type") %>
+    <th style="width:18%" class="align-left"> <%= transaction_sort("accounts.name","Account") %></th>
+    <th style="width:18%" class="align-left"> <%= transaction_sort("sub_categories.name","Category") %> </th>
+    <th style="width:30%"> <%= transaction_sort("transactions.description","Description") %> </th>
+    <th style="width:16%"> <%= transaction_sort("transactions.created_at","Date") %> </th>
+    <th style="width:16%"> <%= transaction_sort("transactions.amount","Value") %> </th>
+    <th style="width:95px" colspan="2"> Actions </th>
+  </tr>
+  </thead>
+
+  <!-- Search in Transactions -->
+  <%= render 'transactions/partials/new' %>
+
+  <!-- New Row Form -->
+
+  <!-- Table Body and Rows Count -->
+  <% @transactions.each do |transaction| %><% rows = rows + 1 %>
+    <% error = params[:error_id] == transaction.id.to_s %>
+    <% updated = params[:updated].to_i == transaction.id %>
+    <tr id="field_record_<%= transaction.id %>" class="<%= cycle('odd', 'even') -%> row-form-field <%= transaction.transaction_type.name %> <%= 'updated' if updated %>" <%= "hidden='hidden'".html_safe if error %>>
+      <td> <%= rows %> </td>
+      <td class="<%= transaction.transaction_type.name %>"><%= trans_type_icon(transaction) %></td>
+      <td class="align-left"> <%= transaction.transfer_or_account_name %> </td>
+      <td class="align-left">  <%= "#{transaction.sub_category.category.name} >> " if transaction.sub_category.category.present? %> <%= transaction.sub_category.name %> </td>
+      <td class="trans-description"> <%= transaction.description %></td>
+      <td><%= default_date(transaction.created_at) %></td>
+      <td class="<%= transaction.transaction_type.name %> trans_amount"><%= transaction.amount_to_string %></td>
+      <% if transaction.transfer %>
+        <td><%= link_to transactions_path(:bank_account_id => transaction.transfer.from_bank.id, :edit_form_id => transaction.transfer.id) do %><i class="fad fa-pencil-alt action-icon" title="Edit"></i><% end %></td>
+        <td><%= link_to transfer_path(:id => transaction.transfer.id, :bank_account_id => @bank_account.id), :class => 'delete-confirm', :method => :delete do %><i class="fas fa-trash action-icon" title="Delete"></i><% end %></td>
+      <% else %>
+        <td><i class="fad fa-pencil-alt action-icon row-form-edit-field" rel="<%= transaction.id %>" title="Edit"></i></td>
+        <td><%= link_to transaction_path(:id => transaction.id), :class => 'delete-confirm', :method => :delete do %><i class="fas fa-trash action-icon" title="Delete"></i><% end %></td>
+      <% end %>
+    </tr>
+    <!-- Row Edit Form -->
+    <%= render 'transactions/partials/edit', locals: { :transaction => transaction, :error => error, :rows => rows} if !transaction.transfer %>
+  <% end %>
+
+  <!-- Index Bottom -->
+  <%= render 'layouts/search/index_bottom', :locals => {:showing => 'Transaction', :collection => @transactions.present?, :total => @transactions.count, :colspan => 10, :rows => rows, :rows_height => 38} %>
+</table>
+

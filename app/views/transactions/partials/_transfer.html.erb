@@ -1,0 +1,59 @@
+<% error, edit =  params[:transfer_error].present? , params[:edit_form_id].present? || params[:new_transfer].present? %>
+<div id="form-index" class="<%= 'error' if error %>" <% unless edit || error  %>hidden='hidden'<% end %> >
+<% @bank_accounts.each do |bank| %><input id=<%= "bank_rate_#{bank.id}" %> type="hidden" value=<%= bank.converted_rate(@bank_account) %>><% end %>
+  <%= form_for @transfer do |form| %>
+    <%= hidden_field_tag(:from_bank_account, @bank_account.id) %>
+  <h1><i class="fas fa-exchange"></i> <%= params[:edit_form_id].present? ? 'Edit' : 'New' %> Transfer</h1>
+
+    <table class="index-form">
+    <tr>
+      <th style="width: 80%">From Bank Account</th>
+      <th style="width: 20%">Amount</th>
+    </tr><tr>
+      <%= form.fields_for :from_bank_account, @transfer.from_bank_account do |from| %>
+      <td><%= from.select :bank_account_id, options_for_select(@bank_accounts.collect{|x| [x.name_currency,x.id]}, @transfer.from_bank_account.bank_account_id), {include_blank: 'Select an Bank Account:'}, :class => 'input-field' %>      </td>
+      <td><%= from.number_field :amount, {:min => 0.00, :step => :any, :class =>'input-field'}  %></td>
+    </tr>
+    <% end %>
+  </table>
+
+    <table class="index-form">
+      <tr>
+        <th style="width: 80%">To Bank Account</th>
+        <th style="width: 20%">Amount</th>
+      </tr>
+      <tr>
+        <%= form.fields_for :to_bank_account, @transfer.to_bank_account do |from| %>
+          <td><%= from.select :bank_account_id, options_for_select(@bank_accounts.where.not(id:params[:bank_account_id]).collect{|x| [x.name_currency,x.id]}, @transfer.to_bank_account.bank_account_id), {include_blank: 'Select an Bank Account:'}, :class => 'input-field' %></td>
+          <td><%= from.number_field :amount, {:value => sprintf("%0.02f", from.object.amount),:min => 0.00, :step => :any, :class =>'input-field'}  %></td>
+        <% end %>
+      </tr>
+    </table>
+
+    <!-- Transfer Fields -->
+    <table class="index-form">
+      <tr>
+        <th style="width: 10%">Rate</th>
+        <th style="width: 50%">Description</th>
+        <th style="width: 20%">Date</th>
+        <th style="width: 20%" colspan="2">  </th>
+      </tr>
+      <tr>
+        <td><%= form.number_field :rate, value:sprintf("%0.02f",@transfer.rate || 0),:min => 0.00, :step => :any, :class => 'input-field'  %></td>
+        <td><%= form.text_field :description, {:value => @transfer.description, :placeholder => 'Optional Description.', :class => 'input-field'} %></td>
+        <td><%= date_field_tag 'transfer[created_at]', form.object.created_at.try(:to_date) || Time.now.to_date, class: 'input-field align-center' %></td>
+        <% if params[:edit_transfer_id].present? %>
+          <td class="align-right"><%= link_to transactions_path(:bank_account_id => @bank_account.id) do %><i class="fad fa-times-circle action-icon new-form" title="Cancel"></i><% end %></td>
+        <% else %>
+          <td class="align-right"><i class="fad fa-times-circle action-icon new-form cancel-table-row-form" title="Cancel"></i></td>
+        <% end %>
+        <td class="align-center"><button type='submit' class='action-icon new-form'><i class="fad fa-save fa-lg" title="Save"></i></button></td>
+      </tr>
+    </table>
+
+
+
+
+
+  <% end %>
+</div>

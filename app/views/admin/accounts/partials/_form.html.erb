@@ -1,0 +1,17 @@
+<div class="view-object simple-form">
+<% form_url = locals[:action_name] == 'edit' ? update_tagging_account_path(:id => @account.id) : create_tagging_account_path(:id=>@account.id) %>
+  <%= form_for @account_tag, :url =>  form_url, method: :put do |f|%><%= f.hidden_field :id %>
+    <!-- Account Previous Selection -->
+    <div class="object-row">
+    <!-- Start   --><h2>Start and End Date:</h2>
+      <h1>
+              </h1>
+    </div>
+</div>
+<!-- Bottom Menu -->
+<div id="menu-bottom">
+  <ul>
+  <!-- Save and Close  --><li><button type="submit" name="save" class="form-save"><i class="fas fa-save fa-3x" title="Save"></i><br>Save and Close </button></li><% end %>
+  <!-- Back to Account --><li><%= link_to account_path(:id => @account, :show => 'tags'), :class => 'bottom-button' do %><i class="fas fa-arrow-alt-left fa-3x" title="Back"></i><br>Back to Account<% end %></li>
+  </ul>
+</div>

@@ -1,0 +1,33 @@
+<div id="calendar">
+  <% %w(Mon Tue Wed Thu Fri Sat Sun).each do |day| %>
+    <div class="day header"><%= day %></div>
+  <% end %>
+  <!-- Calendar -->
+  <% year, month = params[:year].to_i, params[:month].to_i %>
+  <% start = Time.new(year,month).beginning_of_month.beginning_of_week %>
+  <% start_day_of_week =  Time.new(year,month).beginning_of_month.strftime('%A').first %>
+  <% total_days = (start_day_of_week == 'S' || start_day_of_week == 'F') && Time.new(year,month).end_of_month.day == 31 ? (0..41) : (0..34) %>
+  <!-- Days -->
+  <% total_days.each do |x| %>
+    <!-- Day -->
+    <% date = (start + x.days) %>
+    <% other_month = date.strftime('%m') != Time.new(year,month).strftime('%m')  %>
+    <% unpaid_events = other_month ? nil : @calendar[:unpaid][:expenses][(sprintf '%02d',date.day).to_s] %>
+    <% unreceived_events = other_month ? nil : @calendar[:unpaid][:deposits][(sprintf '%02d',date.day).to_s] %>
+    <% events = unpaid_events.present? || unreceived_events.present? %>
+    <% day_of_week = date.strftime('%A').first %>
+    <div class="day <%= 'other-month' if other_month  %> <%= 'weekend' if day_of_week == 'S' && !date.today? %><%= 'today' if date.today? %>">
+      <%= date.day %><br>
+        <% if events %>
+        <%= '<i class="fad fa-exclamation-circle calendar expenses"></i>'.html_safe if unpaid_events.present? && !other_month %>
+        <%= '<i class="fad fa-exclamation-circle calendar deposits"></i>'.html_safe if unreceived_events.present? && !other_month %>
+        <div class='day-details' hidden="hidden">
+          <!-- Unpaid -->
+          <% if unpaid_events.present? %><% unpaid_events.each do |bill| %><%= bill[1] %> <%= number_to_currency(bill[2]) %><br><% end %><% end %>
+          <!-- Unreceived -->
+          <% if unreceived_events.present? %><% unreceived_events.each do |bill| %><%= bill[1] %> <%= number_to_currency(bill[2]) %><br><% end %><% end %>
+        </div>
+        <% end %>
+    </div>
+  <% end %>
+</div>

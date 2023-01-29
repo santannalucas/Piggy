@@ -1,0 +1,38 @@
+  <% error = params[:errors] %>
+  <tr id="row-form-new" <% unless error.present? %> hidden="hidden" <% end %>class="row-form-form <%= 'error' if error.present? %>">
+    <%= form_for @transaction_new do |form| %>
+      <td>
+        <%= form.hidden_field :bank_account_id, :value => @bank_account.id %> <%= form.hidden_field :transaction_type_id %></td>
+      <!-- Select / New Account -->
+      <td class="form trans-icon income">
+        <div class="expense-icon"<% unless error == 'expense' %> hidden="hidden" <% end %>><i class="fas expenses fa-arrow-alt-up"></i></div>
+        <div class="income-icon" <% unless error == 'income' %> hidden="hidden" <% end %>><i class="fas income fa-arrow-alt-down"></i></div>
+      </td>
+      <td class="form">
+        <!-- Select Account -->
+        <%= form.select :account_id, grouped_options_for_select(@accounts_options_new, @transaction_new.account_id), {include_blank: 'Select an Account:'} , {:class => 'input-field-table-column to-focus'} %>
+        <!-- New Account -->
+        <div id="new-account" hidden="hidden">
+          <%= text_field_tag :new_account_name, params[:new_account_name],:class => 'input-field-table-column ', :placeholder => 'Add new Account.' %>
+          <i class="fad fa-times-circle action-icon cancel-new-account" title="Cancel New Account"></i>
+        </div>
+      </td>
+      <!-- Select Category -->
+      <td class="form">
+        <div id='expense-category'<% unless error == 'expense' %> hidden="hidden" <% end %>>
+          <%= select_tag :expense_category_id, grouped_options_for_select(@expenses_categories, params[:sub]), {include_blank: 'Select a Expenses Category:', :class => 'input-field-table-column'} %></div>
+        <div id='income-category' <% unless error == 'income' %> hidden="hidden" <% end %>>
+          <%= select_tag :income_category_id, grouped_options_for_select(@deposits_categories, params[:sub]), {include_blank: 'Select a Income Category:', :class => 'input-field-table-column'} %></div>
+      </td>
+      <!-- Description -->
+      <td class="form"> <%= form.text_field :description, :class => 'input-field-table-column', :placeholder => 'Optional Description.' %></td>
+      <!-- Date -->
+      <td class="form"> <%= date_field_tag('transaction[created_at]', Time.now.to_date, class: 'input-field-table-column align-center') %> </td>
+      <!-- Amount -->
+      <td class="form"> <%= form.number_field :amount, value:sprintf("%0.02f",form.object.amount || 0),:min => 0.00, :step => :any, :class => 'input-field-table-column align-right'  %></td>
+      <!-- Save -->
+      <td class="align-left"><button type='submit' name='Update' value='Update' class='action-icon new-form loading'><i class="fad fa-save fa-lg" title="Save"></i></button></td>
+      <!-- Cancel  -->
+      <td><i class="fad fa-times-circle action-icon new-form cancel-table-row-form" title="Cancel"></i></td>
+    <% end %>
+  </tr>

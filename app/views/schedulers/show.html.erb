@@ -1,0 +1,37 @@
+<!-- Title and Hide Search Toggle -->
+<% content_for :title, "Scheduled Bill ID #{@scheduler.id}" %>
+
+<div id='workspace'>
+  <!-- Transactions Search Header -->
+  <%= search_header("fad fa-calendar-alt", "Scheduled Bill ID #{@scheduler.id} items").html_safe %>
+
+  <!-- Search in Schedulers -->
+  <%= render 'layouts/search/search', :locals => {
+    :fields_search => scheduler_items_search,
+    :help => 'Search in Payments.',
+    :url => scheduler_path(:id => @scheduler.id, :per_page => params[:per_page]),
+    :height => '110px'
+  }%>
+
+
+  <%= render 'layouts/search/loading' %>
+
+  <!-- Display -->
+  <div id="search-results" <%= 'hidden="hidden"'.html_safe if params[:new_form].present? || params[:edit_form_id].present? || params[:scheduler].present? %>>
+    <!-- Pagination and Display -->
+    <%= render 'layouts/search/display_pagination', :locals => {:showing => 'Bill Items', :display => 'true', :paginate => @schedulers, :total => @total_items} %>
+    <!-- Index -->
+    <%= render 'schedulers/partials/items/index' %>
+    <!-- Bottom Pagination -->
+    <%= render 'layouts/search/display_pagination', :locals => {:showing => 'Scheduled Bill', :paginate => @items, :total => @total_items} %>
+  </div>
+
+</div>
+
+<!-- Bottom Menu -->
+<div id="menu-bottom">
+  <ul>
+    <!-- New Bank Account --><li><a id='add-row-form-new' href="#row-form-new"><i class="fad fa-plus-circle fa-3x new-icon" title="New Item"></i><br> New </a> </li>
+    <!-- Back Dashboard -->  <li> <%= link_to root_path do %><i class="fad fa-analytics fa-3x dashboard" title="Back to Dashboard"></i><br>Dashboard<% end %></li>
+  </ul>
+</div>

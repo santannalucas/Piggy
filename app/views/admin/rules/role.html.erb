@@ -1,0 +1,47 @@
+<!-- Title and Search Toggle -->
+<% content_for :title,  "View #{params[:show].titleize} - #{@role.name} Role" %>
+
+<div id='workspace'>
+<%= search_header('fad fa-id-badge sh-lg', " Role: #{@role.name}").html_safe %>
+
+  <!-- Search in Role  -->
+  <%= render 'layouts/search/search', :locals => {
+    :fields_search => rules_search(params[:show]),
+    :help => admin_search_placeholder(params[:show]),
+    :url => role_path(:show => params[:show])}
+  %>
+
+  <!-- Loading -->
+  <%= render 'layouts/search/loading' %>
+  <!-- Display -->
+  <div id="search-results">
+    <!-- Pagination and Display -->
+    <%= render 'layouts/search/display_pagination', :locals => {:showing => rule_show, :display => 'true', :paginate => @showing, :total => @total_showing} %>
+    <!-- Tab Menu -->
+    <%= render 'layouts/show_menu', :locals => {
+      :selected => access_rules_tabs('role', params[:show]),
+      :attr => :show,
+      :collection => access_rules_tabs('role'),
+      :url => [:role],
+      :params => {:id => @role.id, :show => [:show]}
+    }%>
+    <!-- Showing -->
+    <% if params[:show] == 'users' %>
+      <!-- Show Role Users --><%= render 'admin/users/partials/index' %>
+    <% elsif params[:show] == 'rules' %>
+      <!-- Show Role Rules --><%= render 'admin/rules/partials/rules' %>
+    <% elsif params[:show] == 'custom_rules' %>
+      <!-- Show Role Custom Rules --><%= render 'admin/rules/partials/role_rules' %>
+    <% end %>
+    <!-- Bottom Pagination -->
+    <%= render 'layouts/search/display_pagination', :locals => {:showing => rule_show, :paginate => @showing, :total => @total_showing} %>
+  </div>
+</div>
+
+<!-- Bottom Menu -->
+<div id="menu-bottom">
+  <ul>
+  <% if can?(:rule, :create) && @new_custom.present? %><!-- Add Custom Rule --> <li><a id='add-row-form-new' href="#row-form-new"><i class="fas fa-file-plus fa-3x" title="Add Custom Rule"></i><br> Add Custom Rule </a> </li><% end %>
+  <!-- Back Access Rules --><li> <%= link_to rules_path(:show => "roles") do %><i class="fas fa-user-lock fa-3x" title="Back to Access"></i><br>Access Rules<% end %></li>
+  </ul>
+</div>

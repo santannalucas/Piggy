@@ -1,0 +1,47 @@
+<!-- Title and Search Toggle -->
+<% content_for :title,  "System Access Rules" %>
+
+<div id='workspace'>
+<%= search_header('fad fa-user-lock', "&nbsp; Access Rules").html_safe %>
+
+  <!-- Search in Role or Workspace  -->
+  <%= render 'layouts/search/search', :locals => {
+    :fields_search => rules_search(params[:show]),
+    :help => admin_search_placeholder(params[:show]),
+    :url => rules_path(:show => params[:show], :per_page => params[:per_page])
+  }%>
+
+  <!-- Loading -->
+  <%= render 'layouts/search/loading' %>
+  <!-- Display -->
+  <div id="search-results">
+    <!-- Pagination and Display -->
+    <%= render 'layouts/search/display_pagination', :locals => {:showing => rule_show, :display => 'true', :paginate => @showing, :total => @total_showing} %>
+    <!-- Tab Menu -->
+    <%= render 'layouts/show_menu', :locals => {
+      :selected => access_rules_tabs('rules', params[:show]),
+      :attr => :show,
+      :collection => access_rules_tabs('rules'),
+      :url => [:rules],
+      :params => {:show => params[:show]}
+    }%>
+    <!-- Showing -->
+    <% if params[:show] == 'roles' %>
+      <!-- Show Role Users --><%= render 'admin/rules/partials/roles' %>
+    <% elsif params[:show] == 'workspaces' %>
+      <!-- Show Role Rules --><%= render 'admin/rules/partials/workspaces' %>
+    <% elsif params[:show] == 'custom_rules' %>
+      <!-- Show Custom Rules --><%= render 'admin/rules/partials/custom_rules' %>
+    <% end %>
+    <!-- Bottom Pagination -->
+    <%= render 'layouts/search/display_pagination', :locals => {:showing => rule_show, :paginate => @showing, :total => @total_showing} %>
+  </div>
+</div>
+
+<!-- Bottom Menu -->
+<div id="menu-bottom">
+  <ul>
+    <% if params[:show] == 'roles' && can?(:role, :create) %><!-- New Role --><li><a id='add-row-form-new' href="#row-form-new"><i class="fas fa-file-plus fa-3x" title="New Role"></i><br> New Role </a> </li><% end %>
+    <!-- Back Dashboard --><li> <%= link_to root_path do %><i class="fas fa-chalkboard fa-3x" title="Back to Dashboard"></i><br>Dashboard<% end %> </li>
+  </ul>
+</div>

@@ -1,0 +1,12 @@
+<!-- Empty -->
+<% if locals[:collection] == true %>
+  <!-- Row to Complete rows per page -->
+  <% y = params[:per_page].to_i - locals[:rows] %>
+  <% y.times do %>
+    <tr style="height: <%= locals[:rows_height]%>px;" class="<%= cycle('odd', 'even') -%>"><td style="max-width: 50px; text-align: center;">-</td><td colspan="<%= locals[:colspan].to_i - 1 %>"></td></tr>
+  <% end %>
+<% else %>
+  <tr><td colspan="<%= locals[:colspan] %>" height="<%= locals[:rows_height]*params[:per_page].to_i %> px" style="text-align:center;"> No records found.</td></tr>
+  <% end %>
+<!-- Totals -->
+<tr ><td class="bottom" colspan="<%= locals[:colspan] %>">Total <%= locals[:total].nil? || locals[:total] == 1 ? locals[:showing] : locals[:showing].to_s.pluralize %>: <% if locals[:total].present? %> <%= locals[:total] %><% else %>s: 0 <% end %></td></tr>

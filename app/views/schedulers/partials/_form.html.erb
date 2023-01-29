@@ -1,0 +1,76 @@
+<% error, new, transfer =  params[:form_error].present? , params[:new_form].present? || params[:edit_form_id].present?, params[:transaction_type_id] == '1' %>
+<div id="form-index" class="<%= 'error' if error %>" <% unless error || new %>hidden='hidden'<% end %> >
+  <%= form_for @scheduler do |form| %>
+  <h1><i class="fas fa-exchange"></i> <%= params[:edit_scheduler_id].present? ? 'Edit' : 'New' %> Scheduled Bill</h1>
+
+    <table class="index-form">
+    <tr>
+      <th style="width: 40%">Transaction Type</th>
+      <th style="width: 30%"><%= 'From' if transfer %> Bank Account</th>
+      <th style="width: 30%"><%= 'To Bank' if transfer %> Account</th>
+    </tr><tr>
+      <td><%= form.select :transaction_type_id, options_for_select([['Transfer',1],['Deposit',2],['Expense',3]], form.object.transaction_type_id), {include_blank: 'Select a Type:'},{ :class => 'input-field'} %></td>
+      <td><%= form.select :bank_account_id, options_for_select(@bank_accounts.collect{|x| [x.name_currency,x.id]}, form.object.bank_account_id), {include_blank: 'Select an Bank Account:'}, :class => 'input-field' %>      </td>
+      <td>
+      <% if transfer %>
+        <%= form.select :transfer_bank_id, options_for_select(@bank_accounts.collect{|x| [x.name_currency,x.id]}, form.object.transfer_bank_id), {include_blank: 'Select an Bank Account:'}, :class => 'input-field' %>
+      <% else %>
+        <%= form.select :account_id, grouped_options_for_select(@accounts, form.object.account_id), {include_blank: 'Select Account:'}, :class => 'input-field' %>
+      <% end %>
+      </td>
+     </tr>
+    </table>
+
+    <table class="index-form">
+      <tr>
+        <th style="width: 40%">Payment Type</th>
+        <th style="width: 30%" class="split-head"></th>
+        <th style="width: 30%" class="period-head"></th>
+      </tr>
+      <tr>
+        <td><%= form.select :scheduler_type_id, options_for_select(SchedulerType.all.collect{|x| [x.name,x.id]}, form.object.scheduler_type_id),{},{:class => 'input-field'} %></td>
+        <td>
+          <div class="f-last-date" <%= 'hidden="hidden"' unless new || error || form.object.scheduler_type_id == 1 %>>
+            <%= date_field_tag('scheduler[last_payment]', form.object.last_payment.try(:to_date) || Time.now.to_date, class: 'input-field') %>
+          </div>
+          <div class="f-split" <%= 'hidden="hidden"' unless new || error || form.object.scheduler_type_id %>>
+          <%= form.number_field :split, value:(form.object.split || 2),:min => 2, :step => 1, :class => 'input-field split-pay'  %>
+          <%= number_field_tag :split_amount, 0.00, :step => 0.01, :class => 'input-field split-pay' %>
+          </div>
+        </td>
+        <td>
+          <div class="f-period" <%= 'hidden="hidden"' unless new || error || form.object.scheduler_type_id %>>
+            <%= form.select :scheduler_period_id, options_for_select(SchedulerPeriod.all.collect{|x| [x.name,x.id]}),{}, :class => 'input-field'  %>
+          </div>
+        </td>
+      </tr>
+    </table>
+
+    <!-- Transfer Fields -->
+    <table class="index-form">
+      <tr>
+        <th style="width: 40%">Category</th>
+        <th style="width: 30%">Amount</th>
+        <th style="width: 30%">Date</th>
+      </tr>
+      <tr>
+        <td><%= form.select :sub_category_id, grouped_options_for_select(@sub_categories,form.object.sub_category_id),{:include_blank => 'Select a Category'}, :class => 'input-field'  %></td>
+        <td><%= form.number_field :amount, value:sprintf("%0.02f",form.object.amount || 0),:min => 0.00, :step => :any, :class => 'input-field'  %></td>
+        <td> <%= date_field_tag('scheduler[created_at]', form.object.created_at.try(:to_date) || Time.now.to_date, class: 'input-field') %> </td>
+      </tr>
+    </table>
+
+    <!-- Transfer Fields -->
+    <table class="index-form">
+      <tr>
+        <th style="width: 80%">Description</th>
+        <th style="width: 20%" colspan="2">  </th>
+      </tr>
+      <tr>
+        <td><%= form.text_area :description, :class => 'input-field', :placeholder => 'Optional Description.' %></td>
+        <td class="align-right"><i class="fad fa-times-circle action-icon new-form cancel-table-row-form" title="Cancel"></i></td>
+        <td class="align-center"><button type='submit' class='action-icon new-form'><i class="fad fa-save fa-lg" title="Save"></i></button></td>
+      </tr>
+    </table>
+  <% end %>
+</div>

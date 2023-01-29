@@ -1,0 +1,42 @@
+<!-- Title and Hide Search Toggle -->
+<% content_for :title, "Transactions" %>
+
+<!-- Sidebar -->
+<%= render 'transactions/partials/sidebar' %>
+
+<div id='workspace' class="sidebar">
+  <!-- Transactions Search Header -->
+  <%= search_header("fad #{account_type_icon(@bank_account.account_type)}", "#{@bank_account.name} - (#{@bank_account.currency.code})" , true).html_safe %>
+
+  <!-- Search in Transactions -->
+  <%= render 'layouts/search/search', :locals => {
+    :fields_search => transactions_search,
+    :help => 'Search in Transactions.',
+    :url => transactions_path(:bank_account_id => @bank_account.id, :per_page => params[:per_page]),
+    :height => '175px'
+  }%>
+
+  <%= render 'layouts/search/loading' %>
+
+  <%= render 'transactions/partials/transfer' %>
+  <!-- Display -->
+  <div id="search-results" <%= 'hidden="hidden"'.html_safe if params[:new_transfer].present? || params[:edit_form_id].present? || params[:transfer].present? %>>
+    <!-- Pagination and Display -->
+    <%= render 'layouts/search/display_pagination', :locals => {:showing => 'Transaction', :display => 'true', :paginate => @transactions, :total => @total_transactions} %>
+    <!-- Index -->
+    <%= render 'transactions/partials/index' %>
+    <!-- Bottom Pagination -->
+    <%= render 'layouts/search/display_pagination', :locals => {:showing => 'Transaction', :paginate => @transactions, :total => @total_transactions} %>
+  </div>
+
+</div>
+
+<!-- Bottom Menu -->
+<div id="menu-bottom">
+  <ul>
+    <!-- New Income --><li><a id='add-row-form-new' href="#row-form-new"><i class="fad fa-plus-circle fa-3x new-income new-icon" title="New Income"></i><br> Income </a> </li>
+    <!-- New Transaction --><li><a id='add-row-form-expense' href="#row-form-new"><i class="fad fa-minus-circle fa-3x new-expense" title="New Expense"></i><br>Expense</a></li>
+    <!-- New Transaction --><li><a id='add-index-form'><i  class="fad fa-exchange fa-3x new-transfer" title="New Transfer"></i><br>Transfer</a></li>
+    <!-- Back Dashboard --><li> <%= link_to root_path do %><i class="fad fa-analytics fa-3x dashboard" title="Back to Dashboard"></i><br>Dashboard<% end %></li>
+  </ul>
+</div>

@@ -1,0 +1,54 @@
+<!-- Rows Count Init. --><% rows = 0 %>
+<% workspace = @workspace.present? || false %>
+
+<!-- Table Header -->
+<table class="default rules-form">
+  <tr>
+    <th style="width: 05%;"> # </th>
+    <th style="width: 40%;" class="align-left"><%= workspace ? rules_sort('admin_roles.name','Role') : rules_sort("admin_workspaces.name", "Workspace") %></th>
+    <th style="width: 10%;"> <%= rules_sort('admin_crud_rules.c','Create') %></th>
+    <th style="width: 10%;"> <%= rules_sort('admin_crud_rules.r','View') %> </th>
+    <th style="width: 10%;"> <%= rules_sort('admin_crud_rules.u','Update') %> </th>
+    <th style="width: 10%;"> <%= rules_sort('admin_crud_rules.d','Delete') %> </th>
+    <th style="width: 10%;"> <%= rules_sort('admin_crud_rules.s','Search') %> </th>
+    <th style="width: 10%;"> <%= rules_sort('admin_crud_rules.p','Print') %> </th>
+    <th style="width: 105px" <%= "colspan=2" unless workspace %>> Actions </th>
+  </tr>
+  <!-- Table Body and Rows Count -->
+  <% @showing.each do |rule| %><% rows = rows + 1 %>
+    <% updated = params[:updated].to_i == rule.id %>
+    <tr id="field_record_<%= rule.id %>" class="<%= cycle('odd', 'even') -%> <%= 'updated' if updated %>">
+      <td> <%= row_number(rows) %> </td>
+      <td class="align-left"> <% if workspace %><%= link_to rule.role.name, role_path(:id => rule.role.id) %><% else %><%= link_to rule.workspace.name, workspace_path(:id => rule.workspace.id) %><% end %></td>
+      <td><%= check_box_tag("Create", "c", rule.c , disabled:true) %> </td>
+      <td><%= check_box_tag("Read"  , "r", rule.r , disabled:true) %> </td>
+      <td><%= check_box_tag("Update", "u", rule.u , disabled:true) %> </td>
+      <td><%= check_box_tag("Delete", "d", rule.d , disabled:true) %></td>
+      <td><%= check_box_tag("Search", "s", rule.s , disabled:true) %></td>
+      <td><%= check_box_tag("Print" , "p", rule.p , disabled:true) %></td>
+      <!-- View Role  --><td><% if workspace  && can?(:role,:read) %><%= link_to role_path(:id => rule.role_id) do %><i class="fad fa-search action-icon" title="View Role"></i><% end %><% end %>
+      <!-- View WKS   --><% if !workspace && can?(:workspace,:read) %><%= link_to workspace_path(:id => rule.workspace.id) do %><i class="fad fa-search action-icon" title="View Workspace"></i><% end %><% end %>
+      <!-- Edit Rules --></td><td><% if !workspace && can?(:rule,:update) %><i class="fad fa-pencil-alt action-icon row-form-edit-field " rel="<%= rule.id %>" title="Edit"></i><% end %></td>
+    </tr>
+    <% if !workspace && can?(:rule,:update) %>
+    <!-- Edit Rule Form -->
+    <tr id="form_record_<%= rule.id %>" hidden="hidden" class="row-form-form">
+      <%= form_for(rule, url: rule_path, method: :put) do |f|%>
+        <td> <%= row_number(rows) %> <%= f.hidden_field :id %> </td>
+        <td class="align-left"> <%= rule.workspace.name %> </td>
+        <td><%= f.check_box :c, :class => 'rules-form' %> </td>
+        <td><%= f.check_box :r, :class => 'rules-form' %> </td>
+        <td><%= f.check_box :u, :class => 'rules-form' %> </td>
+        <td><%= f.check_box :d, :class => 'rules-form' %> </td>
+        <td><%= f.check_box :s, :class => 'rules-form' %></td>
+        <td><%= f.check_box :p, :class => 'rules-form' %></td>
+        <td><button type='submit' name='Update' value='Update' class='action-icon row-form'><i class="fad fa-save fa-lg" title="Save"></i></button></td>
+        <td><i class="fad fa-times-circle action-icon row-form cancel-table-row-form" rel="<%= rule.id %>" title="Edit"></i></td>
+      <% end %>
+    </tr>
+    <% end %>
+  <% end %>
+
+<!-- Index Bottom -->
+<%= render 'layouts/search/index_bottom', :locals => {:showing => 'Rule', :collection => @showing.present?, :total => @total_showing, :colspan => (workspace ? 10 : 11), :rows => rows, :rows_height => 38} %>
+</table>

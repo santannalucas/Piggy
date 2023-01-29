@@ -1,0 +1,44 @@
+<!-- Rows Count Init. -->
+<%= hidden_field_tag(:from, 'index') %>
+<% rows = 0 %>
+
+<!-- Table Header and Tags Form-->
+<table class="default">
+  <thead>
+  <tr>
+    <th style="width:20px;">#</th>
+    <th style="width:6%"> <%= schedulers_sort("scheduler.transaction_type_id", "Type") %> </th>
+    <th style="width:13%" class="align-left"> <%= schedulers_sort("bank_accounts.name", "Bank Account") %></th>
+    <th style="width:13%" class="align-left"> <%= schedulers_sort("accounts.name", "Account") %> </th>
+    <th style="width:13%"> <%= schedulers_sort("scheduler_types.name", "Scheduler") %> </th>
+    <th style="width:19%" class="align-left"> <%= schedulers_sort("bank_accounts.description", "Description") %> </th>
+    <th style="width:13%"> <%= schedulers_sort("schedulers.split", "Split") %> / <%= schedulers_sort("schedulers.period", "Period") %></th>
+    <th style="width:13%"> <%= schedulers_sort("schedulers.amount", "Amount") %> </th>
+    <th style="width:10%"> <%= schedulers_sort("schedulers.completed", "Status") %> </th>
+    <th style="width:10%"> <%= schedulers_sort("schedulers.date", "Date") %> </th>
+    <th style="width:115px" colspan="2"> Actions </th>
+  </tr>
+  </thead>
+
+  <!-- Table Body and Rows Count -->
+  <% @schedulers.each do |scheduler| %><% rows = rows + 1 %>
+    <% error = params[:error_id] == scheduler.id.to_s %>
+    <% updated = params[:updated].to_i == scheduler.id %>
+    <tr id="field_record_<%= scheduler.id %>" class="<%= cycle('odd', 'even') -%> row-form-field <%= 'updated' if updated %>" <%= "hidden='hidden'".html_safe if error %>>
+      <td> <%= rows %> </td>
+      <td class="<%= scheduler.transaction_type.name %>"><%= trans_type_icon(scheduler) %></td>
+      <td class="align-left"> <%= scheduler.bank_account.name %> </td>
+      <td class="align-left"> <b><%= scheduler.account.name %></b> </td>
+      <td> <%= scheduler.scheduler_type.name %></td>
+      <td class="align-left">  <%= scheduler.description %> </td>
+      <td> <%= scheduler.type_description %></td>
+      <td> <%= number_to_currency(scheduler.amount) %> </td>
+      <td> <i class="<%= scheduler.completed? ? 'fas fa-check-circle scheduler completed' : 'fas fa-exclamation-circle scheduler active' %>"></i> </td>
+      <td> <%= default_date(scheduler.created_at) %> </td>
+      <td><%= link_to scheduler_path(:id => scheduler.id) do %><i class="fad fa-search action-icon" title="View Scheduled Bill"></i><% end %> </td>
+      <td><%= link_to scheduler_path(:id => scheduler.id), :class => 'delete-confirm', :method => :delete do %><i class="fas fa-trash action-icon" title="Delete"></i><% end %></td>
+    </tr>
+   <% end %>
+  <!-- Index Bottom -->
+  <%= render 'layouts/search/index_bottom', :locals => {:showing => 'Bank Account', :collection => @bank_accounts.present?, :total => @bank_accounts.count, :colspan => 12, :rows => rows, :rows_height => 38} %>
+</table>

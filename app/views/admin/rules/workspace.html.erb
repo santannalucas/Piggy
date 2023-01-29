@@ -1,0 +1,41 @@
+<!-- Title and Search Header -->
+<% content_for :title,  "View #{params[:show].titleize} - #{@workspace.name} Workspace" %>
+<%= search_header('fad fa-desktop', " Workspace: #{@workspace.name}").html_safe %>
+
+  <!-- Search in Workspace  -->
+  <%= render 'layouts/search/search', :locals => {
+    :fields_search => rules_search(params[:show]),
+    :help => admin_search_placeholder(params[:show]),
+    :url => workspace_path(:id => @workspace.id, :show => params[:show], :per_page => params[:per_page])
+  }%>
+
+  <!-- Loading -->
+  <%= render 'layouts/search/loading' %>
+  <!-- Display -->
+  <div id="search-results">
+    <!-- Pagination and Display -->
+    <%= render 'layouts/search/display_pagination', :locals => {:showing => rule_show, :display => 'true', :paginate => @showing, :total => @total_showing} %>
+    <!-- Tab Menu -->
+    <%= render 'layouts/object/show_menu', :locals => {
+      :selected => access_rules_tabs('workspace', params[:show]),
+      :attr => :show,
+      :collection => access_rules_tabs('workspace'),
+      :url => [:workspace],
+      :params => {:id => @workspace.id}}
+    %>
+    <!-- Showing -->
+    <% if params[:show] == 'rules' %>
+    <!-- Rules --> <%= render 'admin/rules/partials/rules', :locals => {:workspace => @workspace} %>
+    <% elsif params[:show] == 'custom_rules' %>
+    <!-- Custom Rules --> <%= render 'admin/rules/partials/role_rules' %>
+    <% end %>
+    <!-- Bottom Pagination -->
+    <%= render 'layouts/search/display_pagination', :locals => {:showing => rule_show, :paginate => @showing, :total => @total_showing} %>
+  </div>
+
+<!-- Bottom Menu -->
+<div id="menu-bottom">
+  <ul>
+  <!-- Back Access Rules --><li> <%= link_to rules_path(:show => "workspaces") do %><i class="fas fa-user-lock fa-3x" title="Back to Access"></i><br>Access Rules<% end %></li>
+  </ul>
+</div>

@@ -1,0 +1,46 @@
+<%= form_tag(locals[:url], :method => "get", id: "search-form") do %>
+  <%= hidden_field_tag :direction, params[:direction] %>
+  <%= hidden_field_tag :sort, params[:sort] %>
+  <%= hidden_field_tag :hide_search_option, @current_user.try(:options)['hide_search'] %>
+  <%= hidden_field_tag :from, params[:from] || action_name %>
+  <% if controller_name == 'transactions' %><%= hidden_field_tag :bank_account_id, params[:bank_account_id]  %><% end %>
+  <div id="search-box">
+    <div id="search-wrap" <%= "style='height:#{locals[:height]}'".html_safe if locals[:height] %>>
+      <div class="search-element">
+        <div class="search-elem-field"><% if locals[:help] %><i class="fas fa-info-circle search-help" title="<%= locals[:help] %>"></i><% end %> Search:</div>
+        <div class="search-elem-input"><%= text_field_tag :search, params[:search], class:'search-text-field', placeholder: locals[:placeholder] ? locals[:placeholder].to_s : 'Insert words/sentence:' %>
+          <div class="search-text-checkbox-area">Sentence <%= check_box_tag :full_sentence, value = true, checked = params[:full_sentence], :class => 'search-text-checkbox' %>  </div>
+        </div>
+      </div>
+      <% locals[:fields_search].each do |field| %>
+        <% if field[:can] == true %>
+          <div class="search-element <%= 'custom-date' if field[:type] == 'custom' %>">
+            <% if field[:type] == 'interval' || field[:type] == 'custom' %>
+              <!-- Date Interval Field -->
+              <div class="search-elem-field"><%= field[:name] %> From:</div>
+              <div class="search-elem-input"><%= date_field_tag field[:tag] , field[:options] , field[:html] %> to: <%= date_field_tag field[:tag_end] , field[:options_end] , field[:html_end] %></div>
+            <% elsif field[:type] == 'date' %>
+              <!-- Date Field -->
+              <div class="search-elem-field"><%= field[:name] %></div>
+              <div class="search-elem-input"><%= date_field_tag field[:tag] , field[:options] , field[:html] %></div>
+            <% else %>
+              <!-- Select Field -->
+              <div class="search-elem-field"><%= field[:name] %></div>
+              <div class="search-elem-input"><%= select_tag field[:tag], field[:options], field[:html] %></div>
+            <% end %>
+          </div>
+        <% end %>
+      <% end %>
+    </div>
+
+    <div id="search-button-box">
+      <%= submit_tag "Apply", {:class => "search-button apply"} %>
+      <%= link_to locals[:url], :method => "get", :class => "search-button clear loading" do %> Clear <% end %>
+    </div>
+
+  </div>
+<% end %>
+
+
+
+

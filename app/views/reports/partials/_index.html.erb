@@ -1,0 +1,27 @@
+<!-- Rows Count Init. -->
+<%= hidden_field_tag(:from, 'index') %>
+<% rows = 0 %>
+
+<!-- Table Header and Tags Form-->
+<table class="default">
+  <thead>
+  <tr>
+    <th style="width:20px;">#</th>
+    <th style="width:98%" class="align-left"> <%= transaction_sort("reports.name","Name") %></th>
+    <th style="width:95px" colspan="1"> Actions </th>
+  </tr>
+  </thead>
+
+  <!-- Table Body and Rows Count -->
+  <% @reports.each do |report| %><% rows = rows + 1 %>
+    <tr class="<%= cycle('odd', 'even') -%>">
+      <td> <%= rows %> </td>
+      <td class="align-left"> <%= report.name %></td>
+      <td><%= link_to report_path(:id => report.id) do %><i class="fad fa-search action-icon" title="View Report"></i><% end %> </td>
+    </tr>
+  <% end %>
+
+  <!-- Index Bottom -->
+  <%= render 'layouts/search/index_bottom', :locals => {:showing => 'Report', :collection => @reports.present?, :total => @reports.count, :colspan => 3, :rows => rows, :rows_height => 38} %>
+</table>
+

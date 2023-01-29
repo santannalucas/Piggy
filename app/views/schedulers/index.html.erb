@@ -1,0 +1,39 @@
+<!-- Title and Hide Search Toggle -->
+<% content_for :title, "Scheduled Bills" %>
+
+<div id='workspace'>
+  <!-- Transactions Search Header -->
+  <%= search_header("fad fa-calendar-alt", 'Scheduled Bills').html_safe %>
+
+  <!-- Search in Schedulers -->
+  <%= render 'layouts/search/search', :locals => {
+    :fields_search => schedulers_search,
+    :help => 'Search in Schedulers.',
+    :url => schedulers_path(:per_page => params[:per_page]),
+    :height => '180px'
+  }%>
+
+  <%= render 'layouts/search/loading' %>
+
+  <!-- Search in Transactions -->
+  <%= render 'schedulers/partials/form' %>
+
+  <!-- Display -->
+  <div id="search-results" <%= 'hidden="hidden"'.html_safe if params[:new_form].present? || params[:edit_form_id].present? || params[:scheduler].present? %>>
+    <!-- Pagination and Display -->
+    <%= render 'layouts/search/display_pagination', :locals => {:showing => 'Scheduled Bill', :display => 'true', :paginate => @schedulers, :total => @total_schedulers} %>
+    <!-- Index -->
+    <%= render 'schedulers/partials/index' %>
+    <!-- Bottom Pagination -->
+    <%= render 'layouts/search/display_pagination', :locals => {:showing => 'Scheduled Bill', :paginate => @schedulers, :total => @total_schedulers} %>
+  </div>
+
+</div>
+
+<!-- Bottom Menu -->
+<div id="menu-bottom">
+  <ul>
+    <!-- New Scheduler --><li><a id='add-index-form'><i  class="fad fa-calendar-plus fa-3x" title="New Bill"></i><br>New</a></li>
+    <!-- Back Dashboard -->  <li> <%= link_to root_path do %><i class="fad fa-analytics fa-3x dashboard" title="Back to Dashboard"></i><br>Dashboard<% end %></li>
+  </ul>
+</div>

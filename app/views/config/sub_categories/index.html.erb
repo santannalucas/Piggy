@@ -1,0 +1,38 @@
+<!-- Title and Hide Search Toggle -->
+<% content_for :title, "Categories" %>
+
+<div id='workspace'>
+  <!-- Transactions Search Header -->
+  <%= search_header("fad fa-folders-tree", "#{[@category.name,' - '].join if @category.present?}Sub-Categories").html_safe %>
+
+  <!-- Search in Categories -->
+  <%= render 'layouts/search/search', :locals => {
+    :fields_search => sub_categories_search,
+    :help => 'Search in Sub-Categories.',
+    :url => sub_categories_path(:per_page => params[:per_page]),
+    :height => '110px'
+  }%>
+
+
+  <%= render 'layouts/search/loading' %>
+
+  <!-- Display -->
+  <div id="search-results">
+    <!-- Pagination and Display -->
+    <%= render 'layouts/search/display_pagination', :locals => {:showing => 'Sub-Category', :display => 'true', :paginate => @sub_categories, :total => @total_sub_categories} %>
+    <!-- Index -->
+    <%= render 'config/sub_categories/partials/index' %>
+    <!-- Bottom Pagination -->
+    <%= render 'layouts/search/display_pagination', :locals => {:showing => 'Sub-Category', :paginate => @sub_categories, :total => @total_sub_categories} %>
+  </div>
+
+</div>
+
+<!-- Bottom Menu -->
+<div id="menu-bottom">
+  <ul>
+    <!-- New Category --><li><a id='add-row-form-new' href="#row-form-new"><i class="fad fa-plus-circle fa-3x new-icon" title="New Category"></i><br> New </a> </li>
+    <!-- Categories -->  <li> <%= link_to categories_path do %><i class="fad fa-folders fa-3x dashboard" title="Categories"></i><br>Categories<% end %></li>
+    <!-- Back Dashboard -->  <li> <%= link_to root_path do %><i class="fad fa-analytics fa-3x dashboard" title="Back to Dashboard"></i><br>Dashboard<% end %></li>
+  </ul>
+</div>

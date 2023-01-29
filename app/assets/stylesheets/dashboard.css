@@ -1,0 +1,198 @@
+/* Dashboard related Style */
+
+/* Charts */
+
+#month-expected{
+    margin: 0;
+    width: 220px;
+    height: 255px;
+    padding: 15px;
+}
+
+.google-visualization-tooltip { display: flex; position: absolute }
+
+#pie-expenses{
+    width: 500px;
+    margin: 0;
+    height: 350px;
+}
+
+#monthly{
+    margin: 20px 45px 0 25px;
+    width: 800px;
+    height: 300px;
+}
+#dashboard-central h2{
+    font-size: 15px;
+    text-align: left;
+    color: #7c7c7c;
+    padding: 10px 10px 10px 0 ;
+    margin: 0;
+}
+
+#in-out{
+    display: flex;
+    border-radius: 10px;
+    color: #595959;
+    background: #f1f1f1;
+    width: 96%;
+    height: 30px;
+    font-size: 18px;
+    line-height: 30px;
+    padding: 10px;
+    text-align: center;
+    font-weight: 700;
+    margin: 20px 0;
+}
+
+.in-out-item{
+    width: 30%;
+    text-align: left;
+    margin: 0 1%;
+}
+
+.in-out-value{
+    font-size: 1em;
+    text-align: right;
+    background-color: white;
+    border-radius: 5px;
+    float: right;
+    width: 60%;
+    padding: 0 10px;
+    color: #838383;
+}
+
+.in-out-value i{
+    margin-left: 5px;
+    opacity: 0.7;
+    font-size: 15px;
+}
+.in-out-value.deposits{
+    color:#638269;
+}
+.in-out-value.expenses{
+    color:#c53e3e;
+}
+.in-out-item p{
+    margin-block-start: 5px;
+    margin-block-end: 5px;
+}
+
+
+
+.other-month{
+    border: solid 1px #efefef;
+    color: #dadada;
+}
+ .day{
+     display: inline-block;
+     text-align: left;
+     width: 60px;
+     height: 35px;
+     float: left;
+     border: solid 1px #e9e9e9;
+     padding: 5px;
+ }
+.weekend{
+    background-color: #f7f7f7;
+    font-weight: bold;
+}
+.day.header{
+    width: 62px;
+    text-align: center;
+    font-weight: bold;
+    height: 20px;
+    border: none;
+}
+#calendar{
+    width: 550px;
+    display: inline-block;
+    margin: 0 20px
+
+}
+
+.day.today{
+    background-color: #638269;
+    color:white;
+    font-weight: bold;
+}
+
+.day:hover > .day-details{
+    display: inline-block;
+    color:black;
+
+}
+
+.day:hover{
+    display: inline-block;
+    z-index: -1;
+}
+
+.day-details{
+    position: relative;
+    margin-top: -80px;
+    background-color: #ffffff;
+    border-radius: 5px;
+    width: max-content;
+    border: solid 1px #e1e1e1;
+    padding: 5px;
+    height: auto;
+    line-height: 25px;
+    z-index: 1000;
+}
+
+#bills{
+    border: solid 1px #e9e9e9;
+    overflow-y: scroll;
+    height: 280px;
+    width: 530px;
+}
+
+.programed-bills{
+    width: 100%;
+    font-size: 14px;
+}
+.calendar{
+    margin: 5px 0 0;
+    --fa-secondary-opacity: 0.9;
+}
+
+.calendar.deposits{
+    --fa-secondary-color: #6a8b71 ;
+    --fa-primary-color: #ededed;
+}
+.calendar.expenses{
+    --fa-secondary-color: #c74e4e ;
+    --fa-primary-color: #ededed;
+}
+#controls {
+    bottom: 0;
+    margin: auto 10px 0;
+    position: fixed;
+    width: 260px;
+    height: 50px;
+    text-align: center;
+}
+
+.controls-icon{
+    line-height: 30px;
+    height: 30px;
+    width: 45px;
+    background-color: white;
+    font-size: 18px;
+    border: solid 1px #a9a9a9;
+    border-radius: 10px;
+}
+
+.controls-icon.current{
+    width: 35px;
+}
+#dashboard-central{
+    align-items: center;
+    justify-content: space-around;
+    text-align: center;
+    display: flex;
+    flex-wrap: wrap;
+    margin-top: 15px;
+}
+

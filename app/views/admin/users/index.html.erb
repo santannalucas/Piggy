@@ -1,0 +1,37 @@
+<!-- Title and Hide Search Toggle -->
+<% content_for :title, "Users" %>
+
+<div id='workspace'>
+  <!-- Transactions Search Header -->
+  <%= search_header("fad fa-user", 'Users').html_safe %>
+
+  <!-- Search in Bank Accounts -->
+  <%= render 'layouts/search/search', :locals => {
+    :fields_search => rules_search('users'),
+    :help => 'Search in Users.',
+    :url => users_path(:per_page => params[:per_page]),
+    :height => '110px'
+  }%>
+
+
+  <%= render 'layouts/search/loading' %>
+
+  <!-- Display -->
+  <div id="search-results">
+    <!-- Pagination and Display -->
+    <%= render 'layouts/search/display_pagination', :locals => {:showing => 'Users', :display => 'true', :paginate => @showing, :total => @total_showing} %>
+    <!-- Index -->
+    <%= render 'admin/users/partials/index' %>
+    <!-- Bottom Pagination -->
+    <%= render 'layouts/search/display_pagination', :locals => {:showing => 'Users', :paginate => @showing, :total => @total_showing} %>
+  </div>
+
+</div>
+
+<!-- Bottom Menu -->
+<div id="menu-bottom">
+  <ul>
+    <!-- New User --><li><a id='add-row-form-new' href="#row-form-new"><i class="fad fa-plus-circle fa-3x new-icon" title="New User"></i><br> New User </a> </li>
+    <!-- Back Dashboard -->  <li> <%= link_to root_path do %><i class="fad fa-analytics fa-3x dashboard" title="Back to Dashboard"></i><br>Dashboard<% end %></li>
+  </ul>
+</div>

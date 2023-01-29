@@ -1,0 +1,23 @@
+<script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
+<script type="text/javascript">
+    google.charts.load('current', {'packages':['bar']});
+    google.charts.setOnLoadCallback(drawStuff);
+
+    function drawStuff() {
+        var data = new google.visualization.arrayToDataTable(<%= raw @categories.unshift(%w[Category Total]) %>);
+
+        var options = {
+            colors: ['<%= raw(params[:cat_type] == 'deposits' ? '#638269' : '#c53e3e') %>'],
+            legend: { position: 'none' },
+            chart: {
+                title: 'Total Categories'
+            },
+            bar: { groupWidth: "90%" }
+        };
+
+        var chart = new google.charts.Bar(document.getElementById('top_x_div'));
+        // Convert the Classic options to Material options.
+        chart.draw(data, google.charts.Bar.convertOptions(options));
+    };
+</script>
+<div id="top_x_div" style="width: 100%; height: 800px;"></div>

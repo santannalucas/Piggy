@@ -1,0 +1,73 @@
+<!-- Rows Count Init. --><% rows, columns = 0, 10 %>
+
+<!-- Table Header -->
+<table class="default">
+<thead>
+  <tr>
+    <th style="width:100px"> <%= acc_sort "account_tags.id", "ID" %></th>
+    <th style="width:22%" class="align-left"> <%= acc_sort "tags.name", "Name" %></th>
+    <th style="width:22%"> <%= acc_sort "account_tags.start_at", "Start at" %></th>
+    <th style="width:22%"> <%= acc_sort "account_tags.end_at", "End at" %></th>
+    <th style="width:14%" class="align-left"><%= acc_sort "account_tags.user_id", "User" %></th>
+    <th style="width:10%"><%= acc_sort "tags.tag_type", "Type" %></th>
+    <th style="width:10%"> Active </th>
+    <% if can?(:account, :update) %><th style="width:105px" colspan="3"> Actions </th><% end %>
+  </tr>
+</thead>
+  <% if can?(:account, :update) %>
+  <!-- Row Form - New Record -->
+    <tr id="row-form-new" <% unless params[:errors].present? %> hidden="hidden" <% end %> class="row-form-form <%= 'error' if params[:errors].present? %>">
+      <%= form_for(@new_tag, url: create_tagging_account_path(:id => @account.id), method: :post) do |form|%>
+        <%= hidden_field_tag(:tag_type, params[:tag_type]) %>
+        <td>#</td>
+        <td class="align-left"> <%= form.select :tag_id, options_for_select(@tags.collect {|x| [x.name ,x.id]}, @new_tag.try(:tag).try(:id)), {include_blank:'Select a Tag'}, {class:'input-field'} %></td>
+        <td><input type="datetime-local" id='account_tag_start_at' value="<%= AccountTag.str_time(@new_tag, 'start') %>" name='account_tag[start_at]' class='input-field date column'></td>
+        <td><input type="datetime-local" id='account_tag_end_at' value="<%= AccountTag.str_time(@new_tag, 'end') %>" name='account_tag[end_at]' class='input-field date column'></td>
+        <td> <%= @current_user.name %></td>
+        <td><%= params[:tag_type] %></td>
+        <td><i class="fas fa-times-hexagon acc-tag-status inactive" title="Inactive"></i></td>
+        <td><button type='submit' name='Update' value='Update' class='action-icon'><i class="fad fa-save fa-lg" title="Save"></i></button></td>
+        <td colspan="2" class="align-left"><i class="fad fa-times-circle action-icon cancel-table-row-form" title="Cancel"></i></td>
+      <% end %>
+    </tr>
+  <% end %>
+<!-- Table Body and Rows Count -->
+<% @showing.each do |account_tag| %><% rows = rows + 1 %>
+  <% error = (params[:error_id] == account_tag.id.to_s) %>
+  <% updated = params[:updated].to_i == account_tag.id %>
+  <tr id="field_record_<%= account_tag.id %>" class="<%= cycle('odd', 'even') -%> row-form-field <%= 'updated' if updated %>" <%= "hidden='hidden'".html_safe if error %>>
+    <!-- ID     --> <td> <%= account_tag.id %> </td>
+    <!-- Tag    --> <td class="align-left"> <%= link_to account_tag.tag.name, account_tag.tag %> </td>
+    <!-- Start  --> <td> <%= account_tag.start_at.strftime("%d %b %Y - %H:%M") %> </td>
+    <!-- End    --> <td> <%= account_tag.end_at.strftime("%d %b %Y - %H:%M") %> </td>
+    <!-- Owner  --> <td class="align-left"> <%= account_tag.owner %></td>
+    <!-- Type   --> <td> <%= account_tag.tag.tag_type %></td>
+    <!-- Status --> <td> <%= tag_active_sign(account_tag).html_safe %></td>
+    <% if can?(:account, :update) %>
+      <!-- Edit    --><td><i class="fad fa-pencil-alt action-icon row-form-edit-field " rel="<%= account_tag.id %>" title="Edit"></i></td>
+      <!-- Delete  --><td><%= link_to url_for(:controller => "admin/accounts", :action => "destroy_tagging", :id => account_tag.id), data: {confirm: "Are you sure you want to delete this account tag?"}, :method  => :delete do %><i class="fad fa-trash action-icon" title="Delete"></i><% end %></td>
+      <!-- Objects --><td><% if account_tag.on_range? && @account == @current_user.account %><%= link_to tags_objects_account_path(:tag_filter => account_tag.tag.id) do %><i class="fad fa-search action-icon" title="View <%= account_tag.tag.tag_type %>s"></i><% end %><% end %></td>
+    <% end %>
+  </tr>
+    <!-- Row Form Field -->
+    <tr id="form_record_<%= account_tag.id %>"  <%= "hidden='hidden'".html_safe unless error %> class="row-form-form <%= 'error' if error %>">
+      <%= form_for(account_tag, url: update_tagging_account_path(:id => @account.id), method: :put) do |form| %>
+        <td><%= account_tag.id %><%= form.hidden_field :id %><%= hidden_field_tag :tag_type, params[:tag_type] %></td>
+        <td> <%= form.select :tag_id, options_for_select(load_tags(account_tag.tag.tag_type, account_tag).collect {|x| [x.name ,x.id]}, error ? params[:tag_id].to_i : account_tag.tag_id), {include_blank:'Select a Tag'}, {class:'input-field'} %></td>
+        <td><input type="datetime-local" id='account_tag_start_at' value="<%= error ? params[:start_at].to_datetime.strftime('%FT%R') : AccountTag.str_time(account_tag, 'start') %>" name='account_tag[start_at]' class='input-field date column'></td>
+        <td><input type="datetime-local" id='account_tag_end_at' value="<%= error ? params[:end_at].to_datetime.strftime('%FT%R') : AccountTag.str_time(account_tag, 'end') %>" name='account_tag[end_at]' class='input-field date column' ></td>
+        <td class="align-left"> <%= account_tag.owner %></td>
+        <td> <%= account_tag.tag.tag_type %></td>
+        <td> </td>
+        <td><button type='submit' name='Update' value='Update' class='action-icon row-form'><i class="fad fa-save fa-lg" title="Save"></i></button></td>
+        <td colspan="2" class="align-left">
+          <% if error %><%= link_to account_path(:show => 'tags') do %><i class="fad fa-times-circle action-icon row-form cancel-table-row" title="Cancel"></i><% end %>
+          <% else %><i class="fad fa-times-circle action-icon row-form cancel-table-row-form" rel="<%= account_tag.id %>" title="Cancel"></i><% end %>
+        </td>
+      <% end %>
+    </tr>
+  <% end %>
+  <!-- Index Bottom -->
+  <%= render 'layouts/search/index_bottom', :locals => {:showing => 'Tag', :collection => @showing.present?, :total => @total_account_tags, :colspan => columns, :rows => rows, :rows_height => 38} %>
+</table>
+

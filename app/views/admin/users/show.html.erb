@@ -1,0 +1,83 @@
+<% content_for :title,  "User: #{@user.name}" %>
+
+<% can_edit, error = can?(:user, :update) || @user == @current_user, params[:error].present? %>
+
+<style>
+#show{
+    margin:20px 0 0;
+}
+#show h1{
+    font-size: 16px;
+    margin: 5px 0 0 -10px;
+    padding: 0;
+    line-height: 20px;
+    color: #838383;
+    font-weight: lighter;
+}
+
+.show-item{
+    font-size: 18px;
+    line-height: 30px;
+    width: 100%;
+    display: block;
+    padding: 5px 15px;
+    color: #595959;
+    font-weight: bold;
+}
+
+.input-field-show-form{
+    font-size: 16px;
+    line-height: 25px;
+    display: block;
+    width: 600px;
+    margin: 5px;
+    padding: 5px;
+    color: #595959;
+    font-weight: bold;
+}
+
+input:-internal-autofill-selected {
+    background-color: rgb(180, 179, 179) !important;
+}
+
+input[type="checkbox"].show-item-form-check-box, input[type="checkbox" i].show-item-form-check-box, input:disabled.show-item-form-check-box{
+    font-size: 23px;
+    /* margin: 0 0 -4px; */
+    width: 20px;
+    height: 20px;
+}
+
+</style>
+<%= form_for(@user, url: user_path(id:@user.id), method: :put) do |form|%>
+<div id='workspace'>
+  <%= hidden_field_tag(:editing, params[:editing].present? && can_edit) %>
+  <!-- Transactions Search Header -->
+  <h1><i class='fad fa-user'></i> &nbsp;<%= @user.name %></h1>
+  <div id='show'>
+    <div class="show-item"><h1>Email:</h1><%= @user.email %></div>
+    <div class="show-item"><h1>Role:</h1><%= @user.role.name %></div>
+    <div class="show-item"><h1>Main Bank Account:</h1><%= BankAccount.find(@user.options['default_account']).name %></div>
+    <div class="show-item"><h1>Main Currency:</h1><%= @user.currency.name %></div>
+    <div class="show-item"><h1>Search Display:</h1><%= "#{@user.options['per_page']} row per page." %></div>
+    <div class="show-item"><h1>Search Hide:<%= check_box_tag("Hide", @user.options['hide_search'].to_i, @user.options['hide_search'].to_i == 1, class:'show-item-form-check-box', disabled:true) %></h1> </div>
+    <div class="show-item form"><h1>Name:</h1><%= form.text_field :name, :class => 'input-field-show-form' %></div>
+    <div class="show-item form"><h1>Email:</h1><%= form.text_field :email, :class => 'input-field-show-form' %></div>
+    <div class="show-item form"><h1>Password:</h1><%= form.password_field :password, :class => 'input-field-show-form' %></div>
+    <div class="show-item form"><h1>Primary Bank Account:</h1><%= select_tag 'options[default_account]', user_options_select('default_account', @user),:class => 'input-field-show-form' %></div>
+    <div class="show-item form"><h1>Primary Currency:</h1><%= select_tag 'options[currency]', user_options_select('currency',@user),:class => 'input-field-show-form' %></div>
+    <div class="show-item form"><h1>Search Display:</h1><%= select_tag 'options[per_page]', user_options_select('per_page', @user),:class => 'input-field-show-form'%></div>
+    <div class="show-item form"><h1>Search Hide: <%= select_tag 'options[hide_search]', user_options_select('hide_search',@user), class:'input-field-show-form' %></h1></div>
+  </div>
+</div>
+
+<!-- Bottom Menu -->
+<div id="menu-bottom">
+  <ul>
+    <!-- Save   --> <li class="form-submit"><button type='submit' class="form-save"><i class="fad fa-save fa-3x" title="Save"></i><br>Save</button></li>
+    <!-- Cancel --><li class="form-submit"><a id='cancel-edit-show-items'><i class="fad fa-times-circle fa-3x" title="Cancel"></i><br> Cancel </a> </li>
+    <!-- Edit User --><% if can_edit %><li><a id='edit-show-items'><i class="fad fa-user-edit fa-3x" title="Edit User"></i><br> Edit User </a> </li><% end %>
+    <!-- Users --><% if can?(:user,:search) || params[:from] == 'index' %><li><%= link_to users_path do %><i class="fas fa-users fa-3x" title="Users"></i><br>Users <% end %> </li><% end %>
+    <!-- Back Dashboard -->  <li> <%= link_to root_path do %><i class="fad fa-analytics fa-3x dashboard" title="Back to Dashboard"></i><br>Dashboard<% end %></li>
+  </ul>
+</div>
+<% end %>

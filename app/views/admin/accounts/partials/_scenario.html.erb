@@ -1,0 +1,186 @@
+<!-- Title -->
+<% content_for :title,  "Clinical Scenario #{@object.code}" %>
+<h4><i class="fad fa-hospital-user"></i><%= "&nbsp; #{params[:object_type]} #{params[:object_number]} | <span> Account #{@account.name} </span>".html_safe %> </h4>
+
+<!-- Show Scenario -->
+<div class="view-object user-locked">
+<% s_status = @object.status %>
+
+  <!-- Show Status and Topic --><div class="view-status" style="<%= status_style(s_status) %>"><span style="font-size: 20px;"> <b><%= @object.code %> |</b> </span> <%= @object.status.humanize.titleize %></div>
+  <!-- Inside Object - Padding -->
+  <div class="view-object-inside">
+    <!-- Summary Table -->
+    <h2>Summary</h2>
+    <table class="field-row">
+      <tr><th>Topic</th><td><%= @object.topic %></td></tr>
+      <tr><th>Discipline</th><td><%= @object.discipline.try(:name) %></td></tr>
+      <tr><th>Synopsis</th><td><%= @object.synopsis %></td></tr>
+      <tr><th>Reading Phase </th><td><%= @object.duration('read') %></td></tr>
+      <tr><th>Exam Phase</th><td><%= @object.duration('exam') %></td></tr>
+    </table>
+    <!-- Images --><div id='images-section' class="object-anchor no-margin-top"></div><h2>Images</h2><%= render 'layouts/object/images', :locals => {:object => @object } %>
+     <!-- Station Requirements -->
+    <div id='station-section' style="height: 1px; margin-top: -30px; margin-bottom: 80px;"></div>
+      <h2>Station Requirements</h2>
+      <table class="field-row">
+        <tr><th>Simulated Patient</th><td><%= @object.simulated_patient_type.try(:name) %></td></tr>
+        <tr><th>Examiner</th><td><%= @object.examiner_requirement.try(:requirement) %></td></tr>
+      </table>
+    <div class="view-station"><%= raw(@object.station) %></div>
+    <div id='domains-section' style="height: 1px; margin-top: -30px; margin-bottom: 80px;"></div>
+    <!-- Assessment Area -->
+    <div class="info-view"><div class="info-tabs"><a rel='paa' class="info-tab selected">PREDOMINANT ASSESSMENT AREA</a></div>
+      <div class="info-views"><div id="paa" class="view-tab"><ul class="areas_list"><% @object.areas.each do |area| %><li><%= area.description %></li><% end %></ul></div></div>
+    </div>
+    <!-- Assessment Domains -->
+    <div class="info-view">
+      <div class="info-tabs"><a rel='domains' class="info-tab selected">ASSESSMENT DOMAINS</a></div>
+      <div class="info-views">
+        <div id="domains" class="view-tab">
+          <table class="domains_list"><% @object.scenario_assessments.each_with_index do |sa , num|  %>
+            <tr><td><%= (num+1) %>. <%= sa.domain.title %></td></tr><% end %>
+          </table>
+        </div>
+      </div>
+    </div>
+    <!-- Marksheet and Key Issues -->
+    <div id='marksheet-section' style="height: 1px; margin-top: -30px; margin-bottom: 80px;"></div>
+    <div class="info-view">
+    <!-- Marksheet and Key Issues Tabs Menu -->
+      <div class="info-tabs" >
+        <a rel='marksheet' class="info-tab selected">MARKSHEET</a>
+        <!-- Legacy Scenario Only -->
+        <% if @object.scenario_type.present?%>
+        <a rel='key_issues' class="info-tab">KEY ISSUES (HISTORICAL)</a>
+        <a rel='critic_errors' class="info-tab">CRITICAL ERRORS (HISTORICAL)</a>
+        <% end %>
+      </div>
+      <!-- Marksheet -->
+      <div class="info-views">
+         <div id="marksheet" class="view-tab">
+         <!-- Marksheet - Key Steps -->
+         <br><b> Key Steps:  Did the candidate exhibit the following key steps in this station? </b>
+         <ol class="key_steps"><% @object.scenario_key_steps.each do |key_step| %><li> <%= simple_format(strip_tags(key_step.description)) %></li><% end %></ol>
+         <!-- Marksheet - Level of Performance -->
+         <br> <b>Level of Performance Observed:  Rate the candidate in each of the following domains.</b>
+         <ol class="levels_of_performance"><% @object.scenario_lopos.each do |level_of_performance| %><li class="level_of_performance"><b><%= level_of_performance.assessment_domain.try(:title) %></b><br><%= strip_tags(level_of_performance.description) %></li><% end %></ol>
+        </div>
+        <!-- Key Issues (Legacy Scenarios only)-->
+        <div id="key_issues" class="view-tab" hidden="hidden"><%= legacy_data(@object,'key_issues') if @object.key_issues.present? %></div>
+        <!-- Key Issues (Legacy Scenarios only)-->
+        <div id="critic_errors" class="view-tab" hidden="hidden"><%= legacy_data(@object,'critical_errors') if @object.critical_errors.present? %></div>
+      </div>
+    </div>
+
+    <div id='info-for-section' style="height: 1px; margin-top: -30px; margin-bottom: 80px;"></div>
+    <!-- Information for Candidates, SP, Examiners -->
+    <div class="info-view">
+      <div class="info-tabs" >
+        <a rel='info_candidates' class="info-tab selected">INFORMATION FOR CANDIDATE</a>
+        <a rel='info_sp' class="info-tab">PATIENT</a>
+        <a rel='info_examiners' class="info-tab">EXAMINER</a>
+        <a rel='info_invigilator' class="info-tab">INVIGILATOR</a>
+      </div>
+      <!-- Areas and Domains Views -->
+      <div class="info-views">
+        <!-- Info Candidate   --> <div id="info_candidates" class="view-tab"><%= raw(@object.candidate) %></div>
+        <!-- Info SPs         --> <div id="info_sp" class="view-tab" hidden="hidden" ><%= raw(@object.simulated_patient) %><p>Please also refer for more information on HOW TO PLAY THE ROLE to the AMC GUIDELINES FOR ROLE PLAYERS.</p></div>
+        <!-- Info Examiner    --> <div id="info_examiners" class="view-tab" hidden="hidden"><%= raw(@object.examiner) %></div>
+        <!-- Info Invigilator --> <div id="info_invigilator" class="view-tab" hidden="hidden"><%= raw(@object.invigilator) %></div>
+      </div>
+    </div>
+
+    <!-- Additional Content -->
+    <% media_contents = @object.scenario_contents.media %>
+    <% if media_contents.present? %>
+    <div id='contents-section' class="object-anchor"></div>
+     <h2>Contents</h2>
+     <!-- Media -->
+     <table id="media-table" class="scenario-nested">
+     <tr><th style="width: 20%;"> Name </th><th style="width: 20%;"> Type </th><th style="width: 55%;"> ID / URL </th><th style="width: 5%;" class="nested-action">Preview</th></tr>
+       <% media_contents.each do |media| %>
+       <tr>
+         <td><%= media.name %> </td><td><%= media.content_type %></td><td><%= media.content_type == 'Custom' ? media.content : media.content_id %></td>
+         <td><%= link_to content_scenario_path(:content_id => media.id), :target => '_blank' do %><i class="fad <%= media.type_icon %> add-content"></i><% end %></td>
+       </tr>
+       <% end %>
+     </table>
+     <% end %>
+     <!-- Custom Contents -->
+    <% contents = @object.scenario_contents.custom.order(:name) %>
+    <% if contents.present? %>
+    <div class="info-view">
+      <div class="info-tabs"><% contents.each_with_index do |content, num| %><a rel="content_<%= num + 1 %>" class="info-tab <%= "selected" if num == 0 %>" ><%= content.name.upcase %></a><% end %></div>
+      <div class="info-views"><% contents.each_with_index do |content, num| %><div id="content_<%= num + 1 %>" class="view-tab"  <%= "hidden='hidden'" if num != 0 %>><%= content.content.html_safe if content.content.present? %></div><% end %></div>
+    </div>
+    <% end %>
+
+    <!-- Classifications -->
+    <div id='class-section' class="object-anchor"></div>
+    <h2>Classifications</h2>
+    <!-- Function     -->
+    <table class="field-column">
+      <tr><th colspan="2">Function </th></tr>
+      <% if @object.function.present? %><tr><td class="code"><%= @object.function.code %></td><td class="text-wrap"><%= @object.function.name %></td></tr><% end %>
+      <% unless @object.function.present? %><tr><td colspan="2">None Assigned.</td></tr><% end %>
+    </table>
+    <!-- System       -->
+    <table class="field-column">
+      <tr><th colspan="2">System </th></tr>
+      <% @object.systems.each do |system| %><tr><td class="code"><%= system.code %></td><td class="text-wrap"><%= system.name %></td></tr><% end %>
+       <% unless @object.systems.present? %><tr><td colspan="2">None Assigned.</td></tr><% end %>
+    </table>
+    <!-- Anthologies  -->
+    <table class="field-column">
+      <tr><th colspan="2">Anthologies </th></tr>
+      <% @object.anthologies.each do |anthology| %><tr><td class="code"><%= anthology.code %></td><td class="text-wrap"><%= anthology.name %></td></tr><% end %>
+      <% unless @object.anthologies.present? %><tr><td colspan="2">None Assigned.</td></tr><% end %>
+    </table>
+    <!-- AnthologyLEO -->
+    <table class="field-column" style="margin-bottom: 0;">
+      <tr><th colspan="2">Anthology LEO </th></tr>
+      <% @object.anthology_leos.each do |anthology_leo| %><tr><td class="code"><%= anthology_leo.code %></td><td class="text-wrap"><%= anthology_leo.name %></td></tr><% end %>
+      <% unless @object.anthology_leos.present? %><tr><td colspan="2">None Assigned.</td></tr><% end %>
+    </table>
+
+    <!-- Timed Events -->
+    <% events = @object.scenario_timed_events %>
+    <% if events.present? %><div id='t-events-section' class="object-anchor"></div>
+      <h2> Timed Events </h2>
+      <% [events.reading_phase, events.exam_phase].each_with_index do |t_events, i| %>
+        <% if t_events.present? %><% phase = i == 0 ? 'reading' : 'exam' %>
+        <div class="event-phase <%= phase %>"><%= phase.titleize %> Phase </div>
+        <table id="t-events-table" class="scenario-nested t-events">
+        <tr>
+          <th style="width: 30%;"> Name (Exam Delivery) </th>
+          <th style="width: 30%;"> Content </th>
+          <th style="width: 10%;"> MM:SS </th>
+          <th style="width: 10%; text-align: center"> Prompt Chime </th>
+          <th style="width: 15%;"> Show Content </th>
+          <th style="width: 5%;" class="nested-action">Preview</th>
+        </tr>
+        <% t_events.each do |event| %>
+        <tr>
+          <td><%= event.name %></td>
+          <td><%= event.content.name %></td>
+          <td><%= '%02i' % event.minutes %>:<%= '%02i' % event.seconds %></td>
+          <td style="font-size: 1.5em; text-align: center"><% if event.chime %><i style='color:#2d3e50;' class="fas fa-volume"></i><% else %><i style='color:lightgrey;' class="fas fa-volume-mute"></i><% end %></td>
+          <td><%= event.show %></td>
+          <td><%= link_to content_scenario_path(:content_id => event.scenario_content_id), :target => '_blank' do %><i class="fad fa-tv-alt add-content"></i><% end %></td>
+        </tr>
+        <% end %>
+        </table>
+        <% end %>
+      <% end %>
+    <% end %>
+  </div>
+  <!-- End of Show -->
+</div>
+
+<!-- Bottom Menu -->
+<div id="menu-bottom">
+  <ul>
+    <!-- Back to Account -->  <% if can?(:account, :update) %><li><%= link_to account_path(:id => @current_user.account.id) do %><i class="fas fa-chalkboard-teacher fa-3x" title="Back to Account"></i><br>Back to Account<% end %></li><% end %>
+    <!-- Back to Questions --><li><%= link_to tags_objects_account_path(:show => 'Scenario') do %><i class="fas fa-hospital-user fa-3x" title="Back to Scenarios"></i><br>Back to Scenarios<% end %> </li>
+  </ul>
+</div>

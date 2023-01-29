@@ -1,0 +1,17 @@
+<!-- Title and Hide Search Toggle -->
+<% content_for :title, "#{@report.name} Report" %>
+
+<!-- Sidebar -->
+<%= render 'reports/partials/sidebar' %>
+
+<div id='workspace' class="sidebar">
+
+  <%= render "reports/partials/#{@report.name.downcase.gsub(' ','_')}" %>
+</div>
+
+<!-- Bottom Menu -->
+<div id="menu-bottom">
+  <ul>
+    <!-- Back Dashboard -->  <li> <%= link_to root_path do %><i class="fad fa-analytics fa-3x dashboard" title="Back to Dashboard"></i><br>Dashboard<% end %></li>
+  </ul>
+</div>

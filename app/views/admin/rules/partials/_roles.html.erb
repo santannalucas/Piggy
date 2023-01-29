@@ -1,0 +1,44 @@
+<!-- Rows Count Init. --><% rows = 0 %>
+
+<!-- Table Header -->
+<table class="default">
+  <tr>
+    <th style="width:5%; "> <%= rules_sort("admin_roles.id", "ID") %></th>
+    <th style="width:95%;" class="align-left"> <%= rules_sort "admin_roles.name", "Name" %></th>
+    <th style="width:100px;" colspan="2"> Actions </th>
+  </tr>
+  <!-- Row Form - New Record -->
+  <tr id="row-form-new" <% unless params[:errors].present? %> hidden="hidden" <% end %>class="row-form-form <%= 'error' if params[:errors].present? %>">
+    <%= form_for @new_role do |form| %>
+      <td>#</td>
+      <td><%= form.text_field :name, :placeholder => 'Add Role Name:', :class => 'input-field-table-column to-focus' %></td>
+      <td><button type='submit' name='Update' value='Update' class='action-icon'><i class="fad fa-save fa-lg" title="Save"></i></button></td>
+      <td><i class="fad fa-times-circle action-icon cancel-table-row-form" title="Cancel"></i></td>
+    <% end %>
+  </tr>
+  <!-- Table and Rows Count -->
+<% @showing.each do |role| %><% rows = rows + 1 %>
+  <% error = params[:error_id] == role.id.to_s %>
+  <% updated = params[:updated].to_i == role.id %>
+  <tr id="field_record_<%= role.id %>" class="<%= cycle('odd', 'even') -%> row-form-field <%= 'updated' if updated %>" <%= "hidden='hidden'".html_safe if error %>>
+    <!-- ID   --><td> <%= link_to role.id, role_path(:id => role.id) %> </td>
+    <!-- Name  --><td class="align-left"> <%= link_to role.name, role_path(:id => role.id) %></td>
+    <!-- View  --><td><% if can?(:role, :read) %><%= link_to role_path(:id => role.id, :show => "users") do %><i class="fad fa-search action-icon" title="View Details"></i><% end %><% end %> </td>
+    <!-- Edit  --><td><% if can?(:role, :update) %><i class="fad fa-pencil-alt action-icon row-form-edit-field " rel="<%= role.id %>" title="Edit"></i><% end %></td>
+  </tr>
+  <!-- Row Form Field -->
+  <tr id="form_record_<%= role.id %>"  <%= "hidden='hidden'".html_safe unless error %> class="row-form-form <%= 'error' if error %>">
+    <%= form_for role, method: :put do |form| %>
+      <td><%= role.id %><%= hidden_field_tag :id, role.id %></td>
+      <td><%= form.text_field :name, :value => error ? params[:name] : role.name, :class => 'input-field-table-column' %></td>
+      <td><button type='submit' name='Update' value='Update' class='action-icon row-form'><i class="fad fa-save fa-lg" title="Save"></i></button></td>
+      <td>
+        <% if error %><%= link_to rules_path(:show => 'roles') do %><i class="fad fa-times-circle action-icon row-form cancel-table-row" title="Cancel"></i><% end %>
+        <% else %><i class="fad fa-times-circle action-icon row-form cancel-table-row-form" rel="<%= role.id %>" title="Cancel"></i><% end %>
+      </td>
+    <% end %>
+  </tr>
+  <% end %>
+  <!-- Index Bottom -->
+  <%= render 'layouts/search/index_bottom', :locals => {:showing => 'Role', :collection => @showing.present?, :total => @total_showing, :colspan => 4, :rows => rows, :rows_height => 38} %>
+</table>

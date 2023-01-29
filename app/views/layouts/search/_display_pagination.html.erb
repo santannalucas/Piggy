@@ -1,0 +1,14 @@
+<% if locals[:paginate].present? %>
+<div id="pagination-results">
+  <!-- Results -->
+  <% if locals[:display] == 'true' %>
+    <div class="results">
+      <% if locals[:total] != 0 %> Displaying <% if locals[:total] %><%= (params[:page].to_i - 1)*(params[:per_page].to_i)+ 1 %> to <%= locals[:paginate].try(:next_page).present? ? (params[:page].to_i)*(params[:per_page].to_i) : locals[:total] %> of <% end %>
+        <span style="font-size: 14px; font-weight: bold"><%= locals[:total] %></span> <%= locals[:total] > 1 ? locals[:showing].to_s.pluralize : locals[:showing] %>.
+      <% end %>
+    </div>
+  <% end %>
+  <!-- Pagination -->
+  <%= will_paginate(locals[:paginate], :inner_window => 1, :outer_window => 0 ) %>
+</div>
+<% end %>

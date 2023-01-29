@@ -1,0 +1,34 @@
+<!-- Title -->
+<h4><i class="fad fa-ballot-check"></i> <%= "&nbsp; #{params[:object_type]} #{params[:object_number]} | <span> Account #{@account.name} </span>".html_safe %> </h4>
+
+<!-- Show Question -->
+<div class="view-object user-locked">
+<% q_status = @object.status %>
+  <!-- Show Status and Topic --><div class="view-status" style="<%= status_style(q_status) %>"><%= question_stylized_status(@object) %></div>
+  <!-- View Topic --><div class="view-topic"> <%= @object.topic %></div>
+  <!-- Show Stem --><div class="show-stem"> <%= @object.stem.html_safe %> </div>
+  <!-- Inside Object - Padding -->
+  <div class="view-object-inside">
+  <!-- Responses -->
+  <table class="show-responses">
+    <% @object.responses.each_with_index do |response, num| %>
+    <tr> <% feedback = @object.feedback(num + 1).present? %>
+      <th <%= correct_resp(@object,num+1) %>><%= to_char(num+1) %></th>
+      <td <%= correct_resp(@object,num+1) %>><%= raw(response.body) %>
+      <% if feedback %><i class="fad fa-comment-lines feedback-question" rel="resp-feed-<%= num + 1 %>" title="Show Feedback"></i><% end %></td>
+    </tr>
+    <!-- Feedback -->  <% if feedback %><tr id="resp-feed-<%= num + 1 %>" hidden="hidden"><td colspan="2" class="show-resp-feedback"><%= @object.feedback(num+1) %> </td> </tr><% end %>
+    <% end %>
+  </table>
+  <!-- Images --><h2>Images</h2><%= render 'layouts/object/images', :locals => {:object => @object } %>
+  <!-- Latest Statistics --><% if @object.has_statistics? %><%= render 'questions/partials/stats', :locals =>  {:question => @object} %><% end %>
+  </div>
+</div>
+
+<!-- Bottom Menu -->
+<div id="menu-bottom">
+  <ul>
+  <!-- Back to Account -->  <% if can?(:account, :update) %><li><%= link_to account_path(:id => @current_user.account.id) do %><i class="fas fa-chalkboard-teacher fa-3x" title="Back to Account"></i><br>Back to Account<% end %></li><% end %>
+  <!-- Back to Questions --><li><%= link_to tags_objects_account_path(:show => 'Question') do %><i class="fas fa-books fa-3x" title="Back to Questions"></i><br>Back to Questions<% end %> </li>
+  </ul>
+</div>

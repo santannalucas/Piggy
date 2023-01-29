@@ -1,0 +1,30 @@
+<% error = params[:errors] %>
+<% if locals[:new].present? %>
+<tr id="row-form-new" <% unless error.present? %> hidden="hidden" <% end %>class="row-form-form <%= 'error' if error.present? %>">
+  <%= form_for @currency_new do |form| %>
+    <td> # </td>
+    <!-- Name --> <td class="form"><%= form.text_field :name, :class => 'input-field-table-column', :placeholder => 'Add Currency Name.' %></td>
+    <!-- Code --> <td class="form"><%= form.text_field :code, :class => 'input-field-table-column', :placeholder => 'Add currency Code.' %></td>
+    <!-- Rate --> <td class="form"><%= number_field_tag 'currency[rate]', sprintf("%0.02f", @currency_new.rate || 0),{:min => 0.00, :step => 0.01, :class =>'input-field'}  %></td>
+    <!-- Save -->
+    <td><button type='submit' name='Update' value='Update' class='action-icon new-form'><i class="fad fa-save fa-lg" title="Save"></i></button></td>
+    <!-- Cancel  -->
+    <td><i class="fad fa-times-circle action-icon new-form cancel-table-row-form" title="Cancel"></i></td>
+  <% end %>
+</tr>
+<% else %>
+  <% currency = @currency_edit || locals[:currency] %><% rows = locals[:rows] %>
+  <tr id="form_record_<%= currency.id %>"  <%= "hidden='hidden'".html_safe unless locals[:error] %> class="row-form-form <%= 'error' if locals[:error] %>">
+    <%= form_for(currency, url: currency_path(id:currency.id), method: :put) do |form|%>
+      <!-- #    -->  <td> <%= rows %></td>
+      <!-- Name -->  <td> <%= form.text_field :name, :class => 'input-field-table-column' %></td>
+      <!-- Type -->  <td> <%= form.text_field :code, :class => 'input-field-table-column' %></td>
+      <!-- Rate --> <td class="form"><%= number_field_tag 'currency[rate]', sprintf("%0.02f", form.object.rate || 0),{:min => 0.00, :step => 0.01, :class =>'input-field'}  %></td>
+      <td><button type='submit' name='Update' value='Update' class='action-icon row-form'><i class="fad fa-save fa-lg" title="Save"></i></button></td>
+      <td>
+        <% if locals[:error] %><%= link_to currencies_path do %><i class="fad fa-times-circle action-icon row-form cancel-table-row" title="Cancel"></i><% end %>
+        <% else %><i class="fad fa-times-circle action-icon row-form cancel-table-row-form" rel="<%= currency.id %>" title="Cancel"></i><% end %>
+      </td>
+    <% end %>
+  </tr>
+<% end %>

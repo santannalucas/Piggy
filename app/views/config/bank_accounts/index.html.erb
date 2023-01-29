@@ -1,0 +1,37 @@
+<!-- Title and Hide Search Toggle -->
+<% content_for :title, "Bank Accounts" %>
+
+<div id='workspace'>
+  <!-- Transactions Search Header -->
+  <%= search_header("fad fa-sack-dollar", 'Bank Accounts').html_safe %>
+
+  <!-- Search in Bank Accounts -->
+  <%= render 'layouts/search/search', :locals => {
+    :fields_search => bank_accounts_search,
+    :help => 'Search in Bank Accounts.',
+    :url => bank_accounts_path(:per_page => params[:per_page]),
+    :height => '110px'
+  }%>
+
+
+  <%= render 'layouts/search/loading' %>
+
+  <!-- Display -->
+  <div id="search-results">
+    <!-- Pagination and Display -->
+    <%= render 'layouts/search/display_pagination', :locals => {:showing => 'Bank Account', :display => 'true', :paginate => @bank_accounts, :total => @total_bank_accounts} %>
+    <!-- Index -->
+    <%= render 'config/bank_accounts/partials/index' %>
+    <!-- Bottom Pagination -->
+    <%= render 'layouts/search/display_pagination', :locals => {:showing => 'Bank Account', :paginate => @bank_accounts, :total => @total_bank_accounts} %>
+  </div>
+
+</div>
+
+<!-- Bottom Menu -->
+<div id="menu-bottom">
+  <ul>
+    <!-- New Bank Account --><li><a id='add-row-form-new' href="#row-form-new"><i class="fad fa-plus-circle fa-3x new-icon" title="New Bank Account"></i><br> New </a> </li>
+    <!-- Back Dashboard -->  <li> <%= link_to root_path do %><i class="fad fa-analytics fa-3x dashboard" title="Back to Dashboard"></i><br>Dashboard<% end %></li>
+  </ul>
+</div>

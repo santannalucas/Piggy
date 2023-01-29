@@ -1,0 +1,94 @@
+#sidebar{
+    height: 100%;
+    width: 280px;
+    position: fixed;
+    z-index: 0;
+    top: 0;
+    right: 0;
+    overflow-x: hidden;
+    padding: 50px 0 0;
+    border-left: solid 1px #e1e1e1;
+    display: inline-block;
+    background-color: #FFFFFF;
+}
+
+#sidebar h1{
+    text-align: right;
+    margin: 20px 15px 10px;
+    font-size: 1.15em;
+}
+
+#sidebar h2{
+    margin: 15px;
+    text-align: right;
+    color:#5a5a5a;
+    font-size: 1em;
+}
+
+#sidebar h3{
+    margin: 10px 15px 0;
+    text-align: right;
+    font-size: .95em;
+    color: #838383;
+}
+
+
+.bank-acc, .currency-dash{
+    width: 98%;
+    height: 23px;
+    font-size: 14px;
+    line-height: 15px;
+    padding: 1px 15px 1px 0;
+    text-align: right;
+    margin: 0 1% 0;
+    border-bottom: solid 1px #f1f1f1;
+}
+
+.bank-acc.selected, .bank-acc:hover, .currency-dash{
+    font-weight:bold;
+}
+
+.bank-acc-name, .currency-name{
+    text-align: left;
+    padding: 3px 5px;
+    line-height: 20px;
+    float: left;
+    width: 150px;
+    bottom: 0;
+}
+
+.bank-acc-total, .currency-total{
+    color: #2E2F30;
+    padding: 5px;
+    text-align: right;
+    float:right;
+    font-weight: bold;
+    width: 90px;
+}
+
+.bank-acc-total.expenses{
+    color: #c53e3e;
+}
+
+.bank-acc-total.deposit{
+    color: #228925;
+}
+.bank-acc-total.selected.expenses, .bank-acc:hover > .bank-acc-total.expenses{color: #e01313;}
+.bank-acc-total.selected.deposit, .bank-acc:hover > .bank-acc-total.deposit{color: #02ad0a;}
+
+.sidebar-select{
+    margin: 0 5px 10px;
+    height: 80px;
+}
+
+.sidebar-select-input{
+    overflow: visible;
+    font-size: 15px;
+    float: left;
+    width: 100%;
+    border: none;
+    border-bottom: solid 1px #f1f1f1;
+    padding: 10px 10px 2px;
+    margin: 0 0 6px;
+    font-weight: bold;
+}

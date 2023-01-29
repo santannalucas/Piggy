@@ -1,0 +1,30 @@
+<!-- Title and Hide Search Toggle -->
+<% content_for :title, "External Accounts Search" %>
+<%= search_header('fad fa-chalkboard-teacher', "&nbsp; Accounts Search | <span>External Accounts</span>") %>
+
+  <!-- Search in Accounts  -->
+  <%= render 'layouts/search/search', :locals => {
+    :fields_search => accounts_search,
+    :url => accounts_path
+  }%>
+
+  <!-- Loading -->
+  <%= render 'layouts/search/loading' %>
+  <!-- Display -->
+  <div id="search-results">
+    <!-- Pagination and Display -->
+    <%= render 'layouts/search/display_pagination', :locals => {:showing => 'Account', :display => 'true', :paginate => @accounts, :total => @total_accounts} %>
+    <!-- Account Index -->
+    <%= render 'admin/accounts/partials/index' %>
+    <!-- Pagination Bottom -->
+    <%= render 'layouts/search/display_pagination', :locals => {:showing => 'Account', :paginate => @accounts, :total => @total_accounts} %>
+  </div>
+
+<!-- Bottom Menu -->
+<div id="menu-bottom">
+  <ul>
+    <!-- New Account --><% if can?(:account,:create) %><li><a id='add-row-form-new' href="#row-form-new" <%= "style='display:none;'".html_safe if params[:errors].present? %>><i class="fas fa-file-plus fa-3x" title="New Account"></i><br> New Account</a></li><% end %>
+    <!-- Back Dashboard --><li> <%= link_to root_path do %><i class="fas fa-chalkboard fa-3x" title="Back to Dashboard"></i><br>Dashboard<% end %></li>
+  </ul>
+</div>
+

@@ -1,0 +1,17 @@
+  <% transaction = locals[:transaction] %><% trans_type = transaction.transaction_type.name %><% rows = locals[:rows] %>
+  <tr id="form_record_<%= transaction.id %>"  <%= "hidden='hidden'".html_safe unless locals[:error] %> class="row-form-form <%= trans_type %> <%= 'error' if locals[:error] %>">
+    <%= form_for(transaction, url: transaction_path(id:transaction.id), method: :put) do |form|%>
+      <td><%= row_number(rows) %><%= form.hidden_field :id %></td>
+      <td class="<%= transaction.transaction_type.name %>"><i class="fas <% if trans_type == 'expenses' %>fa-arrow-alt-up<% else %>fa-arrow-alt-down<% end %>"></i>
+      <td class="align-left"> <%= form.select :account_id, grouped_options_for_select(@accounts_options, form.object.account_id), {},:class => 'input-field-table-column to-focus' %> </td>
+      <td class="align-left"> <%= form.select :sub_category_id,  grouped_options_for_select(trans_type == 'expenses' ? @expenses_categories : @deposits_categories,form.object.sub_category_id),{}, :class => 'input-field-table-column' %> </td>
+      <td class="align-left"> <%= form.text_field :description, :class => 'input-field-table-column' %></td>
+      <td class="align-left"> <%= date_field_tag('transaction[created_at]', transaction.created_at.to_date, class: 'input-field-table-column align-center') %> </td>
+      <td class="align-left"> <%= form.number_field :amount, value: sprintf("%0.02f",transaction.amount),:min => 0.00, :step => :any, :class => 'input-field-table-column align-right' %></td>
+      <td><button type='submit' name='Update' value='Update' class='action-icon row-form loading'><i class="fad fa-save fa-lg" title="Save"></i></button></td>
+      <td>
+        <% if locals[:error] %><%= link_to transactions_path do %><i class="fad fa-times-circle action-icon row-form cancel-table-row" title="Cancel"></i><% end %>
+        <% else %><i class="fad fa-times-circle action-icon row-form cancel-table-row-form" rel="<%= transaction.id %>" title="Cancel"></i><% end %>
+      </td>
+    <% end %>
+  </tr>

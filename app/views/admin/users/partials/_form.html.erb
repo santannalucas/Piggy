@@ -1,0 +1,14 @@
+<% error = params[:errors] %>
+  <tr id="row-form-new" <% unless error.present? %> hidden="hidden" <% end %>class="row-form-form <%= 'error' if error.present? %>">
+    <%= form_for @user do |form| %>
+      <td> # </td>
+      <!-- Name  --> <td class="form"> <%= form.text_field :name, :class => 'input-field-table-column', :placeholder => 'Add Name.' %></td>
+      <!-- Email --> <td class="form"> <%= form.text_field :email, :class => 'input-field-table-column', :placeholder => 'Add Email.' %></td>
+      <!-- Role  --> <td class="form"><%= form.select :role_id, options_for_select(Role.all.collect{|x| [x.name,x.id]}),{},{:class => 'input-field-table-column'} %>
+      <!-- Save -->
+    <% if can?(:user,:update) %><td></td><% end %>
+      <td><button type='submit' name='Update' value='Update' class='action-icon new-form'><i class="fad fa-save fa-lg" title="Save"></i></button></td>
+      <!-- Cancel  -->
+      <td><i class="fad fa-times-circle action-icon new-form cancel-table-row-form" title="Cancel"></i></td>
+    <% end %>
+  </tr>

@@ -1,0 +1,39 @@
+<div id="sidebar">
+  <h1>Dashboard</h1>
+  <div class="sidebar-select">
+  <%= form_for dashboard_path, method: 'get' do %>
+    <%= select_tag :bank_account_id, options_for_select(@current_user.bank_accounts.dashboard.collect{|x|[[x.name,x.currency.code].join(' - '),x.id]}, params[:bank_account_id] || @current_user.bank_account.id), {:class => 'auto-submit sidebar-select-input'} %>
+    <%= select_tag :month, options_for_select(month_names, params[:month] || Time.now.month), {:class => 'seventy-w auto-submit sidebar-select-input'} %>
+    <%= select_tag :year, options_for_select(@bank_account.year_select_options(Time.now.year.to_i), params[:year] || Time.now.year), {:class => 'thirty-w auto-submit sidebar-select-input'} %>
+  <% end %>
+  </div>
+
+  <h1>Bank Accounts</h1>
+  <!-- Loop Currencies -->
+  <% @currencies.each do |currency| %>
+    <!-- Currency -->
+    <h2><%= [currency.name,' (', currency.code,')'].join %></h2>
+    <% accounts = @bank_accounts.currency_id(currency.id);  account_types = accounts.collect{|x| x.account_type}.uniq %>
+    <!-- Account Types -->
+    <% currency_total = 0 %>
+    <% account_types.each do |account_type| %>
+      <h3><%= ['Cash','Everyday', 'Savings', 'Investment', 'Credit Card','System'][account_type - 1]%> | <i class="fad <%= account_type_icon(account_type) %>"></i></h3>
+      <% accounts.where(account_type:account_type).order(:name).each do |bank| %>
+        <!-- Accounts -->
+        <%= link_to transactions_path(bank_account_id: bank.id) do %>
+          <div class="bank-acc <%= 'selected' if bank.id == @bank_account.try(:id) %>">
+            <div class="bank-acc-name"><%= bank.name %>  </div>
+            <div class="bank-acc-total <%= 'selected' if bank.id == @bank_account.try(:id) %> <%= bank.total_status %>"><%= number_to_currency(bank.total, negative_format: "(%u%n)") %></div>
+            <% currency_total = currency_total + bank.total(true) %>
+          </div>
+        <% end %>
+      <% end %>
+    <% end %>
+    <div class="currency-dash">
+      <div class="currency-name">Total <%= currency.code %></div>
+      <div class="currency-total"><%= number_to_currency(currency_total, negative_format: "(%u%n)") %></div>
+    </div>
+  <% end %>
+
+  <%= render 'dashboard/partials/controls' %>
+</div>

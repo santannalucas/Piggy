@@ -1,0 +1,44 @@
+<div class="navbar">
+  <!-- User Management -->
+  <div class="dropdown">
+    <button class="dropbtn"><%= link_to user_path(@current_user), :class => 'quick-btn loading' do %><i class="user-initials" title="User Management"><%= @current_user.initials %></i><% end %></button>
+    <div class="dropdown-content"><div class="dropdown-title">User Management</div>
+      <!-- My User --> <%= link_to user_path(@current_user) do %><i class="fad fa-user"></i> &nbsp; <%= @current_user.name %><% end %>
+      <!-- Dashboard --> <%= link_to dashboard_path do %><i class="fad fa-chalkboard"></i>&nbsp; Dashboard <% end %>
+      <!-- Access Rules --><% if can?(:rule,:read) %><%= link_to rules_path do %><i class="fad fa-user-lock"></i> &nbsp; Access Rules<% end %><% end %>
+      <!-- Users --><% if can?(:user,:read) %><%= link_to users_path do %><i class="fad fa-users"></i> &nbsp; Users <% end %><% end %>
+      <!-- Logout --> <%= link_to logout_path, :method => :delete do %><i class="fad fa-sign-out-alt"></i> &nbsp; Logout <% end %>
+    </div>
+  </div>
+
+  <!-- Transactions -->
+    <div class="dropdown">
+      <button class="dropbtn"><%= link_to transactions_path, :class => 'quick-btn loading' do %><i class="fad fa-exchange" title="Transactions"></i><% end %></button>
+      <div class="dropdown-content"><div class="dropdown-title">Transactions</div>
+      <!-- Bank Accounts --><% if can?(:transaction,:search) %><%= link_to transactions_path, :class => 'loading' do %><i class="fad fa-exchange"></i> &nbsp; All Transactions <% end %><% end %>
+      <!-- Accounts --><% if can?(:transaction,:search) %><%= link_to schedulers_path, :class => 'loading' do %><i class="fad fa-calendar-alt"></i> &nbsp; Scheduled Bills <% end %><% end %>
+        <!-- Accounts --><% if can?(:transaction,:search) %><%= link_to reports_path, :class => 'loading' do %><i class="fad fa-analytics"></i> &nbsp; Reports <% end %><% end %>
+      </div>
+    </div>
+
+  <div class="dropdown">
+    <button class="dropbtn"><i class="fad fa-cog" title="Configuration"></i></button>
+    <div class="dropdown-content"><div class="dropdown-title">Configuration</div>
+    <!-- Bank Accounts --><% if can?(:bank_account,:search) %><%= link_to bank_accounts_path, :class => 'loading' do %><i class="fad fa-sack-dollar"></i> &nbsp; Bank Accounts<% end %><% end %>
+    <!-- Accounts --><% if can?(:account,:search) %><%= link_to accounts_path, :class => 'loading' do %><i class="fad fa-address-book"></i> &nbsp; Accounts <% end %><% end %>
+    <!-- Categories -->
+    <% if can?(:categories,:search) %>
+      <%= link_to categories_path, :class => 'loading' do %><i class="fad fa-folders"></i> &nbsp; Categories <% end %>
+      <%= link_to sub_categories_path , :class => 'loading' do %><i class="fad fa-folder-tree"></i> &nbsp; Sub-Categories <% end %>
+    <% end %>
+    <!-- Currencies --><% if can?(:currency,:search) %><%= link_to currencies_path, :class => 'loading' do %><i class="fad fa-usd-circle"></i> &nbsp; Currencies <% end %><% end %>
+    </div>
+  </div>
+
+
+
+  <!-- AMC Logo -->
+  <div id="logo"><%= link_to(image_tag('logo.png', :height => "43px"), dashboard_path, title: "View Dashboard") %></div>
+
+</div>
+

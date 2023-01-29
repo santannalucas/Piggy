@@ -1,0 +1,41 @@
+<!-- Rows Count Init. -->
+<%= hidden_field_tag(:from, 'index') %>
+<% rows = 0 %>
+
+<!-- Table Header and Tags Form-->
+<table class="default">
+  <thead>
+  <tr>
+    <th style="width:20px;">#</th>
+    <th style="width:40%" class="align-left"> <%= accounts_sort("accounts.name","Account") %></th>
+    <th style="width:40%" class="align-left"> <%= accounts_sort("accounts.description","Description") %> </th>
+    <th style="width:10%" class="align-left"> Expenses </th>
+    <th style="width:10%" class="align-left"> Deposits </th>
+    <th style="width:95px" colspan="2"> Actions </th>
+  </tr>
+  </thead>
+
+  <!-- Account Form -->
+  <%= render 'config/accounts/partials/form', :locals => {:new => true} %>
+
+  <!-- Table Body and Rows Count -->
+  <% @accounts.each do |account| %><% rows = rows + 1 %>
+    <% error = params[:error_id] == account.id.to_s %>
+    <% updated = params[:updated].to_i == account.id %>
+    <tr id="field_record_<%= account.id %>" class="<%= cycle('odd', 'even') -%> row-form-field <%= 'updated' if updated %>" <%= "hidden='hidden'".html_safe if error %>>
+      <td> <%= rows %> </td>
+      <td class="align-left"> <%= account.name %> </td>
+      <td class="align-left"> <%= account.try(:description) %></td>
+      <td></td>
+      <td></td>
+      <td><i class="fad fa-pencil-alt action-icon row-form-edit-field" rel="<%= account.id %>" title="Edit"></i></td>
+      <td><%= link_to account_path(:id => account.id), :class => 'delete-confirm', :method => :delete do %><i class="fas fa-trash action-icon" title="Delete"></i><% end %></td>
+    </tr>
+    <!-- Row Edit Form -->
+    <%= render 'config/accounts/partials/form', :locals => { :account => account, :error => error, :rows => rows} %>
+  <% end %>
+
+  <!-- Index Bottom -->
+  <%= render 'layouts/search/index_bottom', :locals => {:showing => 'Account', :collection => @accounts.present?, :total => @accounts.count, :colspan => 7, :rows => rows, :rows_height => 38} %>
+</table>
+

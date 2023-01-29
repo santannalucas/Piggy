@@ -1,0 +1,42 @@
+<% error = params[:errors] %>
+<% if locals[:new].present? %>
+<tr id="row-form-new" <% unless error.present? %> hidden="hidden" <% end %>class="row-form-form <%= 'error' if error.present? %>">
+  <%= form_for @scheduler_item_new, :url => scheduler_create_item_path(scheduler_id:@scheduler.id) do |form| %>
+    <td> # </td>
+    <td class="align-left"> <%= @scheduler.bank_account.name %> </td>
+    <td> <%= @scheduler.account.name %> </td>
+    <td> <%= @scheduler.scheduler_type.name %></td>
+    <td> <%= @scheduler.description %> </td>
+    <td> <%= @scheduler.type_description %></td>
+    <td><%= form.number_field :amount, value:sprintf("%0.02f",form.object.amount || 0),:min => 0.00, :step => :any, :class => 'input-field'  %></td>
+    <!-- Date -->
+    <td class="form"> <%= date_field_tag('scheduler_item[created_at]', Time.now.to_date, class: 'input-field-table-column align-center') %> </td>
+    <!-- Save -->
+    <td></td>
+    <td><button type='submit' name='Update' value='Update' class='action-icon new-form'><i class="fad fa-save fa-lg" title="Save"></i></button></td>
+    <!-- Cancel  -->
+    <td><i class="fad fa-times-circle action-icon new-form cancel-table-row-form" title="Cancel"></i></td>
+  <% end %>
+</tr>
+<% else %>
+  <% item = @scheduler_item_edit || locals[:item] %><% rows = locals[:rows] %>
+  <tr id="form_record_<%= item.id %>"  <%= "hidden='hidden'".html_safe unless locals[:error] %> class="row-form-form <%= 'error' if locals[:error] %>">
+    <%= form_for(item, url: scheduler_update_item_path(scheduler_id:@scheduler.id,item_id:item.id), method: :put) do |form|%>
+      <!-- #    -->  <td> <%= rows %></td>
+      <td class="align-left"> <%= form.object.scheduler.bank_account.name %> </td>
+      <td> <%= @scheduler.account.name %> </td>
+      <td> <%= @scheduler.scheduler_type.name %></td>
+      <td> <%= @scheduler.description %> </td>
+      <td> <%= @scheduler.type_description %></td>
+      <td> <%= form.number_field :amount, value:sprintf("%0.02f",form.object.amount || 0),:min => 0.00, :step => :any, :class => 'input-field'  %></td>
+      <!-- Date -->
+      <td class="form"> <%= date_field_tag('scheduler_item[created_at]', Time.now.to_date, class: 'input-field-table-column align-center') %> </td>
+      <td></td>
+      <td><button type='submit' name='Update' value='Update' class='action-icon row-form'><i class="fad fa-save fa-lg" title="Save"></i></button></td>
+      <td>
+        <% if locals[:error] %><%= link_to items_path do %><i class="fad fa-times-circle action-icon row-form cancel-table-row" title="Cancel"></i><% end %>
+        <% else %><i class="fad fa-times-circle action-icon row-form cancel-table-row-form" rel="<%= item.id %>" title="Cancel"></i><% end %>
+      </td>
+    <% end %>
+  </tr>
+<% end %>
