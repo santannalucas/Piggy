@@ -49,7 +49,7 @@ class Config::SubCategoriesController < ApplicationController
   def update
     @sub_category = SubCategory.find(params[:id])
     if can?(:category,:update)
-      if @sub_category.update_attributes(sub_category_params)
+      if @sub_category.update(sub_category_params)
         # Recreate Custom and CRUD Rules
         redirect_link = sub_categories_path(updated:@sub_category.id)
         flash[:notice] = 'Sub-Category successfully updated.'

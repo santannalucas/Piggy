@@ -44,7 +44,7 @@ class TransactionsController < ApplicationController
   def update
     # Check Access
     @transaction = Transaction.find(params[:id])
-    if @transaction.update_attributes(transaction_params)
+    if @transaction.update(transaction_params)
       # Recreate Custom and CRUD Rules
       redirect_link = transactions_path(:bank_account_id => @transaction.bank_account_id)
       flash[:notice] = 'Transaction successfully created.'

@@ -47,7 +47,7 @@ class Config::CategoriesController < ApplicationController
   def update
     @category = Category.find(params[:id])
     if can?(:category,:update)
-      if @category.update_attributes(category_params)
+      if @category.update(category_params)
         # Recreate Custom and CRUD Rules
         redirect_link = categories_path(updated:@category.id)
         flash[:notice] = 'Category successfully updated.'

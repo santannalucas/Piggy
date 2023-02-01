@@ -72,7 +72,7 @@ class Admin::RolesController < ApplicationController
     # Check Access
     if can?(:role, :update)
       # Save Attempt
-      if @role.update_attributes(role_params)
+      if @role.update(role_params)
         access_log('Role Update','Update', @role.summary_info)
         flash[:notice] = 'Role successfully updated.'
         redirect_link =  rules_path(:show => 'roles', :updated => @role.id, :anchor => "field_record_#{@role.id}")

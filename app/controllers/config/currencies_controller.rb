@@ -48,7 +48,7 @@ class Config::CurrenciesController < ApplicationController
     @currency = Currency.find(params[:id])
     # Check Access and Log
     if can?(:currency, :update)
-      if @currency.update_attributes(currency_params)
+      if @currency.update(currency_params)
         access_log('Update Currency', 'Update', @currency.name)
         flash[:notice] = "Currency successfully updated."
         redirect_link =  currencies_path(:updated => @currency.id, :anchor => "field_record_#{@currency.id}")

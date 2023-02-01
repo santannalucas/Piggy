@@ -44,7 +44,7 @@ class Config::BankAccountsController < ApplicationController
   def update
     @bank_account = BankAccount.find(params[:id])
     if can?(:bank_account,:update)
-      if @bank_account.update_attributes(bank_account_params)
+      if @bank_account.update(bank_account_params)
         # Recreate Custom and CRUD Rules
         redirect_link = bank_accounts_path(updated:@bank_account.id)
         flash[:notice] = 'Bank Account successfully updated.'

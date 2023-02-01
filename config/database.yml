@@ -5,7 +5,6 @@
 #   gem 'sqlite3'
 #
 default: &default
-  database: kuokalc
   adapter: postgresql
   host: localhost
   username: kuokalc_user
@@ -14,4 +13,8 @@ default: &default
 development:
   <<: *default
   database: kuokalc
+
+test:
+  <<: *default
+  database: kuokalc_test
 

@@ -36,7 +36,7 @@ class Admin::RulesController < ApplicationController
     # Check Access
     if can?(:rule, :update)
       # Save Attempt and Log
-      if @rule.update_attributes(rule_params)
+      if @rule.update(rule_params)
         access_log('Update Rule','Update', [@rule.role.name, @rule.workspace.name].join(' - '))
         redirect_to role_path(@rule.role.id, :show => 'rules', :page => params[:page], :per_page => params[:per_page], :updated => @rule.id, :anchor => "field_record_#{@rule.id}")
         flash[:notice] = "Rule successfully updated."
@@ -106,7 +106,7 @@ class Admin::RulesController < ApplicationController
     # Check Access
     if can?(:custom_rule, :update)
       # Save Attempt and Log
-      if @custom.update_attributes(custom_rule_params)
+      if @custom.update(custom_rule_params)
         flash[:notice] = 'Custom Rule successfully updated.'
         access_log('Custom Rule Update','Update', @custom.summary_info)
         redirect_link =  rules_path(:show => 'custom_rules', :updated => @custom.id, :anchor => "field_record_#{@custom.id}")
@@ -128,7 +128,7 @@ class Admin::RulesController < ApplicationController
     # Check Access
     if can?(:custom_rule, :update)
       # Save Attempt and Log
-      if @custom_rule.update_attributes(custom_role_rule_params)
+      if @custom_rule.update(custom_role_rule_params)
         access_log('Custom Role Rule','Update', [@custom_rule.custom_rule.description, @custom_rule.access.to_s].join(' - '))
         redirect_to role_path(@custom_rule.role.id, :show => 'custom_rules', :page => params[:page], :per_page => params[:per_page], :updated => @custom_rule.id, :anchor => "field_record_#{@custom_rule.id}")
         flash[:notice] = "Custom Rule successfully updated."

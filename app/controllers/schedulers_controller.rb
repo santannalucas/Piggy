@@ -59,7 +59,7 @@ class SchedulersController < ApplicationController
   def update
    @scheduler = Scheduler.find(params[:id])
      if can?(:scheduler,:update)
-      if @scheduler.update_attributes(scheduler_params)
+      if @scheduler.update(scheduler_params)
         # Recreate Custom and CRUD Rules
         redirect_link = schedulers_path(updated:@scheduler.id)
         flash[:notice] = 'Scheduled Bill successfully updated.'

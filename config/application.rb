@@ -6,11 +6,11 @@ require "rails/all"
 # you've limited to :test, :development, or :production.
 Bundler.require(*Rails.groups)
 
-module VolcanoFin
+module Piggy
   class Application < Rails::Application
     config.time_zone = "Sydney"
     # Initialize configuration defaults for originally generated Rails version.
-    config.load_defaults 5.2
+    config.load_defaults 7.0
     config.autoload_paths += [config.root.join('app', 'models', 'admins')]
     config.autoload_paths += [config.root.join('app', 'models', 'config')]
     config.autoload_paths += [config.root.join('app', 'models', 'schedulers')]

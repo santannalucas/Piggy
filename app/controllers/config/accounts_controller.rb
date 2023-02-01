@@ -55,7 +55,7 @@ class Config::AccountsController < ApplicationController
   def update
     @account = Account.find(params[:id])
     if can?(:account,:update)
-      if @account.update_attributes(account_params)
+      if @account.update(account_params)
         # Recreate Custom and CRUD Rules
         redirect_link = accounts_path(updated:@account.id)
         flash[:notice] = 'Account successfully updated.'
