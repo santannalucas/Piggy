@@ -3,8 +3,8 @@ module SchedulersHelper
   # Images Search Fields
   def schedulers_search
     [
-      {:name => 'Display',       :tag => :per_page,            :options => options_for_select(per_page_options, params[:per_page]),                   :html => {class:'search-input'}, :can => true  },
-      {:name => 'Status:',       :tag => :completed,           :options => options_for_select([['Active',false],['Completed',true],['All', nil]],params[:completed]), :html => {class:'search-input'}, :can => true },
+      {:name => 'Display',       :tag => :per_page,            :options => options_for_select(per_page_options, params[:per_page]),                   :html => {class:'search-input auto-submit'}, :can => true  },
+      {:name => 'Status:',       :tag => :completed,           :options => options_for_select([['Active',false],['Completed',true],['All', nil]],params[:completed]), :html => {class:'search-input auto-submit'}, :can => true },
       {:name => 'Category:',     :tag => :category_id,         :options => options_for_select(SubCategory.all.collect{ |x| [x.name,x.id]}, params[:category_id]), :html => {class:'multiple_select', multiple:true}, :can => true  },
       {:name => 'Bank Account:', :tag => :bank_account_id,     :options => options_for_select(@current_user.bank_accounts.order(:name).collect{|x|[x.name,x.id]}, params[:bank_account_id]), :html => {class:'multiple_select', multiple:true}, :can => true  },
       {:name => 'Account:',      :tag => :account_id,          :options => options_for_select(@current_user.accounts.order(:name).collect{|x|[x.name,x.id]}, params[:account_id]), :html => {class:'multiple_select', multiple:true}, :can => true  },
@@ -14,7 +14,7 @@ module SchedulersHelper
 
   def scheduler_items_search
     [
-      {:name => 'Display',   :tag => :per_page,          :options => options_for_select(per_page_options, params[:per_page]),                   :html => {class:'search-input'}, :can => true  }
+      {:name => 'Display',   :tag => :per_page,          :options => options_for_select(per_page_options, params[:per_page]),                   :html => {class:'search-input auto-submit'}, :can => true  }
     ]
   end
 

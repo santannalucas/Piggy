@@ -3,8 +3,8 @@ module AccountsHelper
   # Images Search Fields
   def accounts_search
     [
-     {:name => 'Display',   :tag => :per_page,          :options => options_for_select(per_page_options, params[:per_page]),                   :html => {class:'search-input'}, :can => true  },
-     {:name => 'Created  ', :tag => :created_at,        :options => params[:created_at], :html => {include_blank: true, class:'search-input'}, :can => true , :type => 'date'}
+     {:name => 'Display',   :tag => :per_page,          :options => options_for_select(per_page_options, params[:per_page]),                   :html => {class:'search-input auto-submit'}, :can => true  },
+     {:name => 'Created  ', :tag => :created_at,        :options => params[:created_at], :html => {include_blank: true, class:'search-input auto-submit'}, :can => true , :type => 'date'}
     ]
   end
 

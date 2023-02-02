@@ -185,22 +185,6 @@ $(document).ready(function() {
         $('#transaction_account_id').val('')
     });
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 // http://comsim.esac.esa.int/rossim/3dtool/common/utils/jquery/ehynds-jquery-ui-multiselect-widget-f51f209/demos/index.htm#basic
 
 // Close Flash Messages
@@ -478,7 +462,3 @@ $(document).ready(function() {
     });
 
 });
-
-
-
-

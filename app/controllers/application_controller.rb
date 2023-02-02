@@ -14,7 +14,7 @@ class ApplicationController < ActionController::Base
     params[:full_sentence] ? params[:sentence_search] = params[:search] : params[:all_words_search] = params[:search]
   end
 
-  # Failed Access  and Log
+  # Failed Access and Log
   def failed_access(message,action,details = nil)
     access_log("<font color='red'><b>!! #{message} !!</font>", action, details)
     flash[:error] = "You don't have access rights to #{message}."
@@ -41,4 +41,3 @@ class ApplicationController < ActionController::Base
     end
   end
 end
-

@@ -118,22 +118,28 @@ class SchedulersController < ApplicationController
     end
   end
 
+  # Load In-line Form for when ID present
   def initialize_scheduler
-  # Form for New Schedulers
+    # Edit Scheduler
     if params[:edit_form_id].present?
       @scheduler = Scheduler.find(params[:edit_form_id])
       @scheduler.assign_attributes(scheduler_params) if params[:scheduler].present?
+    # New Scheduler
     else
       @scheduler = params[:scheduler].present? ? @current_user.schedulers.new(scheduler_params) : @current_user.schedulers.new(transaction_type_id:params[:transaction_type_id])
     end
     @bank_accounts = @current_user.bank_accounts
     @accounts_options = accounts_options
+    # Transfers
     if params[:transaction_type_id] == '1' || @scheduler.try(:transaction_type_id) == 1
       @sub_categories = @current_user.sub_categories.where(name:'Transfers').map{|l| [l.name, l.category.name, l.id]}.group_by { |c| c[1] }
+    # Deposits
     elsif params[:transaction_type_id] == '2' || @scheduler.try(:transaction_type_id) == 2
       @sub_categories = categories_options('deposits')
+    # Expenses
     elsif params[:transaction_type_id] ==  '3' || @scheduler.try(:transaction_type_id) == 3
       @sub_categories = categories_options('expenses')
+    # All
     else
       @sub_categories = categories_options
     end

@@ -6,19 +6,19 @@ module AccessRulesHelper
    def rules_search(show = nil)
     # Default Search
     rules_search = [
-      {:tag => :per_page, :name => 'Display',  :options => options_for_select(per_page_options, params[:per_page]),    :html => {class:'search-input'}, :can => true},
-      {:tag => :workspace_id, :name => 'Workspace', :options => options_for_select(Workspace.order(:name).collect{ |x| [x.name, x.id]}, params[:id]), :html => {class:'search-input'}, :can => @workspace.present?},
-      {:tag => :role_id, :name => 'Role', :options => options_for_select(Role.order(:name).all.collect{ |x| [x.name, x.id]}, params[:id]), :html => {class:'search-input'}, :can => @role.present?}
+      {:tag => :per_page, :name => 'Display',  :options => options_for_select(per_page_options, params[:per_page]),    :html => {class:'search-input auto-submit'}, :can => true},
+      {:tag => :workspace_id, :name => 'Workspace', :options => options_for_select(Workspace.order(:name).collect{ |x| [x.name, x.id]}, params[:id]), :html => {class:'search-input auto-submit'}, :can => @workspace.present?},
+      {:tag => :role_id, :name => 'Role', :options => options_for_select(Role.order(:name).all.collect{ |x| [x.name, x.id]}, params[:id]), :html => {class:'search-input auto-submit'}, :can => @role.present?}
     ]
     # Users Search (Users And Role)
     if show == 'users'
-        rules_search << { :name => 'Status', :tag => :status, :options => options_for_select([['Active', 1], ['Inactive', 0], %w[All all]], params[:status]), :html => { class:'search-input'}, :can =>  controller_name == 'users'}
+        rules_search << { :name => 'Status', :tag => :status, :options => options_for_select([['Active', 1], ['Inactive', 0], %w[All all]], params[:status]), :html => { class:'search-input auto-submit'}, :can =>  controller_name == 'users'}
         rules_search << {:name => 'Roles',  :tag => :role_id,  :options => options_for_select(Role.all.collect {|x| [x.name,x.id]}, params[:role_id]), :html => {include_blank: 'All', class:'multiple_select', multiple:true}, :can => controller_name == 'users' }
             # Access Rules Search (Workspace and Role - Rules and Custom Rules)
     elsif show == 'custom_rules' || show == 'rules'
       rules_search << {:tag => :workspace_id, :name => 'Workspaces', :options => options_for_select(Workspace.with_custom_rules(params[:show]), params[:workspace_id]), :html => {class:'multiple_select', multiple:true}, :can => @role.present?}
       rules_search << {:tag => :role_id, :name => 'Roles', :options => options_for_select(Role.all.collect {|x| [x.name,x.id]}, params[:role_id]), :html => {class:'multiple_select', multiple:true}, :can => @workspace.present?}
-      rules_search << {:name => 'Status', :tag => :status, :options => options_for_select([['Allowed', 1],['Not Allowed', 0], ['All', 'All']], params[:status].present? ? params[:status] : 1), :html => {class:'search-input'}, :can => @role.present? && params[:show] == 'custom_rules'}
+      rules_search << {:name => 'Status', :tag => :status, :options => options_for_select([['Allowed', 1],['Not Allowed', 0], ['All', 'All']], params[:status].present? ? params[:status] : 1), :html => {class:'search-input auto-submit'}, :can => @role.present? && params[:show] == 'custom_rules'}
     end
     rules_search
   end

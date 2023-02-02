@@ -2,7 +2,7 @@ module ReportsHelper
 
   # Images Search Fields
   def reports_search
-    [{:name => 'Display:',     :tag => :per_page,            :options => options_for_select(per_page_options, params[:per_page]),                   :html => {class:'search-input'}, :can => true  }]
+    [{:name => 'Display:',     :tag => :per_page,            :options => options_for_select(per_page_options, params[:per_page]),                   :html => {class:'search-input auto-submit'}, :can => true  }]
   end
 
   # Sort Column
@@ -20,5 +20,3 @@ module ReportsHelper
   end
 
 end
-
-

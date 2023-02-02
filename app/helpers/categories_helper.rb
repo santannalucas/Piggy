@@ -3,16 +3,16 @@ module CategoriesHelper
   # Images Search Fields
   def categories_search
     [
-      {:name => 'Display',   :tag => :per_page,          :options => options_for_select(per_page_options, params[:per_page]),                   :html => {class:'search-input'}, :can => true  }
+      {:name => 'Display',   :tag => :per_page,          :options => options_for_select(per_page_options, params[:per_page]),                   :html => {class:'search-input auto-submit'}, :can => true  }
     ]
   end
 
   # Images Search Fields
   def sub_categories_search
     [
-      {:name => 'Display',    :tag => :per_page,          :options => options_for_select(per_page_options, params[:per_page]),                   :html => {class:'search-input'}, :can => true  },
-      {:name => 'Created  ',  :tag => :created_at,        :options => params[:created_at], :html => {include_blank: true, class:'search-input'}, :can => true , :type => 'date'},
-      {:name => 'Category  ', :tag => :category_id,        :options => options_for_select(@categories.collect{|x| [x.name,x.id]},params[:category_id]), :html => {include_blank: true, class:'search-input'}, :can => true}
+      {:name => 'Display',    :tag => :per_page,          :options => options_for_select(per_page_options, params[:per_page]),                   :html => {class:'search-input auto-submit'}, :can => true  },
+      {:name => 'Created  ',  :tag => :created_at,        :options => params[:created_at], :html => {include_blank: true, class:'search-input auto-submit'}, :can => true , :type => 'date'},
+      {:name => 'Category  ', :tag => :category_id,        :options => options_for_select(@categories.collect{|x| [x.name,x.id]},params[:category_id]), :html => {include_blank: true, class:'search-input auto-submit'}, :can => true}
     ]
   end
 
