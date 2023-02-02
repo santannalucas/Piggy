@@ -1,4 +1,4 @@
-<script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
+
 <script type="text/javascript">
     google.charts.load("41", {packages:["corechart",'bar']});
     google.charts.setOnLoadCallback(drawTopX);
@@ -26,6 +26,7 @@
         materialChart.draw(data, options);
     }
 </script>
+
 <h1><i class='fad fa-analytics dashboard'></i> &nbsp;Monthly Result per Year - <%= params[:year].to_s %></h1>
 
 <div id="monthly_result_per_year"></div>
