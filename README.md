@@ -5,7 +5,7 @@ Welcome to Open-Piggy, my first open source project.
 * Get repository
 
 ```shell
-git clone https://github.com/libgit2/libgit2
+git clone https://github.com/santannalucas/Piggy.git
 ```
 
 * Ruby version
