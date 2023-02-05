@@ -16,14 +16,13 @@
 /tmp/*
 !/log/.keep
 !/tmp/.keep
-/db/seeds.rb
+/db/import_file_seed_example.rb
 # Ignore uploaded files in development
 /storage/*
 !/storage/.keep
 
 /node_modules
 /yarn-error.log
-
 /public/assets
 .byebug_history
 
