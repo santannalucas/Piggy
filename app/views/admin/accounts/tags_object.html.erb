@@ -1,4 +1,0 @@
-<!-- Title -->
-<% content_for :title, "#{ [params[:object_type] , params[:object_number]].join(' ')} - #{@account.name} Account" %>
-<%= render @object.class.name == 'Scenario' ? 'admin/accounts/partials/scenario' : 'admin/accounts/partials/question' %>
-

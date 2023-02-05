@@ -17,7 +17,9 @@ class Role < ActiveRecord::Base
   scope :all_words_search, -> (search) {where("admin_roles.id = ? OR admin_roles.name LIKE '%#{search.split.join("%' OR admin_roles.name LIKE '%")}%'", search.to_i)}
   scope :sentence_search, -> (search) {where("admin_roles.id = ? OR admin_roles.name LIKE '%#{search}%' OR admin_roles.ad_dn LIKE '%#{search}%'", search.to_i)}
 
+  # Check if Roles dependencies exist
   def self.rebuild
+    # Create All Rules
     Role.all.each do |role|
       Workspace.all.each do |workspace|
         @rule = Rule.where(workspace_id: workspace.id, role_id: role.id).first
@@ -27,20 +29,21 @@ class Role < ActiveRecord::Base
         end
       end
     end
+    # Create All Custom Rules
     CustomRule.all.each do |custom_rule|
     @role_rule = CustomRoleRule.where(custom_rule_id: custom_rule.id, role_id: 1).first
       if @role_rule.nil?
         CustomRoleRule.create(custom_rule_id: custom_rule.id, role_id: 1, access: 1)
       end
     end
+    # Load user's navbar
+    User.active.each do |user|
+      user.load_navbar
+    end
   end
 
   def summary_info
     "#{self.name}"
-  end
-
-  def self.with_custom_rules
-    joins("inner join admin_custom_role_rules on admin_custom_role_rules.admin_role_id = admin_roles.id").order(:name).uniq.collect{ |x| [x.name, x.id]}
   end
 
 end

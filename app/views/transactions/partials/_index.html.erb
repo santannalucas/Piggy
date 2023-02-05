@@ -35,15 +35,15 @@
       <td><%= default_date(transaction.created_at) %></td>
       <td class="<%= transaction.transaction_type.name %> trans_amount"><%= transaction.amount_to_string %></td>
       <% if transaction.transfer %>
-        <td><%= link_to transactions_path(:bank_account_id => transaction.transfer.from_bank.id, :edit_form_id => transaction.transfer.id) do %><i class="fad fa-pencil-alt action-icon" title="Edit"></i><% end %></td>
-        <td><%= link_to transfer_path(:id => transaction.transfer.id, :bank_account_id => @bank_account.id), :class => 'delete-confirm', :method => :delete do %><i class="fas fa-trash action-icon" title="Delete"></i><% end %></td>
+        <td><%= link_to transactions_path(:bank_account_id => transaction.transfer_ref.from_bank.id, :edit_form_id => transaction.transfer_ref.id) do %><i class="fad fa-pencil-alt action-icon" title="Edit"></i><% end %></td>
+        <td><%= link_to transfer_path(:id => transaction.transfer_ref.id, :bank_account_id => @bank_account.id), :class => 'delete-confirm', :method => :delete do %><i class="fas fa-trash action-icon" title="Delete"></i><% end %></td>
       <% else %>
         <td><i class="fad fa-pencil-alt action-icon row-form-edit-field" rel="<%= transaction.id %>" title="Edit"></i></td>
         <td><%= link_to transaction_path(:id => transaction.id), :class => 'delete-confirm', :method => :delete do %><i class="fas fa-trash action-icon" title="Delete"></i><% end %></td>
       <% end %>
     </tr>
     <!-- Row Edit Form -->
-    <%= render 'transactions/partials/edit', locals: { :transaction => transaction, :error => error, :rows => rows} if !transaction.transfer %>
+    <%= render 'transactions/partials/edit', locals: { :transaction => transaction, :trans_type => transaction.transaction_type.name, :error => error, :rows => rows} if !transaction.transfer %>
   <% end %>
 
   <!-- Index Bottom -->

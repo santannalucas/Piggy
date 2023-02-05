@@ -4,22 +4,18 @@ module ApplicationHelper
 
   # User Access Rules Check
   def can?(workspace,action)
-    begin
-      # Find Rule
+    begin  # Find Rule
       Rule.where(workspace_id: Workspace.where("name = ?", workspace.to_s.pluralize.titleize).first.id, role_id: @current_user.role.id).first.send(action.to_s.first)
-    rescue
-      #if Rule doesn't exist
+    rescue # if Rule doesn't exist
       false
     end
   end
 
   # User Access Rules Custom Check
   def c_can?(code)
-    begin
-      # Find Rule
+    begin # Find Rule
       CustomRoleRule.where(custom_rule_id: CustomRule.where(code:code).first.id, role_id: @current_user.role.id).first.access
-    rescue
-     # if Rule doesn't exist
+    rescue # if Rule doesn't exist
     false
     end
   end
@@ -28,7 +24,18 @@ module ApplicationHelper
 
   # Time Interval for Search
   def search_date_periods
-    [['Current Month', 'current_month'], ['Current Year', 'current_year'], ['Last 6 months', 'last_six_months'], ['Last year','last_year'], %w[All all], %w[Custom custom], ]
+    [
+      ['Current Month', 'current_month'],
+      ['Current Year', 'current_year'],
+      ['Last Month','last_month'],
+      ['Last 3 Months','last_quarter'],
+      ['Last 6 months', 'last_six_months'],
+      ['Last year','last_year'],
+      ['Next Month', 'next_month'],
+      ['Next 3 Months', 'next_quarter'],
+      ['Next 6 Months', 'next_six_months'],
+      ['Next Year', 'next_year'],
+      %w[All all], %w[Custom custom], ]
   end
 
   # Default Format for Showing Date and Time
@@ -60,11 +67,6 @@ module ApplicationHelper
     string.present? ? "<div style='text-align:left;'>#{string}</div>" : ''
   end
 
-  def success_exist_errors(success,exist,errors, skip_pretext = false)
-    s_count, e_count, er_count = success.count, exist.count, errors.count
-    "#{'Action completed.' unless skip_pretext} #{['<br> Successful: ',success.to_sentence].join if s_count > 0}#{['<br> Exist: ',exist.to_sentence].join if e_count > 0}#{['<br> Failed :',errors.to_sentence].join if er_count > 0}."
-  end
-
   # Return nested fields
   def nested_fields_errors(object,nested_field)
     unless object.errors.nil?
@@ -73,7 +75,6 @@ module ApplicationHelper
       fields_with_errors.include?(nested_field) ? 'with-nested-errors' : ''
     end
   end
-
 
   # Return Row number on index
   def row_number(rows)
@@ -117,88 +118,79 @@ module ApplicationHelper
     <div id='hide-search' #{'class="sidebar"' if sidebar}><i id='hide-search-arrow' class='fad fa-arrow-alt-from-bottom fa-sm'></i><i class='fad fa-search'></i></div>".html_safe
   end
 
-# Drop Down Icon
-def drop_icon(icon,workspace = nil)
-  case icon
-  when :search
-    '<i class="fad fa-search loading"></i> &nbsp;  Search'.html_safe
-  when :new
-    "<i class='fad fa-file-plus drop-icon-swap'></i> &nbsp; New #{workspace}".html_safe
-  else
-    ''
-  end
-end
-
-def collect_search_params
-  all_params = [:sort,:direction, :search, :bank_account_id, :transaction_type_id, :per_page, :account_id, :period, :sub_category_id]
-  params[:search_params] = nil
-  all_params.each do |parameter|
-    if params[parameter].present?
-      params[:search_params] << params[parameter]
+  # Drop Down Icon
+  def drop_icon(icon,workspace = nil)
+    case icon
+    when :search
+      '<i class="fad fa-search loading"></i> &nbsp;  Search'.html_safe
+    when :new
+      "<i class='fad fa-file-plus drop-icon-swap'></i> &nbsp; New #{workspace}".html_safe
+    else
+      ''
     end
   end
-end
 
-def account_type_icon(account_type)
-  # ['Cash','Everyday', 'Savings', 'Investment', 'Credit Card','System']
-  %w[fa-wallet fa-credit-card-blank fa-piggy-bank fa-chart-line fa-credit-card fa-coins][account_type - 1]
-end
-
-def accounts_options(new = false)
-  @accounts = @current_user.accounts.order(:name).map{|x| [x.name.titleize, x.name[0].match?(/[A-Za-z]/) ? x.name[0].upcase : '#', x.id]}
-  @accounts = @accounts.group_by { |c| c[1] }
-  if new == true
-  @accounts = {'New' => {'Create Account' => 'new_account'}}.merge(@accounts)
-  else
-    @accounts
+  # Collect search params to pass over and then to return to results!TODO
+  def collect_search_params
+    all_params = [:sort,:direction, :search, :bank_account_id, :transaction_type_id, :per_page, :account_id, :period, :sub_category_id]
+    params[:search_params] = nil
+    all_params.each do |parameter|
+      if params[parameter].present?
+        params[:search_params] << params[parameter]
+      end
+    end
   end
-end
 
-def categories_options(type = nil)
-  categories = @current_user.sub_categories.joins(:category).order('categories.name asc')
-  if type.present?
-    categories = (type == 'expenses' ? categories.where('categories.category_type != 2') : categories.where('categories.category_type != 3 '))
+  # Return the Icon class for Account Type
+  def account_type_icon(account_type)
+    # ['Cash','Everyday', 'Savings', 'Investment', 'Credit Card','System']
+    %w[fa-wallet fa-credit-card-blank fa-piggy-bank fa-chart-line fa-credit-card fa-coins][account_type - 1]
   end
-  categories.map{|l| [l.name, l.category.name, l.id]}.group_by { |c| c[1] }
-end
 
-def trans_type_icon(object)
-  if object.try(:transfer).present?
-    icon = 'fa-exchange'
-  else
+  # Return Transaction Icon
+  def trans_type_icon(object)
     icon = object.transaction_type.name == 'expenses' ? 'fa-arrow-alt-up' : 'fa-arrow-alt-down'
+    icon = 'fa-exchange' if object.try(:transfer).present?
+    "<i class='fas #{icon}'></i>".html_safe
   end
-  "<i class='fas #{icon}'></i>".html_safe
-end
 
+  # Option to Create New Account on Multiple Workspaces
+  def accounts_options(new = false)
+    @accounts = @current_user.accounts.order(:name).map{|x| [x.name.titleize, x.name[0].match?(/[A-Za-z]/) ? x.name[0].upcase : '#', x.id]}
+    @accounts = @accounts.group_by { |c| c[1] }
+    new ? @accounts = {'New' => {'Create Account' => 'new_account'}}.merge(@accounts) : @accounts
+  end
+
+  # Return Categories based on Type
+  def categories_options(type = nil)
+    categories = @current_user.sub_categories.joins(:category).order('categories.name asc')
+    categories = (type == 'expenses' ? categories.where('categories.category_type != 2') : categories.where('categories.category_type != 3 ')) if type.present?
+    categories.map{|l| [l.name, l.category.name, l.id]}.group_by { |c| c[1] }
+  end
+
+  # Float to Currency with Balance Color
   def currency_with_color(value)
     color = value > 0 ? '#638269' : '#c53e3e'
     "<span style='color:#{color}'> #{number_to_currency(value)} </span>".html_safe
   end
 
-
-
-def month_names
-  (1..12).collect{|x| [Date::MONTHNAMES[x], x]}
-end
-
-def values_to_colors(values_array)
-  colors = []
-  values_array.each do |value|
-    if value > 0
-      colors << '#638269'
-    elsif value < 0
-      colors << '#c53e3e'
-    else
-      colors << '#838383;'
-    end
+  # Return Array with Month Names
+  def month_names
+    (1..12).collect{|x| [Date::MONTHNAMES[x], x]}
   end
-  colors
+
+  def values_to_colors(values_array)
+    colors = []
+    values_array.each do |value|
+      if value > 0
+        colors << '#638269'
+      elsif value < 0
+        colors << '#c53e3e'
+      else
+        colors << '#838383;'
+      end
+    end
+    colors
+  end
+
 end
-
-
-end
-
-
-
-

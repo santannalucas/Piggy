@@ -1,4 +1,4 @@
-  <% transaction = locals[:transaction] %><% trans_type = transaction.transaction_type.name %><% rows = locals[:rows] %>
+  <% transaction = locals[:transaction] %><% trans_type = locals[:trans_type] %><% rows = locals[:rows] %>
   <tr id="form_record_<%= transaction.id %>"  <%= "hidden='hidden'".html_safe unless locals[:error] %> class="row-form-form <%= trans_type %> <%= 'error' if locals[:error] %>">
     <%= form_for(transaction, url: transaction_path(id:transaction.id), method: :put) do |form|%>
       <td><%= row_number(rows) %><%= form.hidden_field :id %></td>

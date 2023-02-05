@@ -1,6 +1,6 @@
 class Admin::UsersController < ApplicationController
   # Helpers and Modules
-  helper AccessRulesHelper
+  include AccessRulesHelper
   require 'will_paginate/array'
 
 

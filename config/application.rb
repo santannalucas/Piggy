@@ -8,6 +8,12 @@ Bundler.require(*Rails.groups)
 
 module Piggy
   class Application < Rails::Application
+    config.active_record.yaml_column_permitted_classes = [
+      Symbol,
+      ActiveSupport::HashWithIndifferentAccess,
+      ActionController::Parameters
+    ]
+
     config.time_zone = "Sydney"
     # Initialize configuration defaults for originally generated Rails version.
     config.load_defaults 7.0
@@ -15,12 +21,10 @@ module Piggy
     config.autoload_paths += [config.root.join('app', 'models', 'config')]
     config.autoload_paths += [config.root.join('app', 'models', 'schedulers')]
 
-    # Configuration for the application, engines, and railties goes here.
-    #
-    # These settings can be overridden in specific environments using the files
-    # in config/environments, which are processed later.
-    #
-    # config.time_zone = "Central Time (US & Canada)"
-    # config.eager_load_paths << Rails.root.join("extras")
+    config.after_initialize do
+      # Refactor Users
+      Role.rebuild
+    end
+
   end
 end

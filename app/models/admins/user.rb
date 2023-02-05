@@ -1,6 +1,7 @@
 class User < ActiveRecord::Base
   self.table_name = "admin_users"
 
+  belongs_to :role
   has_many :bank_accounts, :dependent => :delete_all
   has_many :currencies, :dependent => :delete_all
   has_many :transactions, through: :bank_accounts, :dependent => :delete_all
@@ -9,10 +10,12 @@ class User < ActiveRecord::Base
   has_many :sub_categories, through: :categories, :dependent => :delete_all
   has_many :schedulers
   has_many :scheduler_items, through: :schedulers, :dependent => :delete_all
+  has_many :rules, through: :role
+  has_many :workspaces, :class_name => 'Workspace', through: :rules
 
-  belongs_to :role
 
   serialize :options
+  serialize :navbar
   # Token Attribute
 
   attr_accessor :remember_token
@@ -56,6 +59,14 @@ class User < ActiveRecord::Base
     params == 'all' ? all : not_all
   end
   # Returns the hash digest of the given string.
+
+  def load_navbar
+    navbar = {}
+      self.rules.each do |rule|
+        navbar[rule.workspace.name.singularize.parameterize.underscore.to_sym] = {:create => rule.c, :read => rule.c, :update => rule.u, :delete => rule.d, :search => rule.s}
+      end
+    self.update(navbar:navbar)
+  end
 
   def total_on_period(year,month,transaction_type,bank_account_id)
     types = {'expenses' => 3, 'deposits' => 2, 'all' => [3,2]}

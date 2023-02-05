@@ -6,6 +6,7 @@ class Workspace < ActiveRecord::Base
   # Relationships
   has_many :rules, :dependent => :destroy
   has_many :roles, through: :rules
+  has_many :users, through: :roles
   has_many :custom_rules, :dependent => :destroy
   has_many :custom_role_rules, through: :custom_rules
 
