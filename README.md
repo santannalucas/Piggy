@@ -47,10 +47,23 @@ test:
 
 * Database initialization
 
+Create, Migrate DB and run the seed to create application initial data
+This will create the initial user, to change user name, password and email, update data on first line of seed file: https://github.com/santannalucas/Piggy/blob/main/db/seeds.rb
+
+1. Update Admin User details
+
+```ruby
+  User.create(name:"Initial User", password:'Init123', email:'piggy.onrails@gmail.com', role_id:1, active: true)
+```
+
+2.Create / Migrate / Seed DB
+
+```bash
+rake db:create
+rake db:migrate
+rake db:seed
+```
+
 * First Access / How to run the test suite
 
-* Services (job queues, cache servers, search engines, etc.)
 
-* Deployment instructions
-
-* ...

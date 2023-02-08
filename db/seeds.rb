@@ -6,8 +6,9 @@ TransactionType.create(name:'expenses')
 # Create Admin Role
 Role.create(name: 'Admin')
 Role.create(name: 'Standard Account')
-User.create(name:"Initial User", password:'Init123', email:'piggy.onrails@gmail.com', role_id:1, active: true)
 
+# Initial User - Change Name, email and Password here.
+User.create(name:"Initial User", password:'Init123', email:'piggy.onrails@gmail.com', role_id:1, active: true)
 
 # Create Workspaces
 Workspace.create(name:'Roles')

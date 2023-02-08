@@ -30,6 +30,21 @@ Rails.application.configure do
     config.cache_store = :null_store
   end
 
+  # Mailer
+  config.action_mailer.delivery_method = :smtp
+  host = 'localhost:3000'
+  config.action_mailer.default_url_options = { :host => 'localhost:3000', protocol: 'http' }
+
+  # SMTP settings for gmail
+  config.action_mailer.smtp_settings = {
+    :address              => "smtp.gmail.com",
+    :port                 => 587,
+    :user_name            => 'piggy.onrails@gmail.com',
+    :password             => '|vAtRG;[?kz{G#4',
+    :authentication       => "plain",
+    :enable_starttls_auto => true
+  }
+
   # Store uploaded files on the local file system (see config/storage.yml for options).
   config.active_storage.service = :local
 
