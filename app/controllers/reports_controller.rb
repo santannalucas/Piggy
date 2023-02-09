@@ -10,16 +10,12 @@ class ReportsController < ApplicationController
   end
 
   def show
-
-
     load_sidebar_params
     start = Time.new(params[:year].try(:to_i), params[:month].try(:to_i)).beginning_of_month
     finish = Time.new(params[:end_year].try(:to_i), params[:end_month].try(:to_i)).end_of_month
-
     @report = Report.where(id:params[:id])
     @report = @report.first if @report.present?
     @bank_account = BankAccount.find(params[:account_id]||@current_user.bank_account.id)
-
     case @report.try(:name)
     when "Monthly Result per Year"
       @monthly_result = @current_user.transactions.bank_account_id(@bank_account.id).no_transfers.monthly_results(@current_user,params[:year], 1)

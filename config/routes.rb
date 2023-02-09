@@ -13,6 +13,11 @@ Rails.application.routes.draw do
 
   resources :transfers
 
+  namespace :api do
+    namespace :v1 do
+      resources :transactions
+    end
+  end
 
   # System Admin Module
   scope module: 'config' do

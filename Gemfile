@@ -3,7 +3,7 @@ git_source(:github) { |repo| "https://github.com/#{repo}.git" }
 
 ruby '3.0.0'
 
-
+gem 'rack-cors'
 gem 'bcrypt'
 gem 'rails', '~> 7.0'
 gem 'puma', '~> 3.11'
