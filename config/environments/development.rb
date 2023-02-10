@@ -1,4 +1,5 @@
 require "active_support/core_ext/integer/time"
+require 'dotenv'
 
 Rails.application.configure do
   # Settings specified here will take precedence over those in config/application.rb.
@@ -31,6 +32,7 @@ Rails.application.configure do
   end
 
   # Mailer
+  config.action_mailer.perform_deliveries = true
   config.action_mailer.delivery_method = :smtp
   host = 'localhost:3000'
   config.action_mailer.default_url_options = { :host => 'localhost:3000', protocol: 'http' }
@@ -39,8 +41,8 @@ Rails.application.configure do
   config.action_mailer.smtp_settings = {
     :address              => "smtp.gmail.com",
     :port                 => 587,
-    :user_name            => 'piggy.onrails@gmail.com',
-    :password             => '|vAtRG;[?kz{G#4',
+    :user_name            => ENV['GMAIL_ACCOUNT'],
+    :password             => ENV['GMAIL_PASSWORD'],
     :authentication       => "plain",
     :enable_starttls_auto => true
   }
@@ -49,7 +51,7 @@ Rails.application.configure do
   config.active_storage.service = :local
 
   # Don't care if the mailer can't send.
-  config.action_mailer.raise_delivery_errors = false
+  config.action_mailer.raise_delivery_errors = true
 
   config.action_mailer.perform_caching = false
 
