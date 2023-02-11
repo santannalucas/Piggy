@@ -64,6 +64,9 @@ rake db:migrate
 rake db:seed
 ```
 
-* First Access / How to run the test suite
+* First Access 
+
+Steps on How to configure and use after your first access are available at the Open Piggy Wiki on Github:
+https://github.com/santannalucas/Piggy/wiki
 
 
