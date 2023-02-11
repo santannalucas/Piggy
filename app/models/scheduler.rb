@@ -83,7 +83,7 @@ class Scheduler < ActiveRecord::Base
 
   def increase_date(date,period)
     if period == 'month'
-      date + self.scheduler_period.months.months
+      date + self.scheduler_period.months.to_i * 30.days
     elsif period == 'week'
       date + self.scheduler_period.days.days
     end
