@@ -22,7 +22,7 @@
   <%= render 'schedulers/partials/items/form', :locals => {:new => true} %>
 
   <!-- Table Body and Rows Count -->
-  <% @items.each do |item| %><% rows = rows + 1 %>
+  <% @items.each do |item| %><% rows +=1%>
     <% error = params[:error_id] == item.id.to_s %>
     <% updated = params[:updated].to_i == item.id %>
     <tr id="field_record_<%= item.id %>" class="<%= cycle('odd', 'even') -%> row-form-field <%= 'updated' if item.payment.present? %>" <%= "hidden='hidden'".html_safe if error %>>

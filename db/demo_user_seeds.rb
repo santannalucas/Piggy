@@ -47,39 +47,43 @@ end
 
 # Create User Accounts
 
-accounts_costs = {
-  'Sydney Water' => 15 ,
-  'Vodafone' => 45,
-  'Netflix' => 15,
-  'Origin' => 70,
-  'AGL' => 30,
-  'Landlord' => 2200,
-  'Allianz' => 50,
-  'JetBrains' => 20,
-  'Toyota' => 450,
-  'Piggy Inc' => 5500,
-  'Medicare' => 100,
-  'Coles' => 70,
-  'McDonalds' => 15,
-  'Gas Station' => 50
-}
+accounts_costs = {  'Sydney Water' => 15 , 'Vodafone' => 45, 'Netflix' => 15, 'Origin' => 70, 'AGL' => 30, 'Landlord' => 2200, 'Allianz' => 50, 'JetBrains' => 20,
+                    'Toyota' => 450, 'Piggy Inc' => 5500, 'Medicare' => 100, 'Coles' => 70, 'McDonalds' => 15, 'Gas Station' => 50 }
 
-accounts_costs.each do |account|
-  @user.accounts.where(name:account[0]).first_or_create
-end
+# accounts_costs.each do |account|
+#   @user.accounts.where(name:account[0]).first_or_create
+# end
 
 # Scheduled Bills
-["Sydney Water", "Vodafone", "Netflix", "Origin", "AGL", "Landlord", "Allianz", "JetBrains", "Toyota", "Piggy Inc", "Medicare"].each do |account|
-  @scheduler = Scheduler.create(user_id:@user.id, scheduler_type_id: , :bank_account_id, :account_id, :split, :scheduler_period_id, :description, :amount, :sub_category_id, :last_payment, :transaction_type_id, :created_at, :updated_at)
+accounts_and_categories = [
+  ["Sydney Water","Water"],
+  ["Vodafone", "Phone"],
+  ["Netflix","TV"],
+  ["Origin","Energy"],
+  ["AGL","Gas"],
+  ["Landlord","Rent"],
+  ["Allianz","Car Insurance"],
+  ["JetBrains","Software"],
+  ["Toyota","Loan"],
+  ["Medicare","Health Insurance"]
+]
 
-
-
-
-
-
-
+accounts_and_categories.each do |account|
+  @scheduler = Scheduler.create(
+    user_id:@user.id,
+    scheduler_type_id:3 ,
+    bank_account_id: @user.bank_account.id,
+    account_id: @user.accounts.where(name:account[0]).first.id,
+    scheduler_period_id:5,
+    amount:accounts_costs[account[0]],
+    sub_category_id: @user.sub_categories.where(name:account[1]).first.id,
+    last_payment: Time.now.end_of_year,
+    transaction_type_id: 3,
+    created_at: (Time.now - 1.year).beginning_of_year
+  )
 end
 
+@user.scheduler_items.unpaid.where("scheduler_items.created_at < ?", Time.now).each do |x| x.pay end
 
 
 

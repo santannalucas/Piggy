@@ -66,27 +66,31 @@ class Scheduler < ActiveRecord::Base
       while date < last_date do
         date = increase_date(date,self.scheduler_period.period_type) unless payment == 1
         self.scheduler_items.create(amount:self.amount, created_at:date.to_datetime)
-        payment = payment + 1
+        payment += 1
       end
       # Split Payments
     elsif self.scheduler_type.name == 'Split Payments' && split != self.scheduler_items.count
       date = self.created_at.to_datetime
       payment = 1
       self.split.to_i.times do
-        date = increase_date(date,self.scheduler_period.period_type) unless payment == 1
+        date = Scheduler.increase_date(date,self) unless payment == 1
         self.scheduler_items.create(amount:self.amount/self.split, created_at:date.to_datetime)
-        payment = payment + 1
+        payment += 1
       end
     end
     self.completed = false
   end
 
-  def increase_date(date,period)
+  def self.increase_date(date,scheduler)
+    period = scheduler.scheduler_period.period_type
     if period == 'month'
-      date + self.scheduler_period.months.to_i * 30.days
+      scheduler.scheduler_period.months.times do
+        date = date.to_date.next_month
+      end
     elsif period == 'week'
-      date + self.scheduler_period.days.days
+      date + scheduler.scheduler_period.days.days
     end
+    date
   end
 
   def check_for_completion

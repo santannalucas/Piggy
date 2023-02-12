@@ -9,7 +9,7 @@
   </tr>
 
   <!-- Table Body and Rows Count -->
-  <% @showing.each do |workspace| %><% rows = rows + 1 %>
+  <% @showing.each do |workspace| %><% rows +=1%>
     <tr class="<%= cycle('odd', 'even') -%>">
       <td> <%= link_to workspace.id, workspace_path(:id => workspace.id) %> </td>
       <td class="align-left"> <%= link_to workspace.name, workspace_path(:id => workspace.id) %> </td>

@@ -45,10 +45,6 @@ class Transaction < ActiveRecord::Base
   scope :next_six_months, -> {where('transactions.created_at >= ? AND transactions.created_at <= ?', Time.now.beginning_of_month, Time.now.end_of_month + 5.months)}
   scope :next_year, -> {where('transactions.created_at >= ? AND transactions.created_at <= ?', (Time.now + 1.year).end_of_day, Time.now.end_of_day)}
 
-
-
-
-
   validates :amount, numericality: { greater_than: 0 }
 
 

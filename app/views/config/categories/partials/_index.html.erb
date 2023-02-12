@@ -17,7 +17,7 @@
   <%= render 'config/categories/partials/form', :locals => {:new => true} %>
 
   <!-- Table Body and Rows Count -->
-  <% @categories.each do |category| %><% rows = rows + 1 %>
+  <% @categories.each do |category| %><% rows +=1%>
     <% error = params[:error_id] == category.id.to_s %>
     <% updated = params[:updated].to_i == category.id %>
     <tr id="field_record_<%= category.id %>" class="<%= cycle('odd', 'even') -%> row-form-field <%= 'updated' if updated %>" <%= "hidden='hidden'".html_safe if error %>>

@@ -21,7 +21,7 @@
   </thead>
 
   <!-- Table Body and Rows Count -->
-  <% @schedulers.each do |scheduler| %><% rows = rows + 1 %>
+  <% @schedulers.each do |scheduler| %><% rows +=1%>
     <% error = params[:error_id] == scheduler.id.to_s %>
     <% updated = params[:updated].to_i == scheduler.id %>
     <tr id="field_record_<%= scheduler.id %>" class="<%= cycle('odd', 'even') -%> row-form-field <%= 'updated' if updated %>" <%= "hidden='hidden'".html_safe if error %>>

@@ -13,7 +13,7 @@
   </thead>
 
   <!-- Table Body and Rows Count -->
-  <% @reports.each do |report| %><% rows = rows + 1 %>
+  <% @reports.each do |report| %><% rows +=1%>
     <tr class="<%= cycle('odd', 'even') -%>">
       <td> <%= rows %> </td>
       <td class="align-left"> <%= report.name %></td>

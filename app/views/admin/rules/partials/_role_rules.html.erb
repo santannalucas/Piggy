@@ -24,7 +24,7 @@
   </tr>
   <% end %>
 <!-- Table Body and Rows Count -->
-<% @showing.each do |role_rule| %><% rows = rows + 1 %>
+<% @showing.each do |role_rule| %><% rows +=1%>
   <% error = params[:error_id] == role_rule.id.to_s %>
   <% updated = params[:updated].to_i == role_rule.id %>
     <% role_wks = role_view ?

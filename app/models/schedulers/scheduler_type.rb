@@ -4,9 +4,9 @@ class SchedulerType < ActiveRecord::Base
   has_many :schedulers
 
   def self.rebuild
-    SchedulerType.where(name:'Single Payment').create(name:'Single Payment')
-    SchedulerType.where(name:'Split Payments').create(name:'Split Payments')
-    SchedulerType.where(name:'Periodic Payments').create(name:'Periodic Payments')
+    SchedulerType.where(name:'Single Payment').first_or_create
+    SchedulerType.where(name:'Split Payments').first_or_create
+    SchedulerType.where(name:'Periodic Payments').first_or_create
   end
 
 end

@@ -14,6 +14,22 @@ class SchedulerItem < ActiveRecord::Base
   end
 
 
+  def pay
+    payment = Transaction.new(
+      :bank_account_id => self.scheduler.bank_account_id,
+      :account_id => self.scheduler.account_id,
+      :sub_category_id => self.scheduler.sub_category_id,
+      :transaction_type_id => self.scheduler.transaction_type_id,
+      :description => self.scheduler.description,
+      :created_at => self.created_at,
+      :amount => self.amount
+    )
+    if payment.save
+      self.update(transaction_id:payment.id)
+      true
+    end
+  end
+
   def trans_type
     trans_type = self.scheduler.transaction_type_id
     if trans_type == 1

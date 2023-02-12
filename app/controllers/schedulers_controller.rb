@@ -78,22 +78,12 @@ class SchedulersController < ApplicationController
   def pay
     @scheduler = Scheduler.find(params[:scheduler_id])
     @item = SchedulerItem.find(params[:item_id])
-    @transaction = @current_user.transactions.new(
-      :bank_account_id => @scheduler.bank_account_id,
-      :account_id => @scheduler.account_id,
-      :sub_category_id => @scheduler.sub_category_id,
-      :transaction_type_id => @scheduler.transaction_type_id,
-      :description => @scheduler.description,
-      :created_at => @item.created_at,
-      :amount => @item.amount
-    )
-    if @transaction.save
-      @item.update_column(:transaction_id, @transaction.id)
+    if @item.pay
       @scheduler.check_for_completion
       flash[:notice] = 'Scheduled Bill successfully paid.'
     else
       # Save Failed
-      flash[:error] = errors_to_string(@transaction.errors)
+      flash[:error] = errors_to_string(@item.payment.errors)
     end
     redirect_to params[:from] == 'dashboard' ? dashboard_path : @scheduler
   end

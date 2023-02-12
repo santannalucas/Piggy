@@ -23,7 +23,7 @@
   <!-- New Row Form -->
 
   <!-- Table Body and Rows Count -->
-  <% @transactions.each do |transaction| %><% rows = rows + 1 %>
+  <% @transactions.each do |transaction| %><% rows +=1%>
     <% error = params[:error_id] == transaction.id.to_s %>
     <% updated = params[:updated].to_i == transaction.id %>
     <tr id="field_record_<%= transaction.id %>" class="<%= cycle('odd', 'even') -%> row-form-field <%= transaction.transaction_type.name %> <%= 'updated' if updated %>" <%= "hidden='hidden'".html_safe if error %>>

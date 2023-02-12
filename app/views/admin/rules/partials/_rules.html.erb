@@ -15,7 +15,7 @@
     <th style="width: 105px" <%= "colspan=2" unless workspace %>> Actions </th>
   </tr>
   <!-- Table Body and Rows Count -->
-  <% @showing.each do |rule| %><% rows = rows + 1 %>
+  <% @showing.each do |rule| %><% rows +=1%>
     <% updated = params[:updated].to_i == rule.id %>
     <tr id="field_record_<%= rule.id %>" class="<%= cycle('odd', 'even') -%> <%= 'updated' if updated %>">
       <td> <%= row_number(rows) %> </td>

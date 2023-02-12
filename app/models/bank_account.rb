@@ -5,9 +5,8 @@ class BankAccount < ActiveRecord::Base
 
   belongs_to :user
   belongs_to :currency
-  has_many :schedulers
-  has_many :transactions
-  has_many :accounts, through: :transactions
+  has_many :schedulers, :dependent => :destroy
+  has_many :transactions, :dependent => :destroy
 
   validates_presence_of :currency_id, :account_type, :name
 

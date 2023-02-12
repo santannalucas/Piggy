@@ -23,7 +23,7 @@
   <%= render 'config/bank_accounts/partials/form', :locals => {:new => true} %>
 
   <!-- Table Body and Rows Count -->
-  <% @bank_accounts.each do |bank_account| %><% rows = rows + 1 %>
+  <% @bank_accounts.each do |bank_account| %><% rows +=1%>
     <% error = params[:error_id] == bank_account.id.to_s %>
     <% updated = params[:updated].to_i == bank_account.id %>
     <tr id="field_record_<%= bank_account.id %>" class="<%= cycle('odd', 'even') -%> row-form-field <%= 'updated' if updated %>" <%= "hidden='hidden'".html_safe if error %>>

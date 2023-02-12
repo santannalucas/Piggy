@@ -17,7 +17,7 @@
   <%= render 'config/currencies/partials/form', :locals => {:new => true} %>
 
   <!-- Table Body and Rows Count -->
-  <% @currencies.each do |currency| %><% rows = rows + 1 %>
+  <% @currencies.each do |currency| %><% rows +=1%>
     <% error = params[:error_id] == currency.id.to_s %>
     <% updated = params[:updated].to_i == currency.id %>
     <tr id="field_record_<%= currency.id %>" class="<%= cycle('odd', 'even') -%> row-form-field <%= 'updated' if updated %>" <%= "hidden='hidden'".html_safe if error %>>

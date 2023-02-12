@@ -17,7 +17,7 @@
     <% end %>
   </tr>
   <!-- Table and Rows Count -->
-<% @showing.each do |role| %><% rows = rows + 1 %>
+<% @showing.each do |role| %><% rows +=1%>
   <% error = params[:error_id] == role.id.to_s %>
   <% updated = params[:updated].to_i == role.id %>
   <tr id="field_record_<%= role.id %>" class="<%= cycle('odd', 'even') -%> row-form-field <%= 'updated' if updated %>" <%= "hidden='hidden'".html_safe if error %>>

@@ -9,7 +9,7 @@
     <th style='width:70px'> <%= rules_sort "admin_users.id", "ID" %></th>
     <th style='width:33%' class="align-left"> <%= rules_sort "admin_users.name", "Name" %></th>
     <th style='width: 33%' class="align-left"> <%= rules_sort "admin_users.email", "Email" %></th>
-    <% unless @role.present? %><th style='width:33%' class="align-left"> <%= rules_sort "admin_roles.name", "Role" %></th><% columns = columns + 1 %><% end %>
+    <% unless @role.present? %><th style='width:33%' class="align-left"> <%= rules_sort "admin_roles.name", "Role" %></th><% columns += 1 %><% end %>
     <th style='width:155px' colspan="3"> Actions </th>
   </tr>
 
@@ -17,7 +17,7 @@
   <%= render 'admin/users/partials/form' %>
 
   <!-- Table Body and Rows Count -->
-<% @showing.each do |user| %><% rows = rows + 1 %>
+<% @showing.each do |user| %><% rows +=1%>
   <!-- Quick Link to View -->
   <% link_to_path = user_path(:id => user.id, :from => params[:from], :from_id => params[:from_id]) %>
   <tr class="<%= cycle('odd', 'even') -%>">

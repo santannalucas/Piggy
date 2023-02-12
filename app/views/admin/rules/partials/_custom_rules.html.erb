@@ -10,7 +10,7 @@
     <th style="width: 100px;" colspan="2"> Actions </th>
   </tr>
 <!-- Table Body and Rows Count -->
-<% @showing.each do |custom| %><% rows = rows + 1 %>
+<% @showing.each do |custom| %><% rows +=1%>
   <% error = (params[:error_id] == custom.id.to_s || params[:filter_workspace] == '1') %>
   <% updated = params[:updated].to_i == custom.id %>
   <% object_link = workspace_path(:id => custom.workspace.id, :show => 'custom_rules', :search => custom.description, :full_sentence => true) %>
