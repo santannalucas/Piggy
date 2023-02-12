@@ -18,7 +18,8 @@ categories = [
      ['Leisure', ['Pubs','Coffee Shops','Cinema', 'Eating Out', 'Fast Food']],
      ['Medical and Insurance', ['Medicine','GP Visits','Health Insurance']],
      ['Subscriptions', %w[Internet Phone TV Software]],
-     ['Taxes', ['Income Tax', 'Other taxes']]
+     ['Taxes', ['Income Tax', 'Other taxes']],
+     ['Groceries',['Food','Eating Out']]
   ]],
   ['Income',
    [
@@ -83,16 +84,34 @@ accounts_and_categories.each do |account|
   )
 end
 
+# Income Scheduler
+@scheduler = Scheduler.create(
+  user_id:@user.id,
+  scheduler_type_id:3 ,
+  bank_account_id: @user.bank_account.id,
+  account_id: @user.accounts.where(name:'Piggy Inc').first.id,
+  scheduler_period_id:5,
+  amount:accounts_costs['Piggy Inc'],
+  sub_category_id: @user.sub_categories.where(name:'Salary').first.id,
+  last_payment: Time.now.end_of_year,
+  transaction_type_id: 2,
+  created_at: (Time.now - 1.year).beginning_of_year
+)
+
+# Pay Bill until today
 @user.scheduler_items.unpaid.where("scheduler_items.created_at < ?", Time.now).each do |x| x.pay end
 
-
-
-
-
-
 # Variable Expenses
-
-
-
-
-
+['Coles', 'McDonalds', 'Gas Station'].each do |var_exp|
+  date = Time.new(2022,01,01)
+  24.times do
+    @user.transactions.create(
+      amount: 0.0,
+      rated_amount: 0.0,
+      created_at: nil,
+      bank_account_id: nil,
+      account_id: nil,
+      sub_category_id: nil,
+      transaction_type_id: 3)
+  end
+end
