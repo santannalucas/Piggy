@@ -9,7 +9,6 @@ Role.rebuild
 @user.validate_options
 
 # Create User Categories
-
 categories = [
   ['Expenses',[
      ['Water, Gas & Energy', %w[Water Gas Energy]],
@@ -47,13 +46,12 @@ categories.each do |type|
 end
 
 # Create User Accounts
-
 accounts_costs = {  'Sydney Water' => 15 , 'Vodafone' => 45, 'Netflix' => 15, 'Origin' => 70, 'AGL' => 30, 'Landlord' => 2200, 'Allianz' => 50, 'JetBrains' => 20,
                     'Toyota' => 450, 'Piggy Inc' => 5500, 'Medicare' => 100, 'Coles' => 70, 'McDonalds' => 15, 'Gas Station' => 50 }
 
-# accounts_costs.each do |account|
-#   @user.accounts.where(name:account[0]).first_or_create
-# end
+accounts_costs.each do |account|
+  @user.accounts.where(name:account[0]).first_or_create
+end
 
 # Scheduled Bills
 accounts_and_categories = [
@@ -69,6 +67,7 @@ accounts_and_categories = [
   ["Medicare","Health Insurance"]
 ]
 
+# Expenses Scheduler
 accounts_and_categories.each do |account|
   @scheduler = Scheduler.create(
     user_id:@user.id,
@@ -98,7 +97,7 @@ end
   created_at: (Time.now - 1.year).beginning_of_year
 )
 
-# Pay Bill until today
+# Pay Bills until today
 @user.scheduler_items.unpaid.where("scheduler_items.created_at < ?", Time.now).each do |x| x.pay end
 
 # Variable Expenses
