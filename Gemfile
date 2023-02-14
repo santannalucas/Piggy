@@ -1,7 +1,7 @@
 source 'https://rubygems.org'
 git_source(:github) { |repo| "https://github.com/#{repo}.git" }
 
-ruby '3.0.0'
+ruby '3.1.2'
 
 gem 'rack-cors'
 gem 'bcrypt'
@@ -9,7 +9,6 @@ gem 'rails', '~> 7.0'
 gem 'puma', '~> 3.11'
 gem 'uglifier', '>= 1.3.0'
 gem 'execjs'
-gem 'therubyracer'
 gem 'font-awesome-sass', '>= 5.15.1'
 gem 'jbuilder', '~> 2.5'
 gem 'pg'
