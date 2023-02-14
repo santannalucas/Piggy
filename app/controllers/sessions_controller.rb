@@ -16,10 +16,16 @@ class SessionsController < ApplicationController
 		log_in user
 		params[:session][:remember_me] == '1' ? remember(user) : forget(user)
 		#@logs = Log.create(user_id: current_user.id , role_id: current_user.role_id, action:"Login")
-		redirect_to dashboard_path
-		else 
-		flash.now[:danger] = 'Email or Password incorrect.'
-		render'new', :layout => false
+			respond_to do |format|
+		     format.html  {redirect_to dashboard_path}# index.html.erb
+		     format.json  { render :json => { status: :created, logged_in: true, user:user.email } }
+			end
+		else
+			flash.now[:danger] = 'Email or Password incorrect.'
+			respond_to do |format|
+				format.html  { render 'new', :layout => false }
+				format.json  { render :json => { status: 401 } }
+			end
 		end
 	end
 
