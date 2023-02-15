@@ -1,0 +1,15 @@
+<%- headers = ['Bank Account','Account', 'Type', 'Description','Date', 'Value', 'Transfer', 'Transfer Bank Account', 'Transfer Rate'] -%>
+<%= CSV.generate_line headers -%>
+<%- @transactions.each do |transaction| -%>
+  <%= CSV.generate_line([
+  transaction.bank_account.name,
+  transaction.account.try(:name) ,
+  transaction.transaction_type.name.titleize,
+  transaction.description,
+  transaction.created_at.to_date,
+  transaction.amount,
+  transaction.transfer? ? 'True' : nil,
+  transaction.transfer? ? transaction.transfer_ref.transfer_account(transaction.bank_account.name).name : nil,
+  transaction.transfer? ? transaction.transfer_ref.rate : nil
+  ]).html_safe -%>
+<%- end -%>

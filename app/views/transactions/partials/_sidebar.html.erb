@@ -25,4 +25,6 @@
       <div class="currency-total"><%= number_to_currency(currency_total, negative_format: "(%u%n)") %></div>
     </div>
   <% end %>
+  <%=link_to export_transactions_path(format:'csv',bank_account_id:params[:bank_account_id],period:params[:period]) do %><i class="fad fa-file-spreadsheet"></i>Export CSV<% end %>
+
 </div>

@@ -20,6 +20,7 @@ module Piggy
     config.autoload_paths += [config.root.join('app', 'models', 'admins')]
     config.autoload_paths += [config.root.join('app', 'models', 'config')]
     config.autoload_paths += [config.root.join('app', 'models', 'schedulers')]
+    config.autoload_paths += [config.root.join('app', 'models', 'tools')]
 
     config.after_initialize do
       # Refactor Users

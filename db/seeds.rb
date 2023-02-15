@@ -23,7 +23,9 @@ Workspace.create(name:'Currencies')
 Workspace.create(name:'Categories')
 Workspace.create(name:'Schedulers')
 Workspace.create(name:'Reports')
+Workspace.create(name:'Import Files')
 
+ImportFile.create(name:'Import Transactions')
 # Rebuild Roles
 Role.rebuild
 User.first.validate_options

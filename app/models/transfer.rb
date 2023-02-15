@@ -37,4 +37,9 @@ class Transfer < ActiveRecord::Base
     errors.add(:to_bank_account, "Missing.") if self.to_bank_account.amount.nil?
   end
 
+  # Return the Transfer Account
+  def transfer_account(account)
+    account == from_bank_account.bank_account ? to_bank_account.bank_account : from_bank_account.bank_account
+  end
+
 end

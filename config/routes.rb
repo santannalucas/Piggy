@@ -9,7 +9,11 @@ Rails.application.routes.draw do
 
   get 'dashboard' => 'dashboard#dashboard'
 
-  resources :transactions
+  resources :transactions do
+    collection do
+      get 'export'
+    end
+  end
 
   resources :transfers
 
@@ -55,4 +59,7 @@ Rails.application.routes.draw do
     resources :users
   end
 
+  scope module: 'tools' do
+    resources :import_files
+  end
 end

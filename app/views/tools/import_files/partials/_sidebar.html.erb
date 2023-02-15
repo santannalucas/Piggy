@@ -1,0 +1,35 @@
+<div id="sidebar">
+
+  <div class="sidebar-select">
+    <%= form_for report_path(:id => @report.id), method: 'get' do %>
+
+      <!-- Bank Account -->
+      <%= select_tag :bank_account_id, options_for_select(@current_user.bank_accounts.dashboard.collect{|x|[[x.name,x.currency.code].join(' - '),x.id]}, params[:bank_account_id] || @current_user.bank_account.id), {:class => 'auto-submit sidebar-select-input'} %>
+      <h3>Bank Account</h3>
+
+      <!-- Start Date -->
+      <%= select_tag :month, options_for_select(month_names, params[:month]), {:class => 'seventy-w auto-submit sidebar-select-input'} %>
+      <%= select_tag :year, options_for_select(@bank_account.year_select_options(Time.now.year), params[:year]), {:class => 'thirty-w auto-submit sidebar-select-input'} %>
+      <h3>Start Date</h3>
+
+      <!-- Period -->
+      <%= select_tag :period, options_for_select([['Montly','month'],['Year','year']], params[:period]), {:class => 'auto-submit sidebar-select-input'} %>
+      <h3>Period</h3>
+      <!-- End Date -->
+      <% unless @report.name == "Monthly Result per Year" %>
+        <%= select_tag :end_month, options_for_select(month_names, params[:end_month] ), {:class => 'seventy-w auto-submit sidebar-select-input'} %>
+        <%= select_tag :end_year, options_for_select(@bank_account.year_select_options(Time.now.year), params[:end_year]), {:class => 'thirty-w auto-submit sidebar-select-input'} %>
+        <h3>End Date</h3>
+      <% end %>
+
+      <% if @report.name == 'Categories by Period' %>
+        <%= select_tag :cat_type, options_for_select([%w[Expenses expenses], %w[Deposits deposits]], params[:cat_type]), { :class => 'auto-submit sidebar-select-input'} %>
+        <h3>Category Type</h3>
+
+        <h3>Categories</h3>
+      <% end %>
+
+    <% end %>
+  </div>
+
+</div>

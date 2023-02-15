@@ -1,0 +1,16 @@
+<!-- Title and Hide Search Toggle -->
+<% content_for :title, "#{@import.name} File" %>
+
+
+<div id='workspace'>
+  <% form_for import_file_path, method: 'POST' do %>
+
+  <% end %>
+</div>
+
+<!-- Bottom Menu -->
+<div id="menu-bottom">
+  <ul>
+    <!-- Back Dashboard -->  <li> <%= link_to root_path do %><i class="fad fa-analytics fa-3x dashboard" title="Back to Dashboard"></i><br>Dashboard<% end %></li>
+  </ul>
+</div>

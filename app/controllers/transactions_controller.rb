@@ -57,6 +57,21 @@ class TransactionsController < ApplicationController
     redirect_to redirect_link
   end
 
+  def export
+    @bank_account = params[:bank_account_id].present? ? @bank_accounts.find(params[:bank_account_id]) : BankAccount.find(@current_user.options['default_account'].to_i)
+    @transactions = params[:period] == 'custom' ? @bank_account.transactions : @bank_account.transactions.send(params[:period])
+    @transactions = @transactions.includes(:account,:sub_category).filtering(params.slice(:all_words_search, :sentence_search,:account_id, :transaction_type_id, :sub_category_id, :start_date, :end_date))
+    @transactions = @transactions.order(transactions_sort_column + " " + desc_sort_direction)
+      respond_to do |format|
+        format.csv do
+          response.headers['Content-Type'] = 'text/csv'
+          response.headers['Content-Disposition'] = "attachment; filename=transactions.csv"
+          render 'transactions/partials/export'
+        end
+    end
+  end
+
+
   def destroy
     @transaction = Transaction.find(params[:id])
     @bank_account = BankAccount.find(@transaction.bank_account_id)
@@ -68,6 +83,10 @@ class TransactionsController < ApplicationController
     end
     redirect_to transactions_path(:bank_account_id => @bank_account.id)
   end
+
+
+
+
 
   # Initializer for Creating Transaction and Transfer from Transactions Index
 

@@ -36,6 +36,13 @@
     </div>
   </div>
 
+  <div class="dropdown">
+    <button class="dropbtn"><i class="fad fa-toolbox" title="Tools"></i></button>
+    <div class="dropdown-content"><div class="dropdown-title"> Tools </div>
+    <!-- File Importer --><% if nav[:import_file][:search] %><%= link_to import_files_path, :class => 'loading' do %><i class="fad fa-file-import"> </i> &nbsp; Import Files <% end %><% end %>
+    </div>
+  </div>
+
   <!-- Piggy Logo -->
   <div id="logo"><%= link_to(image_tag('logo.png', :height => "43px"), dashboard_path, title: "View Dashboard") %></div>
 
