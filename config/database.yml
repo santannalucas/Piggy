@@ -6,9 +6,13 @@ default: &default
   username: piggy
   password: piggy_pass
 
+production:
+  <<: *default
+  database: piggy_prod
+
 development:
   <<: *default
-  database: piggy
+  database: piggy_dev
 
 test:
   <<: *default
