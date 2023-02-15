@@ -12,8 +12,8 @@ class Transaction < ActiveRecord::Base
   belongs_to :transaction_type
 
   # Search Scopes
-  scope :all_words_search , -> (all_words_search) {where("transactions.id = ? OR number LIKE '%#{all_words_search.split.join("%' OR number LIKE '%")}%' OR description LIKE '%#{all_words_search.split.join("%' OR description LIKE '%")}%'", all_words_search)}
-  scope :sentence_search, -> (sentence_search) {where("transactions.id = ? OR number LIKE '%#{sentence_search}%' OR description LIKE '%#{sentence_search}%'", sentence_search)}
+  scope :all_words_search , -> (all_words_search) {where("description LIKE '%#{all_words_search.split.join("%' OR description LIKE '%")}%'")}
+  scope :sentence_search, -> (sentence_search) {where("description LIKE '%#{sentence_search}%'")}
 
   # Relationship Scopes
   scope :currency_id, -> (currency_id) {where currency_id: currency_id}
@@ -67,7 +67,6 @@ class Transaction < ActiveRecord::Base
   def self.total
     sum(:amount)
   end
-
 
   def self.monthly_total(user, year = nil, currency_id = nil)
     currency = Currency.find(currency || user.options['currency'])

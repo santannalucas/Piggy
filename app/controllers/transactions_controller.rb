@@ -15,7 +15,7 @@ class TransactionsController < ApplicationController
     initialize_transaction
     # Filtering and sort Users
     @transactions = params[:period] == 'custom' ? @bank_account.transactions : @bank_account.transactions.send(params[:period])
-    @transactions = @transactions.includes(:account,:sub_category).filtering(params.slice(:account_id, :transaction_type_id, :sub_category_id, :start_date, :end_date))
+    @transactions = @transactions.includes(:account,:sub_category).filtering(params.slice(:all_words_search, :sentence_search,:account_id, :transaction_type_id, :sub_category_id, :start_date, :end_date))
     @total_transactions = @transactions.count
     @transactions = @transactions.order(transactions_sort_column + " " + desc_sort_direction).paginate(:page => params[:page], :per_page => params[:per_page]) if @transactions.present?
   end
