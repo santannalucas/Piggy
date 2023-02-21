@@ -2,6 +2,7 @@ class ApplicationController < ActionController::Base
   protect_from_forgery with: :null_session, if: Proc.new { |c| c.request.format == 'application/json' }
   include SessionsHelper
   include ApplicationHelper
+  include JsonWebToken
   before_action :logged_in_user
 
   # Return Params to Enable Search Filtering and Pagination
@@ -32,6 +33,13 @@ class ApplicationController < ActionController::Base
       # To Account
       to_bank_account_attributes: [:id, :bank_account_id, :sub_category_id, :description, :amount, :transfer, :created_at]
     )
+  end
+
+  def authenticate_api
+    header = request.headers["Authorization"]
+    header = header.split(" ").last if header
+    decoded = jwt_decode(header)
+    @current_user = User.find(decoded[:user_id])
   end
 
   def logged_in_user

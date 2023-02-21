@@ -3,9 +3,14 @@
 
 
 <div id='workspace'>
-  <% form_for import_file_path, method: 'POST' do %>
-
+  <h1><%= @import.name %></h1>
+  <br>
+  <%= form_for new_import_file_path(id: @import.id), multipart:true, method: 'get' do %>
+    <%= file_field_tag :file, class: 'input' %>
+    <%= hidden_field_tag :id, @import.id %>
+  <%= submit_tag 'Import' %>
   <% end %>
+
 </div>
 
 <!-- Bottom Menu -->

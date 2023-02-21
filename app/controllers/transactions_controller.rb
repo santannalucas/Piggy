@@ -2,6 +2,7 @@ class TransactionsController < ApplicationController
   include TransactionsHelper
   include ApplicationHelper
   require 'will_paginate/array'
+  require 'csv'
 
   def index
     get_search_defaults(@current_user.options['per_page'])
@@ -58,7 +59,7 @@ class TransactionsController < ApplicationController
   end
 
   def export
-    @bank_account = params[:bank_account_id].present? ? @bank_accounts.find(params[:bank_account_id]) : BankAccount.find(@current_user.options['default_account'].to_i)
+    @bank_account = params[:bank_account_id].present? ? @current_user.bank_accounts.where(id:params[:bank_account_id]).first : BankAccount.find(@current_user.options['default_account'].to_i)
     @transactions = params[:period] == 'custom' ? @bank_account.transactions : @bank_account.transactions.send(params[:period])
     @transactions = @transactions.includes(:account,:sub_category).filtering(params.slice(:all_words_search, :sentence_search,:account_id, :transaction_type_id, :sub_category_id, :start_date, :end_date))
     @transactions = @transactions.order(transactions_sort_column + " " + desc_sort_direction)

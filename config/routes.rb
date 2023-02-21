@@ -2,9 +2,8 @@ Rails.application.routes.draw do
   # For details on the DSL available within this file, see https://guides.rubyonrails.org/routing.html
   root 'sessions#new'
   get 'login'    => 'sessions#new'
-
-  get 'login'    => 'sessions#new'
   post 'login'   => 'sessions#create'
+  post 'login_api' => 'sessions#api_login'
   delete 'logout' => 'sessions#destroy'
 
   get 'dashboard' => 'dashboard#dashboard'
@@ -20,6 +19,11 @@ Rails.application.routes.draw do
   namespace :api do
     namespace :v1 do
       resources :transactions
+      resources :users do
+        collection do
+          get 'navbar'
+        end
+      end
     end
   end
 

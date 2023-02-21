@@ -15,6 +15,7 @@ gem 'pg'
 gem 'will_paginate'
 gem "sprockets-rails"
 gem 'dotenv-rails'
+gem 'jwt'
 
 # Reduces boot times through caching; required in config/boot.rb
 gem 'bootsnap', '>= 1.1.0', require: false

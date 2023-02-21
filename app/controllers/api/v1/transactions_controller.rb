@@ -1,4 +1,4 @@
-class Api::V1::TransactionsController < ApplicationController
+class Api::V1::TransactionsController < Api::V1::BaseController
   include TransactionsHelper
   include ApplicationHelper
   # skip_before_action :logged_in_user, only: [:show, :index]

@@ -204,5 +204,9 @@ class User < ActiveRecord::Base
     { :expenses => expenses, :deposits => deposits}
   end
 
+  def api_user_data
+    { name: self.name, email: self.email, navbar: self.navbar}
+  end
+
 end
 

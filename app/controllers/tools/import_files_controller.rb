@@ -12,9 +12,6 @@ class Tools::ImportFilesController < ApplicationController
 
   def new
     @import = ImportFile.find(params[:id])
-  end
-
-  def create
     # Check if file was provided.
     if params[:file]
       file = File.open(params[:file])
@@ -38,6 +35,11 @@ class Tools::ImportFilesController < ApplicationController
     end
     flash[:notice] = result
     redirect_to people_path
+  end
+
+  # Return Model Row Conversion
+  def parse_row(object,row)
+    object.constantize.parse_row
   end
 
   def destroy
