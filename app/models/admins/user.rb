@@ -2,14 +2,14 @@ class User < ActiveRecord::Base
   self.table_name = "admin_users"
 
   belongs_to :role
-  has_many :bank_accounts, :dependent => :delete_all
-  has_many :currencies, :dependent => :delete_all
-  has_many :transactions, through: :bank_accounts, :dependent => :delete_all
-  has_many :accounts, :dependent => :delete_all
-  has_many :categories, :dependent => :delete_all
-  has_many :sub_categories, through: :categories, :dependent => :delete_all
+  has_many :bank_accounts, :dependent => :destroy
+  has_many :currencies, :dependent => :destroy
+  has_many :transactions, through: :bank_accounts, :dependent => :destroy
+  has_many :accounts, :dependent => :destroy
+  has_many :categories, :dependent => :destroy
+  has_many :sub_categories, through: :categories, :dependent => :destroy
   has_many :schedulers
-  has_many :scheduler_items, through: :schedulers, :dependent => :delete_all
+  has_many :scheduler_items, through: :schedulers, :dependent => :destroy
   has_many :rules, through: :role
   has_many :workspaces, :class_name => 'Workspace', through: :rules
 
@@ -109,13 +109,6 @@ class User < ActiveRecord::Base
     data
   end
 
-  # [
-  #
-  #               ['2013',  1000,      400],
-  #               ['2014',  1170,      460],
-  #               ['2015',  660,       1120],
-  #               ['2016',  1030,      540]
-  #           ]
 
 
   def current_month_payments(year,month)
@@ -206,6 +199,42 @@ class User < ActiveRecord::Base
 
   def api_user_data
     { name: self.name, email: self.email, navbar: self.navbar}
+  end
+
+  def navbar_json
+    available_icons = []
+    nav = self.navbar
+    [
+      { name: "User Management", icon_type:"text", icon:"user-initials",
+        contents:{
+          user:{active:true,href:"/Admin/User", icon:"fad fa-user", title:self.try(:name)},
+          dashboard:{active:true, href:"/", icon:'fad fa-chalkboard', title:"Dashboard"},
+          access_rules:{active:nav[:rule][:read], href:"/Admin/Ruses", icon:"fad fa-user-lock", title:"Access Rules"},
+          users:{active:nav[:user][:search],href:"/Admin/Users", icon:"fad fa-users", title:"Users"}
+        }},
+      { name: "Transactions", icon_type:"icon", icon:"fad fa-arrow-right-arrow-left",
+        contents:{
+          transactions:{active:nav[:transaction][:search],href:"/Transactions", icon:"fad fa-right-left", title:"Transactions"},
+          schedulers:{active:nav[:transaction][:search],href:"/Schedulers",icon:"fad fa-calendar", title:"Scheduler"},
+          reports:{active:nav[:report][:search],href:"/Reports",icon:"fad fa-chart-column", title:"Reports"}
+        }},
+      { name:"Configuration", icon_type:"icon", icon:"fad fa-gear",
+        contents:{
+          bank_accounts:{active:nav[:bank_account][:search],href:"/Config/BankAccounts",icon:"fad fa-sack-dollar", title:"Bank Accounts"},
+          accounts:{active:nav[:account][:search],href:"/Config/Accounts",icon:"fad fa-address-book", title:"Accounts"},
+          categories:{active:nav[:category][:search],href:"/Config/Categories",icon:"fad fa-folder", title:"Categories"},
+          sub_categories:{active:nav[:category][:search],href:"/Config/SubCategories",icon:"fad fa-folder-tree", title:"Sub-Categories"},
+          currencies: {active:nav[:currency][:search],href:"/Config/Currencies",icon:"fad fa-circle-dollar", title:"Currencies"}
+        }}
+    ].each do |dropdown|
+      # Add Parent and Children if one or more is available
+      if dropdown[:contents].collect{ |o| o[1][:active]}.include?(true)
+        available = []
+        dropdown[:contents].each do |content| available << content if content[1][:active] end
+        available_icons << [dropdown[:name],dropdown[:icon_type],dropdown[:icon],available ]
+      end
+    end
+    available_icons.to_json
   end
 
 end

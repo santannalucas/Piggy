@@ -179,7 +179,7 @@ class Admin::RulesController < ApplicationController
 
   # Rule Params
   def rule_params
-    params.require(:rule).permit(:c, :r, :u, :d, :s )
+    params.require(:rule).permit(:c, :r, :u, :d, :s, :p )
   end
 
   # Custom Rule Params

@@ -10,6 +10,7 @@ class Transaction < ActiveRecord::Base
   has_one :transfer_to, class_name: 'Transfer', :foreign_key => 'to_id', :dependent => :destroy
   has_one :transfer_from, class_name: 'Transfer', :foreign_key => 'from_id', :dependent => :destroy
   belongs_to :transaction_type
+  has_one :scheduler_item, :dependent => :nullify
 
   # Search Scopes
   scope :all_words_search , -> (all_words_search) {where("description LIKE '%#{all_words_search.split.join("%' OR description LIKE '%")}%'")}

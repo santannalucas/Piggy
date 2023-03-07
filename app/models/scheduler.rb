@@ -27,7 +27,6 @@ class Scheduler < ActiveRecord::Base
   validates :amount, numericality: { greater_than: 0 }
   validate :payment_type
 
-
   before_save :clear_split
   after_update :check_for_completion
   after_create :create_items

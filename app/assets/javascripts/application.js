@@ -16,6 +16,5 @@
 //= require jquery/jquery_ujs.js
 //= require jquery/jquery.multiselect.min.js
 //= require indexes.js
-//= require 'batch_selection.js'
 //= require 'scheduler.js'
 

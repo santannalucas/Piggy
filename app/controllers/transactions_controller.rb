@@ -77,17 +77,12 @@ class TransactionsController < ApplicationController
     @transaction = Transaction.find(params[:id])
     @bank_account = BankAccount.find(@transaction.bank_account_id)
     if @transaction.destroy
-      redirect_link =
       flash[:notice] = 'Transaction successfully deleted.'
     else
       flash[:error] = errors_to_string(@transaction.errors)
     end
     redirect_to transactions_path(:bank_account_id => @bank_account.id)
   end
-
-
-
-
 
   # Initializer for Creating Transaction and Transfer from Transactions Index
 

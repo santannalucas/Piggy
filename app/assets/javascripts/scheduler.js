@@ -36,7 +36,9 @@ $(document).ready(function() {
             hidePaysOpts()
         }
     }
+
     changePaymentType();
+
     // Reload Transfer
 
     payment_type_select.change(function () {

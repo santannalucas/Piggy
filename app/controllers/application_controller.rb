@@ -35,13 +35,6 @@ class ApplicationController < ActionController::Base
     )
   end
 
-  def authenticate_api
-    header = request.headers["Authorization"]
-    header = header.split(" ").last if header
-    decoded = jwt_decode(header)
-    @current_user = User.find(decoded[:user_id])
-  end
-
   def logged_in_user
     unless logged_in?
       flash[:danger] = "Please log in."
