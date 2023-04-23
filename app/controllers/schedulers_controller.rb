@@ -108,6 +108,25 @@ class SchedulersController < ApplicationController
     end
   end
 
+  def update_item
+    @item = SchedulerItem.find(params[:item_id])
+    if can?(:scheduler,:update)
+      if @item.update(scheduler_item_params)
+        # Recreate Custom and CRUD Rules
+        redirect_link = scheduler_path(@item.scheduler_id, updated:@item.id)
+        flash[:notice] = 'Scheduled Bill successfully updated.'
+      else
+        # Save Failed
+        redirect_link = scheduler_path(:id => params[:scheduler_item][:scheduler_id], form_error:'error')
+        flash[:error] = errors_to_string(@scheduler.errors)
+      end
+      redirect_to redirect_link
+    else
+      # Failed Access
+      failed_access('Create Scheduler', 'Update', @scheduler.id)
+    end
+  end
+
   # Load In-line Form for when ID present
   def initialize_scheduler
     # Edit Scheduler

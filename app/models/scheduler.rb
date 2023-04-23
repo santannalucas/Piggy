@@ -63,7 +63,7 @@ class Scheduler < ActiveRecord::Base
       last_date = self.last_payment.to_datetime
       payment = 1
       while date < last_date do
-        date = Scheduler.increase_date(date,self) unless payment == 1
+        date = self.increase_date(date) unless payment == 1
         self.scheduler_items.create(amount:self.amount, created_at:date.to_datetime)
         payment += 1
       end
@@ -80,14 +80,14 @@ class Scheduler < ActiveRecord::Base
     self.completed = false
   end
 
-  def self.increase_date(date,scheduler)
-    period = scheduler.scheduler_period.period_type
+  def increase_date(date)
+    period = self.scheduler_period.period_type
     if period == 'month'
-      scheduler.scheduler_period.months.times do
+      self.scheduler_period.months.times do
         date = date.to_date.next_month
       end
     elsif period == 'week'
-      date + scheduler.scheduler_period.days.days
+      date = date + self.scheduler_period.days.days
     end
     date
   end

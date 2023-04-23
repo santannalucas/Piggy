@@ -25,6 +25,9 @@ Rails.application.routes.draw do
           get 'navbar'
         end
       end
+      namespace :admin do
+        resources :roles
+      end
     end
   end
 
