@@ -7,11 +7,11 @@
   <thead>
   <tr>
     <th style="width:20px;">#</th>
-    <th style="width:15%" class="align-left"> <%= schedulers_sort("bank_accounts.name", "Bank Account") %></th>
     <th style="width:15%"> <%= schedulers_sort("accounts.name", "Account") %> </th>
     <th style="width:15%"> <%= schedulers_sort("scheduler_types.name", "Type") %> </th>
     <th style="width:15%" class="align-left"> <%= schedulers_sort("bank_accounts.description", "Description") %> </th>
     <th style="width:15%"> <%= schedulers_sort("schedulers.split", "Split") %> / <%= schedulers_sort("schedulers.period", "Period") %></th>
+    <th style="width:5%"> Repeat </th>
     <th style="width:15%"> <%= schedulers_sort("schedulers.amount", "Amount") %> </th>
     <th style="width:10%"> <%= schedulers_sort("scheduler_items.created_at", "Date") %> </th>
     <th style="width:115px" colspan="3"> Actions </th>
@@ -27,11 +27,11 @@
     <% updated = params[:updated].to_i == item.id %>
     <tr id="field_record_<%= item.id %>" class="<%= cycle('odd', 'even') -%> row-form-field <%= 'updated' if item.payment.present? %>" <%= "hidden='hidden'".html_safe if error %>>
       <td> <%= rows %> </td>
-      <td class="align-left"> <%= @scheduler.bank_account.name %> </td>
-      <td> <%= @scheduler.account.name %> </td>
+      <td class="align-left">  <%= @scheduler.account.name %> </td>
       <td> <%= @scheduler.scheduler_type.name %></td>
       <td> <%= @scheduler.description %> </td>
       <td> <%= @scheduler.type_description %></td>
+      <td> <%= item.scheduler_position %></td>
       <td> <%= number_to_currency(item.amount) %> </td>
       <td> <%= default_date(item.created_at) %> </td>
       <td>

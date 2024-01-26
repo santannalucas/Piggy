@@ -13,11 +13,10 @@ class User < ActiveRecord::Base
   has_many :rules, through: :role
   has_many :workspaces, :class_name => 'Workspace', through: :rules
 
-
   serialize :options
   serialize :navbar
-  # Token Attribute
 
+  # Token Attribute
   attr_accessor :remember_token
 
   # Email Regex
@@ -39,7 +38,6 @@ class User < ActiveRecord::Base
             format: { with: VALID_EMAIL_REGEX }
 
   # Access Control Details
-
   has_secure_password
 
   validates :password,
@@ -109,20 +107,52 @@ class User < ActiveRecord::Base
     data
   end
 
-
-
   def current_month_payments(year,month)
     payments = {
       :paid => {:expenses =>{}, :deposits =>{}},
       :unpaid => {:expenses =>{}, :deposits =>{}}
     }
     date = Time.new(year,month)
-    bills = self.scheduler_items.joins(:scheduler).where('scheduler_items.created_at > ? AND scheduler_items.created_at < ?', date.beginning_of_month, date.end_of_month)
+    bills = self.scheduler_items.joins(:scheduler).where('scheduler_items.created_at >= ? AND scheduler_items.created_at <= ?', date.beginning_of_month, date.end_of_month)
     payments[:paid][:deposits] = bills.paid.where('schedulers.transaction_type_id = 2').map{|x| [x.created_at.strftime('%d'), x.summary]}.group_by { |c| c[0] }
     payments[:paid][:expenses] = bills.paid.where('schedulers.transaction_type_id = 3').map{|x| [x.created_at.strftime('%d'), x.summary]}.group_by { |c| c[0] }
     payments[:unpaid][:deposits] = bills.unpaid.where('schedulers.transaction_type_id = 2').map{|x| [x.created_at.strftime('%d'), x.summary]}.group_by { |c| c[0] }
     payments[:unpaid][:expenses] = bills.unpaid.where('schedulers.transaction_type_id = 3').map{|x| [x.created_at.strftime('%d'), x.summary]}.group_by { |c| c[0] }
     payments
+  end
+
+  def year_stats(bank_account = nil, currency = nil)
+    bank_account = bank_account.present? ? bank_account : self.bank_account
+    currency_id = currency.present? ? currency.id : self.bank_account.currency_id
+    all_transactions = transactions.joins(:bank_account).where("bank_account_id = ? AND bank_accounts.currency_id = ? AND transactions.created_at >= ? AND transactions.created_at <= ?", bank_account.id, currency_id, Time.now - 12.months, (Time.now + 12.months).end_of_month)
+    all_scheduled_items = scheduler_items.joins(:scheduler, :bank_account).where("bank_accounts.currency_id = ? AND scheduler_items.created_at >= ? AND scheduler_items.created_at <= ?", currency_id, Time.now.end_of_month, (Time.now + 12.months).end_of_month)
+    this_year_income = all_transactions.where("transactions.transaction_type_id = 2 AND transactions.created_at >= ? AND transactions.created_at <= ?", Time.now.beginning_of_year, Time.now.end_of_year)
+    this_year_expenses = all_transactions.where("transactions.transaction_type_id = 3 AND transactions.created_at >= ? AND transactions.created_at <= ?", Time.now.beginning_of_year, Time.now.end_of_year)
+    last_12_months_income=  all_transactions.where("transactions.transaction_type_id = 2 AND transactions.created_at >= ? AND transactions.created_at <= ?", (Time.now - 12.months).end_of_month, Time.now.end_of_month)
+    last_12_months_expenses = all_transactions.where("transactions.transaction_type_id = 3 AND transactions.created_at >= ? AND transactions.created_at <= ?", (Time.now - 12.months).end_of_month, Time.now.end_of_month)
+    last_6_months_income = last_12_months_income.where("transactions.created_at >= ?", (Time.now - 6.months).end_of_month)
+    last_6_months_expenses = last_12_months_expenses.where("transactions.created_at >= ?", (Time.now - 6.months).end_of_month)
+    next_3_months_income = all_transactions.where("transactions.transaction_type_id = 2 AND transactions.created_at >= ? AND transactions.created_at <= ?", Time.now.end_of_month, (Time.now + 3.months).end_of_month)
+    next_3_months_expenses = all_transactions.where("transactions.transaction_type_id = 3 AND transactions.created_at >= ? AND transactions.created_at <= ?", Time.now.end_of_month, (Time.now + 3.months).end_of_month)
+    next_3_months_scheduled_income = all_scheduled_items.where("schedulers.transaction_type_id = 2 AND scheduler_items.created_at >= ? AND scheduler_items.created_at <= ?", Time.now.end_of_month, (Time.now + 3.months).end_of_month)
+    next_3_months_scheduled_expenses = all_scheduled_items.where("schedulers.transaction_type_id = 3 AND scheduler_items.created_at >= ? AND scheduler_items.created_at <= ?", Time.now.end_of_month, (Time.now + 3.months).end_of_month)
+    next_6_months_income = all_transactions.where("transactions.transaction_type_id = 2 AND transactions.created_at >= ? AND transactions.created_at <= ?", Time.now.end_of_month, (Time.now + 6.months).end_of_month)
+    next_6_months_expenses = all_transactions.where("transactions.transaction_type_id = 3 AND transactions.created_at >= ? AND transactions.created_at <= ?", Time.now.end_of_month, (Time.now + 6.months).end_of_month)
+    next_6_months_scheduled_income = all_scheduled_items.where("schedulers.transaction_type_id = 2 AND scheduler_items.created_at >= ? AND scheduler_items.created_at <= ?", Time.now.end_of_month, (Time.now + 6.months).end_of_month)
+    next_6_months_scheduled_expenses = all_scheduled_items.where("schedulers.transaction_type_id = 3 AND scheduler_items.created_at >= ? AND scheduler_items.created_at <= ?", Time.now.end_of_month, (Time.now + 6.months).end_of_month)
+
+    {
+      :this_year_expenses => this_year_expenses.sum(:amount),
+      :this_year_income => this_year_income.sum(:amount),
+      :last_12_months_expenses => last_12_months_expenses.sum(:amount),
+      :last_12_months_income => last_12_months_income.sum(:amount),
+      :last_6_months_expenses => last_6_months_expenses.sum(:amount),
+      :last_6_months_income => last_6_months_income.sum(:amount),
+      :next_6_months_income => next_6_months_income.sum(:amount) + next_6_months_scheduled_income.sum(:amount),
+      :next_6_months_expenses => next_6_months_expenses.sum(:amount) + next_6_months_scheduled_expenses.sum(:amount),
+      :next_3_months_income => next_3_months_income.sum(:amount) + next_3_months_scheduled_income.sum(:amount),
+      :next_3_months_expenses => next_3_months_expenses.sum(:amount) + next_3_months_scheduled_expenses.sum(:amount),
+    }
   end
 
   def User.digest(string)
@@ -169,7 +199,6 @@ class User < ActiveRecord::Base
   def currency
     Currency.find(self.options['currency'])
   end
-
 
   def validate_options
     self.options = {} if self.options.nil?

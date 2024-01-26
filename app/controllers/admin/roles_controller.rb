@@ -15,7 +15,7 @@ class Admin::RolesController < ApplicationController
       # Check Access
       if can?(:role,:read)
         # Get Search default params and Log
-        get_search_defaults(15)
+        get_search_defaults
         access_log("View Role #{params[:show].titleize}", 'Read', @role.name)
         # Show Users
         if params[:show] == 'users' && can?(:user,:read)

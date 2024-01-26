@@ -20,6 +20,7 @@ Rails.application.routes.draw do
     namespace :v1 do
       resources :transactions
       resources :schedulers
+      resources :transaction_types, :only => [:index]
       resources :users do
         collection do
           get 'navbar'
@@ -27,6 +28,9 @@ Rails.application.routes.draw do
       end
       namespace :admin do
         resources :roles
+      end
+      namespace :config do
+        resources :accounts
       end
     end
   end

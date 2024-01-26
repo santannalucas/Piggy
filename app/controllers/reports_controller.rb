@@ -3,7 +3,7 @@ class ReportsController < ApplicationController
   require 'will_paginate/array'
 
   def index
-    get_search_defaults(15)
+    get_search_defaults
     @reports = Report.all
     @total_reports = @reports.count
     @reports = @reports.order(reports_sort_column + " " + desc_sort_direction).paginate(:page => params[:page], :per_page => params[:per_page]) if @reports.present?

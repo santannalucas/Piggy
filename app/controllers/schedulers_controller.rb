@@ -4,9 +4,8 @@ class SchedulersController < ApplicationController
   require 'will_paginate/array'
 
   def index
-    # Check Access and Log
-    if can?(:scheduler,:search)  # Index
-      get_search_defaults(15)
+    if can?(:scheduler,:search)
+      get_search_defaults
       initialize_scheduler
       # Filtering and sort
       params[:completed] = 0 unless params.has_key?(:completed)
@@ -21,7 +20,7 @@ class SchedulersController < ApplicationController
 
   def show
     params[:sort] = 'scheduler_items.created_at' if params[:sort].nil?
-    get_search_defaults(15)
+    get_search_defaults
     @scheduler = Scheduler.find(params[:id])
     if @scheduler.user == @current_user
       @scheduler_item_new = @scheduler.scheduler_items.new
@@ -108,6 +107,16 @@ class SchedulersController < ApplicationController
     end
   end
 
+  def create_item
+    @scheduler = Scheduler.find(params[:scheduler_id])
+    if @scheduler.scheduler_items.create(scheduler_item_params)
+      flash[:notice] = "New Bill successfully created."
+    else
+      flash[:error] = "Error"
+    end
+      redirect_to @scheduler
+  end
+
   def update_item
     @item = SchedulerItem.find(params[:item_id])
     if can?(:scheduler,:update)
@@ -124,6 +133,23 @@ class SchedulersController < ApplicationController
     else
       # Failed Access
       failed_access('Create Scheduler', 'Update', @scheduler.id)
+    end
+  end
+
+  def delete_item
+    @item = SchedulerItem.find(params[:item_id])
+    @scheduler = @item.scheduler
+    if can?(:scheduler,:delete)
+      if @item.destroy
+        flash[:notice] = 'Scheduled Bill successfully deleted.'
+      else
+        # Save Failed
+        flash[:error] = errors_to_string(@item.errors)
+      end
+      redirect_to redirect_link
+    else
+      # Failed Access
+      failed_access('Delete Scheduler', 'Delete', @scheduler.id)
     end
   end
 

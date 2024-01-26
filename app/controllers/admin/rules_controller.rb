@@ -10,7 +10,7 @@ class Admin::RulesController < ApplicationController
     params[:show] = get_user_admin_rules.first || 'Roles' if params[:show].nil?
     # Check Access
     if can?(:role, :search) || can?(:workspace, :search) || can?(:custom_rule, :search) || can?(:rule, :search)
-      get_search_defaults(15)
+      get_search_defaults
       # Show Roles
       if params[:show] == 'roles' && can?(:rule,:search)
         show_roles
@@ -59,7 +59,7 @@ class Admin::RulesController < ApplicationController
     params[:show] = 'rules' if params[:show].nil?
     # Check Access and Log
     if can?(:workspace,:read)
-      get_search_defaults(15)
+      get_search_defaults
       access_log("View Workspace #{params[:show].titleize}", 'Read', @workspace.name)
       # Show Rules
       if params[:show] == 'rules' && can?(:rule,:read)

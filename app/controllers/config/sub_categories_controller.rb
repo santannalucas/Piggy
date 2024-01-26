@@ -9,7 +9,7 @@ class Config::SubCategoriesController < ApplicationController
   def index
     # Check Access and Log
     if can?(:category,:search)  # Index
-      get_search_defaults(15)
+      get_search_defaults
       access_log('Search Sub-Categories', 'Search')
       # Load Category(ies)
       @categories = @current_user.categories.order(:name)

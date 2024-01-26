@@ -14,7 +14,7 @@ class Config::AccountsController < ApplicationController
   def index
     # Check Access and Log
     if can?(:account,:search)  # Index
-      get_search_defaults(15)
+      get_search_defaults
       access_log('Search Accounts', 'Search')
       # Form for New Account
       @account_new = @current_user.accounts.new

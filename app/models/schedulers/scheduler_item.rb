@@ -2,7 +2,9 @@ class SchedulerItem < ActiveRecord::Base
 
   # Lucas Code
   belongs_to :scheduler
+  has_one :bank_account, :through => :scheduler
   belongs_to :payment, class_name: 'Transaction', :foreign_key => 'transaction_id', :required => false
+  after_update :check_scheduler_completion
 
   scope :unpaid, -> {where('scheduler_items.transaction_id IS NULL')}
   scope :paid, -> {where('scheduler_items.transaction_id IS NULL')}
@@ -13,6 +15,9 @@ class SchedulerItem < ActiveRecord::Base
     "#{self.trans_type} $ <b>#{ ('%.2f' % self.amount)}</b> to <b>#{self.destination}</b> from #{self.scheduler.bank_account.name}".html_safe
   end
 
+  def scheduler_position
+    "#{self.scheduler.scheduler_items.order('created_at ASC').index(self) + 1} of #{self.scheduler.scheduler_items.count}"
+  end
 
   def pay
     payment = Transaction.new(
@@ -45,5 +50,8 @@ class SchedulerItem < ActiveRecord::Base
     self.trans_type == 'Transfer' ? BankAccount.find(self.scheduler.transfer_bank_id).name : self.scheduler.account.name
   end
 
+  def check_scheduler_completion
+    self.scheduler.check_for_completion
+  end
 
 end

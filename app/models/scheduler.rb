@@ -2,7 +2,7 @@ class Scheduler < ActiveRecord::Base
 
   include Filterable
 
-  # Lucas Code
+  # Relationships
   belongs_to :scheduler_type
   belongs_to :bank_account
   belongs_to :account
@@ -13,8 +13,11 @@ class Scheduler < ActiveRecord::Base
   has_many :scheduler_items, :dependent => :destroy
   has_many :payments, :through => :scheduler_items
 
+  # Search Scopes
   scope :all_words_search , -> (all_words_search) {where("schedulers.id = ? OR description LIKE '%#{all_words_search.split.join("%' OR description LIKE '%")}%'", all_words_search)}
   scope :sentence_search, -> (sentence_search) {where("schedulers.id = ? OR description LIKE '%#{sentence_search}%'", sentence_search)}
+
+  # Filter Scopes
   scope :completed, -> (completed) {where(completed:completed)}
   scope :sub_category_id , -> (sub_category_id) {where(sub_category_id:sub_category_id)}
   scope :account_id , -> (account_id) {where(account_id:account_id)}
@@ -72,7 +75,7 @@ class Scheduler < ActiveRecord::Base
       date = self.created_at.to_datetime
       payment = 1
       self.split.to_i.times do
-        date = Scheduler.increase_date(date,self) unless payment == 1
+        date = self.increase_date(date) unless payment == 1
         self.scheduler_items.create(amount:self.amount/self.split, created_at:date.to_datetime)
         payment += 1
       end
@@ -93,8 +96,7 @@ class Scheduler < ActiveRecord::Base
   end
 
   def check_for_completion
-    name = self.scheduler_type.name
-    if !self.scheduler_items.where('scheduler_items.transaction_id IS NULL').present? && (name == 'Split Payments' || name == 'Single Payment')
+    unless self.scheduler_items.where('scheduler_items.transaction_id IS NULL').present?
       self.update_column(:completed,true)
     end
   end

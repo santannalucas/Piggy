@@ -10,7 +10,7 @@ class Admin::UsersController < ApplicationController
     if can?(:user, :search)
       access_log('Search Users','Search')
       # Get Search default params
-      get_search_defaults(15)
+      get_search_defaults
       params[:status] = 1 unless params.has_key?(:status)
       @users = User.all
       @user = User.new

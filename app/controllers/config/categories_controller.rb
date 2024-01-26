@@ -9,7 +9,7 @@ class Config::CategoriesController < ApplicationController
   def index
     # Check Access and Log
     if can?(:category,:search)  # Index
-      get_search_defaults(15)
+      get_search_defaults
       access_log('Search Categories', 'Search')
       # Form for New Category
       @category = @current_user.categories.new

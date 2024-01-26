@@ -31,7 +31,7 @@ class DashboardController < ApplicationController
     # Year
     @monthly_total = @current_user.transactions.bank_account_id(@bank_account.id).no_transfers.monthly_total(@current_user,params[:year], 1)
     @calendar = @current_user.current_month_payments(params[:year].to_i,params[:month].to_i)
-
+    @year_stats = @current_user.year_stats(@bank_account)
   end
 
 end

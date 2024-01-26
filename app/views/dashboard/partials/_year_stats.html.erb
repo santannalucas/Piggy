@@ -1,0 +1,63 @@
+<div>
+  <h2> Yearly Statistics</h2>
+
+  <div id=year-stats>
+    <table class="year-stats">
+      <tr class="even">
+        <th> Period</th>
+        <th> Deposits </th>
+        <th> Expenses </th>
+        <th> Result </th>
+        <th> Avg. Deposits</th>
+        <th> Avg. Expenses</th>
+        <th> Avg. Results</th>
+      </tr>
+      <tr>
+        <th> This Year</th>
+        <td><%= number_to_currency(@year_stats[:this_year_income] )%></td>
+        <td><%= number_to_currency(@year_stats[:this_year_expenses] )%></td>
+        <td><%= number_to_currency(@year_stats[:this_year_income] - @year_stats[:this_year_expenses] )%></td>
+        <td><%= number_to_currency(@year_stats[:this_year_income]/ Time.now.month )%></td>
+        <td><%= number_to_currency(@year_stats[:this_year_expenses]/ Time.now.month )%></td>
+        <td><%= number_to_currency(@year_stats[:this_year_income]/Time.now.month  - @year_stats[:this_year_expenses]/Time.now.month) %></td>
+      </tr>
+      <tr class="even">
+        <th> Last 6 Months</th>
+        <td><%= number_to_currency(@year_stats[:last_6_months_income] )%></td>
+        <td><%= number_to_currency(@year_stats[:last_6_months_expenses] )%></td>
+        <td><%= number_to_currency(@year_stats[:last_6_months_income] - @year_stats[:last_6_months_expenses] )%></td>
+        <td><%= number_to_currency(@year_stats[:last_6_months_income]/6 )%></td>
+        <td><%= number_to_currency(@year_stats[:last_6_months_expenses]/6 )%></td>
+        <td><%= number_to_currency((@year_stats[:last_6_months_income] - @year_stats[:last_6_months_expenses])/6 )%></td>
+      </tr>
+      <tr>
+        <th> Last 12 Months</th>
+        <td><%= number_to_currency(@year_stats[:last_12_months_income] )%></td>
+        <td><%= number_to_currency(@year_stats[:last_12_months_expenses] )%></td>
+        <td><%= number_to_currency(@year_stats[:last_12_months_income] - @year_stats[:last_12_months_expenses] )%></td>
+        <td><%= number_to_currency(@year_stats[:last_12_months_income]/12 )%></td>
+        <td><%= number_to_currency(@year_stats[:last_12_months_expenses]/12 )%></td>
+        <td><%= number_to_currency((@year_stats[:last_12_months_income] - @year_stats[:last_12_months_expenses])/12 ) %></td>
+      </tr>
+      <tr>
+        <th> Next 3 Months </th>
+        <td> <%= number_to_currency(@year_stats[:next_3_months_income]) %></td>
+        <td> <%= number_to_currency(@year_stats[:next_3_months_expenses]) %></td>
+        <td> <%= number_to_currency(@year_stats[:next_3_months_income] - @year_stats[:next_3_months_expenses]) %></td>
+        <td> <%= number_to_currency(@year_stats[:next_3_months_income]/12) %></td>
+        <td> <%= number_to_currency(@year_stats[:next_3_months_expenses]/12) %></td>
+        <td> <%= number_to_currency((@year_stats[:next_3_months_income] - @year_stats[:next_3_months_expenses])/12) %></td>
+      </tr>
+      <tr class="even">
+        <th> Next 6 Months </th>
+        <td> <%= number_to_currency(@year_stats[:next_6_months_income]) %></td>
+        <td> <%= number_to_currency(@year_stats[:next_6_months_expenses]) %></td>
+        <td> <%= number_to_currency(@year_stats[:next_6_months_income] - @year_stats[:next_6_months_expenses]) %></td>
+        <td> <%= number_to_currency(@year_stats[:next_6_months_income]/6) %></td>
+        <td> <%= number_to_currency(@year_stats[:next_6_months_expenses]/6) %></td>
+        <td> <%= number_to_currency((@year_stats[:next_6_months_income] - @year_stats[:next_6_months_expenses])/6) %></td>
+      </tr>
+    </table>
+  </div>
+
+</div>

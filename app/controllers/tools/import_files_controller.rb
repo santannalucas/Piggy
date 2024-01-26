@@ -4,7 +4,7 @@ class Tools::ImportFilesController < ApplicationController
   require 'csv'
 
   def index
-    get_search_defaults(15)
+    get_search_defaults
     @imports = ImportFile.all
     @total_imports = @imports.count
     @imports = @imports.order(import_sort_column + " " + desc_sort_direction).paginate(:page => params[:page], :per_page => params[:per_page]) if @imports.present?

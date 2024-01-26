@@ -9,7 +9,7 @@ class Config::CurrenciesController < ApplicationController
   def index
     # Check Access and Log
     if can?(:currency,:search)  # Index
-      get_search_defaults(15)
+      get_search_defaults
       access_log('Search Currencies', 'Search')
       # Form for New / Edit Currency
       @currency_new = @current_user.currencies.new

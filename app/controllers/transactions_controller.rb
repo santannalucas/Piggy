@@ -4,71 +4,62 @@ class TransactionsController < ApplicationController
   require 'will_paginate/array'
   require 'csv'
 
+  before_action :get_search_defaults, only: [:index]
+  before_action :load_bank_accounts, only: [:index, :export]
+
   def index
-    get_search_defaults(@current_user.options['per_page'])
     params[:period] = 'current_month' if params[:period].nil?
-    # Initialize Sidebar Options
-    @bank_accounts = @current_user.bank_accounts
-    @bank_account = params[:bank_account_id].present? ? @bank_accounts.find(params[:bank_account_id]) : BankAccount.find(@current_user.options['default_account'].to_i)
     @currencies = Currency.where(id:@bank_accounts.collect{|x| x.currency_id}.uniq).order(:name)
     # Initialize Transfer and Transaction Forms
     initialize_transfer(@bank_account)
     initialize_transaction
     # Filtering and sort Users
     @transactions = params[:period] == 'custom' ? @bank_account.transactions : @bank_account.transactions.send(params[:period])
-    @transactions = @transactions.includes(:account,:sub_category).filtering(params.slice(:all_words_search, :sentence_search,:account_id, :transaction_type_id, :sub_category_id, :start_date, :end_date))
+    @transactions = @transactions.includes(:account,:sub_category).filtering(params.slice(:all_words_search,:sentence_search,:account_id,:sub_category_id,:bank_account_id))
     @total_transactions = @transactions.count
     @transactions = @transactions.order(transactions_sort_column + " " + desc_sort_direction).paginate(:page => params[:page], :per_page => params[:per_page]) if @transactions.present?
+    respond_to do |format|
+      format.csv do
+        response.headers['Content-Type'] = 'text/csv'
+        response.headers['Content-Disposition'] = "attachment; filename=transactions.csv"
+        render 'transactions/partials/export', :layout => false
+      end
+      format.html do
+        render 'transactions/index'
+      end
+    end
   end
 
-  # Routed Action - Create Role
+
+
   def create
-    # Check Access
       @transaction = Transaction.new(transaction_params)
       @transaction.sub_category_id = params[:expense_category_id].present? ? params[:expense_category_id] : params[:income_category_id]
       if params[:new_account_name].present?
         @transaction.account_id = (Account.where(name:params[:new_account_name]).first || Account.create(name:params[:new_account_name], user_id: @current_user.id)).id
       end
       if @transaction.save
-        # Recreate Custom and CRUD Rules
-        redirect_link = transactions_path(:bank_account_id => @transaction.bank_account_id)
         flash[:notice] = 'Transaction successfully created.'
+        redirect_back(fallback_location: transactions_path(:bank_account_id => @transaction.bank_account_id))
       else
-        # Save Failed
         error = params[:expense_category_id].present? ? 'expense' : 'income'
-        redirect_link = transactions_path(:transaction => transaction_params, :sub => @transaction.sub_category_id, errors:error)
         flash[:error] = errors_to_string(@transaction.errors)
+        redirect_to transactions_path(:transaction => transaction_params, :sub => @transaction.sub_category_id, errors:error)
       end
-      redirect_to redirect_link
   end
 
   def update
     # Check Access
     @transaction = Transaction.find(params[:id])
     if @transaction.update(transaction_params)
-      # Recreate Custom and CRUD Rules
-      redirect_link = transactions_path(:bank_account_id => @transaction.bank_account_id)
       flash[:notice] = 'Transaction successfully created.'
+      redirect_back(fallback_location: transactions_path(:bank_account_id => @transaction.bank_account_id))
+
     else
       # Save Failed
       error = params[:expense_category_id].present? ? 'expense' : 'income'
-      redirect_link = transactions_path(:transaction => transaction_params, :sub => @transaction.sub_category_id, errors:error)
       flash[:error] = errors_to_string(@transaction.errors)
-    end
-    redirect_to redirect_link
-  end
-
-  def export
-    @bank_account = params[:bank_account_id].present? ? @current_user.bank_accounts.where(id:params[:bank_account_id]).first : BankAccount.find(@current_user.options['default_account'].to_i)
-    @transactions = params[:period] == 'custom' ? @bank_account.transactions : @bank_account.transactions.send(params[:period])
-    @transactions = @transactions.includes(:account,:sub_category).filtering(params.slice(:all_words_search, :sentence_search,:account_id, :transaction_type_id, :sub_category_id, :start_date, :end_date))
-    @transactions = @transactions.order(transactions_sort_column + " " + desc_sort_direction)
-      respond_to do |format|
-        format.csv do
-          response.headers['Content-Type'] = 'text/csv'
-          response.headers['Content-Disposition'] = "attachment; filename=transactions.csv"
-          render 'transactions/partials/export'
-        end
+      redirect_to transactions_path(:transaction => transaction_params, :sub => @transaction.sub_category_id, errors:error)
     end
   end
 
@@ -114,4 +105,20 @@ class TransactionsController < ApplicationController
     params.require(:transaction).permit(:id, :bank_account_id, :account_id, :sub_category_id, :transaction_type_id, :description, :created_at, :updated_at, :amount)
   end
 
+  def filter_params
+    params.permit(
+      :all_words_search,
+      :sentence_search,
+      :account_id,
+      :transaction_type_id,
+      :sub_category_id,
+      :start_date,
+      :end_date
+    )
+  end
+
+  def load_bank_accounts
+    @bank_accounts = @current_user.bank_accounts
+    @bank_account = params[:bank_account_id].present? ? @bank_accounts.find(params[:bank_account_id]) : @current_user.bank_account
+  end
 end

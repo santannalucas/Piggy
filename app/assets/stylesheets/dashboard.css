@@ -17,6 +17,17 @@
     height: 350px;
 }
 
+#year-stats{
+    margin: 10px 45px 0 25px;
+
+}
+
+.year-stats td, .year-stats th{
+    width: 150px;
+    text-align: right;
+    padding: 5px 10px;
+}
+
 #monthly{
     margin: 20px 45px 0 25px;
     width: 800px;

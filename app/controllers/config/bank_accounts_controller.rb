@@ -6,7 +6,7 @@ class Config::BankAccountsController < ApplicationController
   def index
     # Check Access and Log
     if can?(:bank_account,:search)  # Index
-      get_search_defaults(15)
+      get_search_defaults
       # Form for New Account
       @bank_account_new = @current_user.bank_accounts.new
       @currencies = @current_user.currencies

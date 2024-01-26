@@ -3,18 +3,18 @@ module TransactionsHelper
   # Transactions Search Fields
   def transactions_search
     [
-      {:name => 'Display:',   :tag => :per_page,            :options => options_for_select(per_page_options, params[:per_page]), :html => {class:'search-input auto-submit'}, :can => true  },
-      {:name => 'Category:',  :tag => :sub_category_id,     :options => options_for_select(SubCategory.all.collect{ |x| [x.name,x.id]}, params[:sub_category_id]), :html => {class:'multiple_select ', multiple:true}, :can => true  },
-      {:name => 'Account:',   :tag => :account_id,          :options => options_for_select(@current_user.accounts.order(:name).collect{|x|[x.name,x.id]}, params[:account_id]), :html => {class:'multiple_select', multiple:true}, :can => true  },
-      {:name => 'Type:',      :tag => :transaction_type_id, :options => options_for_select( TransactionType.order(:name).collect {|x| [x.name.titleize,x.id]}, params[:transaction_type_id]), :html => {class:'multiple_select', multiple:true}, :can => true  },
-      {:name => 'Period:',    :tag => :period,              :options => options_for_select(search_date_periods, params[:period]),  :html => {class:'search-input auto-submit'}, :can => true  },
-      {:name => 'Date:',      :tag => :start_date,          :options => params[:start_date], :html => {include_blank: true, class:'search-date'}, :tag_end => :end_date, :options_end => params[:end_date],  :html_end => {include_blank: true, class:'search-date end'}, :can => true , :type => 'custom'},
+      {:name => 'Display:',   :tag => :per_page,            :options => options_for_select(per_page_options, params[:per_page]), :html => {:class => 'search-input auto-submit'}, :can => true  },
+      {:name => 'Category:',  :tag => :sub_category_id,     :options => options_for_select(SubCategory.all.order(:name).uniq.collect{ |x| [x.name,x.id]}, params[:sub_category_id]), :html => {:class =>'multiple_select ', multiple:true}, :can => true  },
+      {:name => 'Account:',   :tag => :account_id,          :options => options_for_select(@current_user.accounts.order(:name).collect{|x|[x.name,x.id]}, params[:account_id]), :html => {:class =>'multiple_select', multiple:true}, :can => true  },
+      {:name => 'Type:',      :tag => :transaction_type_id, :options => options_for_select( TransactionType.order(:name).collect {|x| [x.name.titleize,x.id]}, params[:transaction_type_id]), :html => {:class =>'multiple_select', multiple:true}, :can => true  },
+      {:name => 'Period:',    :tag => :period,              :options => options_for_select(search_date_periods, params[:period]),  :html => {:class =>'search-input auto-submit'}, :can => true  },
+      {:name => 'Date:',      :tag => :start_date,          :options => params[:start_date], :html => {include_blank: true, :class =>'search-date'}, :tag_end => :end_date, :options_end => params[:end_date],  :html_end => {include_blank: true, :class =>'search-date end'}, :can => true , :type => 'custom'},
     ]
   end
 
   # Sort Column
   def transactions_sort_column
-    acceptable_cols = %w(accounts.name categories.name transactions.transaction_type_id transactions.created_at)
+    acceptable_cols = %w(accounts.name sub_categories.name transactions.transaction_type_id transactions.created_at)
     acceptable_cols.include?(params[:sort]) ? params[:sort] : "transactions.created_at"
   end
 
