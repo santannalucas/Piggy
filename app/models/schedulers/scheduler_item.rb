@@ -1,6 +1,5 @@
 class SchedulerItem < ActiveRecord::Base
 
-  # Lucas Code
   belongs_to :scheduler
   has_one :bank_account, :through => :scheduler
   belongs_to :payment, class_name: 'Transaction', :foreign_key => 'transaction_id', :required => false
@@ -20,6 +19,8 @@ class SchedulerItem < ActiveRecord::Base
   end
 
   def pay
+    return true if self.transaction_id.present?
+
     payment = Transaction.new(
       :bank_account_id => self.scheduler.bank_account_id,
       :account_id => self.scheduler.account_id,
@@ -53,5 +54,4 @@ class SchedulerItem < ActiveRecord::Base
   def check_scheduler_completion
     self.scheduler.check_for_completion
   end
-
 end

@@ -6,7 +6,7 @@
   <% year, month = params[:year].to_i, params[:month].to_i %>
   <% start = Time.new(year,month).beginning_of_month.beginning_of_week %>
   <% start_day_of_week =  Time.new(year,month).beginning_of_month.strftime('%A').first %>
-  <% total_days = (start_day_of_week == 'S' || start_day_of_week == 'F') && Time.new(year,month).end_of_month.day == 31 ? (0..41) : (0..34) %>
+  <% total_days = (start_day_of_week == 'S' || start_day_of_week == 'F') && (Time.new(year,month).end_of_month.day == 31 || Time.new(year,month).end_of_month.day == 30) ? (0..41) : (0..34) %>
   <!-- Days -->
   <% total_days.each do |x| %>
     <!-- Day -->

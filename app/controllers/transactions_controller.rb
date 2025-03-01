@@ -6,6 +6,7 @@ class TransactionsController < ApplicationController
 
   before_action :get_search_defaults, only: [:index]
   before_action :load_bank_accounts, only: [:index, :export]
+  before_action :load_transaction, only: [:update, :destroy]
 
   def index
     params[:period] = 'current_month' if params[:period].nil?
@@ -15,7 +16,7 @@ class TransactionsController < ApplicationController
     initialize_transaction
     # Filtering and sort Users
     @transactions = params[:period] == 'custom' ? @bank_account.transactions : @bank_account.transactions.send(params[:period])
-    @transactions = @transactions.includes(:account,:sub_category).filtering(params.slice(:all_words_search,:sentence_search,:account_id,:sub_category_id,:bank_account_id))
+    @transactions = @transactions.includes(:account,:sub_category).filtering(params.slice(:all_words_search,:sentence_search,:transaction_type_id,:account_id,:sub_category_id,:bank_account_id))
     @total_transactions = @transactions.count
     @transactions = @transactions.order(transactions_sort_column + " " + desc_sort_direction).paginate(:page => params[:page], :per_page => params[:per_page]) if @transactions.present?
     respond_to do |format|
@@ -29,8 +30,6 @@ class TransactionsController < ApplicationController
       end
     end
   end
-
-
 
   def create
       @transaction = Transaction.new(transaction_params)
@@ -54,7 +53,6 @@ class TransactionsController < ApplicationController
     if @transaction.update(transaction_params)
       flash[:notice] = 'Transaction successfully created.'
       redirect_back(fallback_location: transactions_path(:bank_account_id => @transaction.bank_account_id))
-
     else
       # Save Failed
       error = params[:expense_category_id].present? ? 'expense' : 'income'
@@ -62,7 +60,6 @@ class TransactionsController < ApplicationController
       redirect_to transactions_path(:transaction => transaction_params, :sub => @transaction.sub_category_id, errors:error)
     end
   end
-
 
   def destroy
     @transaction = Transaction.find(params[:id])
@@ -72,7 +69,7 @@ class TransactionsController < ApplicationController
     else
       flash[:error] = errors_to_string(@transaction.errors)
     end
-    redirect_to transactions_path(:bank_account_id => @bank_account.id)
+    redirect_back(fallback_location: transactions_path(:bank_account_id => @bank_account.id))
   end
 
   # Initializer for Creating Transaction and Transfer from Transactions Index
@@ -120,5 +117,9 @@ class TransactionsController < ApplicationController
   def load_bank_accounts
     @bank_accounts = @current_user.bank_accounts
     @bank_account = params[:bank_account_id].present? ? @bank_accounts.find(params[:bank_account_id]) : @current_user.bank_account
+  end
+
+  def load_transaction
+    @transaction = Transaction.find(params[:id])
   end
 end

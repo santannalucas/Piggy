@@ -14,26 +14,11 @@ Rails.application.routes.draw do
     end
   end
 
-  resources :transfers
-
-  namespace :api do
-    namespace :v1 do
-      resources :transactions
-      resources :schedulers
-      resources :transaction_types, :only => [:index]
-      resources :users do
-        collection do
-          get 'navbar'
-        end
-      end
-      namespace :admin do
-        resources :roles
-      end
-      namespace :config do
-        resources :accounts
-      end
-    end
+  namespace :hotwire do
+    resources :transactions
   end
+
+  resources :transfers
 
   # System Admin Module
   scope module: 'config' do
@@ -45,10 +30,9 @@ Rails.application.routes.draw do
   end
 
   resources :schedulers do
-    put 'update_item'
-    post 'create_item'
-    delete 'delete_item'
+    resources :scheduler_items, only: [:create, :update, :destroy], controller: 'schedulers/scheduler_items'
     get 'pay'
+    post 'complete_pay_all'
   end
 
   resources :reports

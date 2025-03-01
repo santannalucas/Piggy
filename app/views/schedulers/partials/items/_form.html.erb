@@ -1,7 +1,7 @@
 <% error = params[:errors] %>
 <% if locals[:new].present? %>
 <tr id="row-form-new" <% unless error.present? %> hidden="hidden" <% end %>class="row-form-form <%= 'error' if error.present? %>">
-  <%= form_for @scheduler_item_new, :url => scheduler_create_item_path(scheduler_id:@scheduler.id) do |form| %>
+  <%= form_for @scheduler_item_new, :url => scheduler_scheduler_items_path(scheduler_id:@scheduler.id) do |form| %>
     <td> # </td>
     <td class="align-left"> <%= @scheduler.account.name %> </td>
     <td> <%= @scheduler.scheduler_type.name %></td>
@@ -21,16 +21,19 @@
 <% else %>
   <% item = @scheduler_item_edit || locals[:item] %><% rows = locals[:rows] %>
   <tr id="form_record_<%= item.id %>"  <%= "hidden='hidden'".html_safe unless locals[:error] %> class="row-form-form <%= 'error' if locals[:error] %>">
-    <%= form_for(item, url: scheduler_update_item_path(scheduler_id:@scheduler.id,item_id:item.id), method: :put) do |form|%>
+    <%= form_for(item, url: scheduler_scheduler_item_path(scheduler_id:@scheduler.id,item_id:item.id), method: :put) do |form|%>
       <!-- #    -->  <td> <%= rows %></td>
-      <td> <%= @scheduler.account.name %> </td>
+      <td class="align-left"> <%= @scheduler.account.name %> </td>
       <td> <%= @scheduler.scheduler_type.name %></td>
       <td> <%= @scheduler.description %> </td>
       <td> <%= @scheduler.type_description %></td>
-      <td></td>
-      <td> <%= form.number_field :amount, value:sprintf("%0.02f",form.object.amount || 0),:min => 0.00, :step => :any, :class => 'input-field'  %></td>
+      <td> <%= number_field_tag :repeat, params[:repeat], class: 'input-field' %></td>
+      <td>  <%= form.number_field :amount, value:sprintf("%0.02f",form.object.amount || 0),:min => 0.00, :step => :any, :class => 'input-field-table-column seven-width align-center' %>
+        <span title="Apply to All"><%= check_box_tag('apply_all', true ) %></span>
+      </td>
+
       <!-- Date -->
-      <td class="form"> <%= date_field_tag('scheduler_item[created_at]', Time.now.to_date, class: 'input-field-table-column align-center') %> </td>
+      <td class="form"> <%= date_field_tag('scheduler_item[created_at]', item.created_at.to_date, class: 'input-field-table-column align-center') %> </td>
       <td></td>
       <td><button type='submit' name='Update' value='Update' class='action-icon row-form'><i class="fad fa-save fa-lg" title="Save"></i></button></td>
       <td>

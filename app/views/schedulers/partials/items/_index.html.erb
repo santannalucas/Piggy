@@ -40,7 +40,7 @@
           <%= link_to scheduler_pay_path(:scheduler_id => @scheduler.id, :item_id => item.id) do %><i class="fad fa-check-circle <%= @scheduler.type_name %> action-icon" title="Pay Bill"></i><% end %> </td>
         <% end %>
       <td><i class="fad fa-pencil-alt action-icon row-form-edit-field" rel="<%= item.id %>" title="Edit"></i></td>
-      <td><%= link_to scheduler_delete_item_path(:scheduler_id => @scheduler.id, :item_id => item.id) , :class => 'delete-confirm', :method => :delete do %><i class="fas fa-trash action-icon" title="Delete"></i><% end %></td>
+      <td><%= link_to scheduler_scheduler_item_path(:scheduler_id => @scheduler.id, :item_id => item.id) , :class => 'delete-confirm', :method => :delete do %><i class="fas fa-trash action-icon" title="Delete"></i><% end %></td>
     </tr>
     <!-- Row Edit Form -->
     <%= render 'schedulers/partials/items/form', :locals => { :item => item, :error => error, :rows => rows} %>

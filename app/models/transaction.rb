@@ -70,7 +70,7 @@ class Transaction < ActiveRecord::Base
   end
 
   def self.monthly_total(user, year = nil, currency_id = nil)
-    currency = Currency.find(currency || user.options['currency'])
+    currency = Currency.find(currency_id || user.options['currency'])
     transactions = user.transactions
     total = []
     (1..12).to_a.each do |month|

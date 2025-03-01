@@ -31,7 +31,10 @@
 <!-- Bottom Menu -->
 <div id="menu-bottom">
   <ul>
+    <!-- Complete and Delete --> <li><%= link_to scheduler_path(:id => @scheduler.id), :data => {:confirm => 'Are you sure? This will not delete paid transactions.'}, :method => :delete do %><i class="fad fa-trash fa-3x delete-icon" title="Delete"></i><br>Delete<% end %></li>
+    <!-- Complete and Pay --> <li><%= link_to scheduler_complete_pay_all_path(:scheduler_id => @scheduler.id),  :data => {:confirm => 'Are you sure? This will pay all unpaid items.'} do %><i class="fad fa-vote-yea fa-3x pay-complete-icon" title="Complete and Pay"></i><br>Pay & Complete<% end %></li>
     <!-- New Bank Account --><li><a id='add-row-form-new' href="#row-form-new"><i class="fad fa-plus-circle fa-3x new-icon" title="New Item"></i><br> New </a> </li>
+    <!-- Back to Schedulers --> <li><%= link_to schedulers_path do %><i class="fad fa-calendar-alt fa-3x calendar-icon" title="Back to Scheduled Bills"></i><br>Back<% end %></li>
     <!-- Back Dashboard -->  <li> <%= link_to root_path do %><i class="fad fa-analytics fa-3x dashboard" title="Back to Dashboard"></i><br>Dashboard<% end %></li>
   </ul>
 </div>

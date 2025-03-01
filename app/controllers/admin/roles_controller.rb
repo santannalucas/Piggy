@@ -9,7 +9,6 @@ class Admin::RolesController < ApplicationController
     if params[:role_id].present? && params[:role_id] != params[:id]
       redirect_to role_path(:id => params[:role_id], :role_id => nil, :show => params[:show])
     else
-      # Get Role and Showing
       @role = Role.find(params[:id])
       params[:show] = 'users' if params[:show].nil?
       # Check Access

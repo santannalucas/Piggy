@@ -36,7 +36,7 @@
       <td> <i class="<%= scheduler.completed? ? 'fas fa-check-circle scheduler completed' : 'fas fa-exclamation-circle scheduler active' %>"></i> </td>
       <td> <%= default_date(scheduler.created_at) %> </td>
       <td><%= link_to scheduler_path(:id => scheduler.id) do %><i class="fad fa-search action-icon" title="View Scheduled Bill"></i><% end %> </td>
-      <td><%= link_to scheduler_path(:id => scheduler.id), :class => 'delete-confirm', :method => :delete do %><i class="fas fa-trash action-icon" title="Delete"></i><% end %></td>
+      <td><%= link_to scheduler_path(:id => scheduler.id), :data => {:confirm => 'Are you sure? This will not delete paid transactions.'}, :method => :delete do %><i class="fas fa-trash action-icon" title="Delete"></i><% end %></td>
     </tr>
    <% end %>
   <!-- Index Bottom -->

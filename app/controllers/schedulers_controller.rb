@@ -84,7 +84,21 @@ class SchedulersController < ApplicationController
       # Save Failed
       flash[:error] = errors_to_string(@item.payment.errors)
     end
-    redirect_to params[:from] == 'dashboard' ? dashboard_path : @scheduler
+    redirect_back(fallback_location: params[:from] == 'dashboard' ? dashboard_path : @scheduler)
+  end
+
+  def complete_pay_all
+    @scheduler = Scheduler.find(params[:scheduler_id])
+    if can?(:scheduler,:update)
+      @scheduler.scheduler_items.unpaid.each do |item|
+        item.pay
+      end
+      @scheduler.check_for_completion
+      flash[:notice] = 'All Bills successfully marked as paid.'
+      redirect_back(fallback_location: @scheduler)
+    else
+      failed_access('Complete Scheduler', 'Update', @scheduler.id)
+    end
   end
 
   # Routed Action - Destroy Account
@@ -104,52 +118,6 @@ class SchedulersController < ApplicationController
     else
       # Failed Access
       failed_access("Delete Scheduler", 'Delete', @sub_category.name)
-    end
-  end
-
-  def create_item
-    @scheduler = Scheduler.find(params[:scheduler_id])
-    if @scheduler.scheduler_items.create(scheduler_item_params)
-      flash[:notice] = "New Bill successfully created."
-    else
-      flash[:error] = "Error"
-    end
-      redirect_to @scheduler
-  end
-
-  def update_item
-    @item = SchedulerItem.find(params[:item_id])
-    if can?(:scheduler,:update)
-      if @item.update(scheduler_item_params)
-        # Recreate Custom and CRUD Rules
-        redirect_link = scheduler_path(@item.scheduler_id, updated:@item.id)
-        flash[:notice] = 'Scheduled Bill successfully updated.'
-      else
-        # Save Failed
-        redirect_link = scheduler_path(:id => params[:scheduler_item][:scheduler_id], form_error:'error')
-        flash[:error] = errors_to_string(@scheduler.errors)
-      end
-      redirect_to redirect_link
-    else
-      # Failed Access
-      failed_access('Create Scheduler', 'Update', @scheduler.id)
-    end
-  end
-
-  def delete_item
-    @item = SchedulerItem.find(params[:item_id])
-    @scheduler = @item.scheduler
-    if can?(:scheduler,:delete)
-      if @item.destroy
-        flash[:notice] = 'Scheduled Bill successfully deleted.'
-      else
-        # Save Failed
-        flash[:error] = errors_to_string(@item.errors)
-      end
-      redirect_to redirect_link
-    else
-      # Failed Access
-      failed_access('Delete Scheduler', 'Delete', @scheduler.id)
     end
   end
 
@@ -184,15 +152,10 @@ class SchedulersController < ApplicationController
 
   # Access Log
   def access_log(action, rule, details = nil)
-    AccessLog.create(user_id: @current_user.id , role_id: @current_user.role.id, workspace_id: Workspace.where(name:"Bank Accounts").first.id, action:action, access_rule:rule, details:details)
+    AccessLog.create(user_id: @current_user.id , role_id: @current_user.role.id, workspace_id: Workspace.where(name:"Schedulers").first.id, action:action, access_rule:rule, details:details)
   end
 
   def scheduler_params
     params.require(:scheduler).permit(:id, :user_id, :scheduler_type_id, :bank_account_id, :account_id, :split, :scheduler_period_id, :description, :amount, :sub_category_id, :last_payment, :transaction_type_id, :created_at, :updated_at)
   end
-
-  def scheduler_item_params
-    params.require(:scheduler_item).permit(:created_at,:amount)
-  end
-
 end
